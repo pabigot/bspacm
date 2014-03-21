@@ -247,7 +247,18 @@ Default_Handler:
  *    overwritten by other handlers */
 	.macro	def_irq_handler	handler_name
 	.weak	\handler_name
+#ifdef __STARTUP_USE_UNIQUE_DEFAULT_HANDLER
+/* Provide a unique default handler for each candidate so
+ * we can use the debugger to figure out which handler we
+ * forgot to provide. */
+	.type	\handler_name, %function
+\handler_name:
+	b	.
+	.size	\handler_name, . - \handler_name
+#else /* __STARTUP_USE_UNIQUE_DEFAULT_HANDLER */
+/* Just reference the default handler */
 	.set	\handler_name, Default_Handler
+#endif /* __STARTUP_USE_UNIQUE_DEFAULT_HANDLER */
 	.endm
 
 	def_irq_handler	NMI_Handler
