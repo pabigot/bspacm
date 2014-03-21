@@ -1,0 +1,339 @@
+# Copyright 2014, Peter A. Bigot
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the software nor the names of its contributors may be
+#   used to endorse or promote products derived from this software without
+#   specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# BSPACM (http://github.com/pabigot/bspacm) common build support
+#
+# BSPACM applications can significantly reduce the size of
+# application-specific Makefiles by defining BSPACM_ROOT, perhaps
+# BOARD, and SRC, then including this file.  Some variables documented
+# in this file enable specific features.
+
+# BSPACM_ROOT: Path to root of a BSPACM installation.  This is used to set
+# paths for board files.
+ifndef BSPACM_ROOT
+$(error Must specify BSPACM_ROOT)
+endif # BSPACM_ROOT
+
+# Default goal, just to prevent rules added in subordinate makefiles
+# from taking precedence.
+default: delayed_default
+
+# TOOLCHAIN: The CMSIS standard identifier for the toolchain being used:
+# GCC -- GNU Tools for ARM Embedded https://launchpad.net/gcc-arm-embedded
+# Future candidates:
+# ARM : MDK-ARM
+# G++ : Sourcery G++ Lite
+# IAR : IAR Embedded Workbench
+TOOLCHAIN=GCC
+
+# GNU Make function to convert text+hyphen to upper case+underscore
+# (assuming a POSIX shell environment)
+uc=$(shell echo $(1) | tr '[a-z-]' '[A-Z_]')
+
+# At this time we support only the GNU toolchain.
+ifneq (GCC,$(TOOLCHAIN))
+$(error Unsupported toolchain $(TOOLCHAIN))
+endif # TOOLCHAIN
+
+CROSS_COMPILE ?= arm-none-eabi-
+CC=$(CROSS_COMPILE)gcc
+CXX=$(CROSS_COMPILE)g++
+LD=$(CROSS_COMPILE)ld
+AR=$(CROSS_COMPILE)ar
+SIZE=$(CROSS_COMPILE)size
+OBJCOPY=$(CROSS_COMPILE)objcopy
+LS=ls
+
+# TARGET_CPPFLAGS: Target-specific preprocessor flags.
+TARGET_CPPFLAGS ?=
+
+# TARGET_MFLAGS: Target-specific machine flags.  These are -mthumb and
+# similar options that have to go in CFLAGS, LDFLAGS, ASFLAGS, and
+# other places the C compiler driver is used.
+TARGET_MFLAGS ?=
+
+# TARGET_CFLAGS: Target-specific C compiler options.
+TARGET_CFLAGS ?= 
+
+# TARGET_ASFLAGS: Target-specific assembler-with-cpp options.
+TARGET_ASFLAGS ?= 
+
+# TARGET_LDFLAGS: Target-specific linker options
+TARGET_LDFLAGS ?=
+
+# BOARD: Standard nomenclature for a particular board with particular
+# features.  This may define things on its own, but primarily it
+# includes the specific device within the device/series/line/device
+# hierarchy.  That in turn defines DEVICE, ARM_PROCESSOR, and other
+# flags, and includes parent line and series definitions.
+ifndef BOARD
+$(error No BOARD identified)
+endif # BOARD
+include $(BSPACM_ROOT)/board/$(BOARD)/Makefile.board
+
+# DEVICE: The specific microcontroller for which the application is to
+# be built.  Must be defined, probably (indirectly) by Makefile.board.
+# DEVICE must be defined; parent identifiers DEVICE_SERIES (tm4c,
+# efm32) and DEVICE_LINE (tm4c123, efm32gg) are optional.
+ifndef DEVICE
+$(error No DEVICE identified)
+endif # DEVICE
+
+# EVALUATE_AFTER_BOARD_INCLUSION: Optional Make variable that expands
+# into Makefile source that needs to be evaluated after the
+# BOARD/DEVICE/DEVICE_SERIES/DEVICE_LINE material has been defined.
+# For example, an application that needs extra source files out of the
+# vendor library.  Normally by the time control returns to the
+# application Makefile, SRC has already been processed into OBJ and
+# DEP and other items, and it's too late to add anything.
+ifdef EVALUATE_AFTER_BOARD_INCLUSION
+$(eval $(call EVALUATE_AFTER_BOARD_INCLUSION))
+endif # EVALUATE_AFTER_BOARD_INCLUSION
+
+# Default to a device-specific but application-independent linker
+# script that's in the BSPACM device directory.
+TARGET_LDSCRIPT ?= $(BSPACM_ROOT)/toolchain/$(TOOLCHAIN)/gcc_arm.ld
+TARGET_LDFLAGS += -Wl,-T,$(TARGET_LDSCRIPT)
+
+# Path to the device-specific memory.ld script that will be included
+# by the default TARGET_LDSCRIPT.
+DEVICE_LDSCRIPT_PATH ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)
+TARGET_LDFLAGS += -L$(DEVICE_LDSCRIPT_PATH)
+
+# Extra preprocessor flags used when compiling the startup code.
+
+# STARTUP_STACK_SIZE: Explicit definition of the number of words to
+# reserve for the initial stack.
+STARTUP_STACK_SIZE ?= 0x400
+STARTUP_CPPFLAGS += -D__STACK_SIZE=$(STARTUP_STACK_SIZE)
+
+# STARTUP_HEAP_SIZE: Explicit definition of the number of words to
+# reserve for the heap.
+STARTUP_HEAP_SIZE ?= 0
+STARTUP_CPPFLAGS += -D__HEAP_SIZE=$(STARTUP_HEAP_SIZE)
+
+# Unless told otherwise, use the standard startup source, which is an
+# asm file.
+ifndef CMSIS_SRC_STARTUP
+VPATH += $(BSPACM_ROOT)/toolchain/$(TOOLCHAIN)
+CMSIS_SRC_STARTUP = startup_ARMC$(ARM_PROCESSOR).S
+SRC += $(CMSIS_SRC_STARTUP)
+endif # STARTUP
+
+# CMSIS_SRC_SYSTEM : The source file that provides the CMSIS system
+# layer for the device; normally defined in Makefile.series or
+# Makefile.line.  If absent, the call to SystemInit is elided from the
+# startup.
+ifdef CMSIS_SRC_SYSTEM
+SRC += $(CMSIS_SRC_SYSTEM)
+else # CMSIS_SRC_SYSTEM
+STARTUP_CPPFLAGS += -D__NO_SYSTEM_INIT
+endif # CMSIS_SRC_SYSTEM
+
+# __STARTUP_USE_UNIQUE_DEFAULT_HANDLER : An extension to generate
+# unique default handlers so when one gets invoked unexpectedly you
+# can tell which one needs to be provided (or at least what caused the
+# fault).
+STARTUP_CPPFLAGS += -D__STARTUP_USE_UNIQUE_DEFAULT_HANDLER
+
+# OPT_CFLAGS: CFLAGS related to optimization and debugging.  The
+# default enables debugging and optimizes for size, and puts each
+# function and data object in its own section so it can be discarded
+# at link time if not needed.  Also review OPT_LDFLAGS.
+OPT_CFLAGS ?= -ggdb -Os -ffunction-sections -fdata-sections
+
+# OPT_LDFLAGS: LDFLAGS related to optimization and debugging.  THe
+# default value enables removal of unreferenced sections during
+# non-relocatable link.
+OPT_LDFLAGS ?= -Wl,-gc-sections
+
+# WARN_CFLAGS: CFLAGS that control warnings
+WARN_CFLAGS ?= -Wall -Wno-main
+
+# WITH_WARN_ERROR: If not set to zero, adds -Werror which causes all
+# warnings to be treated as errors.
+WITH_WARN_ERROR ?= 1
+ifneq (0,$(WITH_WARN_ERROR))
+WARN_CFLAGS += -Werror
+endif # WITH_WARN_ERROR
+
+# STD_CFLAGS: CFLAGS to select C language standard conformance.
+STD_CFLAGS ?= -std=c99
+
+# STD_CXXFLAGS : CXXFLAGS to select C++ language standard conformance.
+# BSPTIVA uses C++11.
+STD_CXXFLAGS ?= -std=c++11 
+
+# RT_CXXFLAGS: CXXFLAGS to control runtime support facilities.  The
+# defaults disable the infrastructure for runtime type inference and
+# for exceptions.
+RT_CXXFLAGS ?= -fno-rtti -fno-exceptions
+
+# Aggregate individual flags
+CPPFLAGS = $(TARGET_CPPFLAGS)
+# Provide board and device information for source code reference.
+CPPFLAGS += -DBSPACM_BOARD_$(call uc,$(BOARD))
+CPPFLAGS += -DBSPACM_DEVICE_SERIES_$(call uc,$(DEVICE_SERIES))
+CPPFLAGS += -DBSPACM_DEVICE_LINE_$(call uc,$(DEVICE_LINE))
+CPPFLAGS += -DBSPACM_DEVICE_$(call uc,$(DEVICE))
+
+# Allow each layer to override the standard include hierarchy.
+# The priority is: BOARD > DEVICE > LINE > SERIES > BSPACM
+# Each include subdirectory should support <bspacm/internal/file.h>,
+# i.e. taken in order they provide the bspacm/internal hierarchy.
+CPPFLAGS += -I$(BSPACM_ROOT)/board/$(BOARD)/include
+CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)/include
+CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/include
+CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/include
+CPPFLAGS += -I$(BSPACM_ROOT)/include
+
+# Tell the application which toolchain is being used
+CPPFLAGS += -DBSPACM_CORE_TOOLCHAIN_$(TOOLCHAIN)
+
+CFLAGS = $(WARN_CFLAGS) $(STD_CFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
+CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
+ASFLAGS = $(TARGET_ASFLAGS) $(TARGET_MFLAGS)
+LDFLAGS = $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
+
+# Append any extra flags pre-defined in the Makefile (AUX_*) or passed
+# on the make command line (EXT_*).
+CPPFLAGS += $(AUX_CPPFLAGS) $(EXT_CPPFLAGS)
+CFLAGS += $(AUX_CFLAGS) $(EXT_CFLAGS)
+ASFLAGS += $(AUX_ASFLAGS) $(EXT_ASFLAGS)
+LDFLAGS += $(AUX_LDFLAGS) $(EXT_LDFLAGS)
+LDLIBS += $(AUX_LDLIBS) $(EXT_LDLIBS)
+
+# If any source file is C++, use CXX for linking; otherwise use CC.
+ifeq (,$(filter %.cc,$(SRC)))
+LINKER=$(CC)
+else # linker
+LINKER=$(CXX)
+endif # linker
+
+# Normal compilers use .o for object files.  TI's uses .obj, and defines
+# OBJ_EXT above.
+OBJ_EXT ?= .o
+
+# Utility function to replace the .c, .cc, and .S suffixes of source files
+# with some derived file extension.
+subst_src_suffix=$(patsubst %.c,%$(1),$(patsubst %.cc,%$(1),$(patsubst %.S,%$(1),$(SRC))))
+
+# Object files derive from C source files and preprocessed assembly files
+OBJ += $(call subst_src_suffix,$(OBJ_EXT))
+
+# Dependency files derive from anything that was preprocessed.  I'd like
+# these stuffed in a hidden subdirectory, haven't worked that one yet.
+# Also see http://locklessinc.com/articles/makefile_tricks/
+DEP += $(call subst_src_usffix,.d)
+
+# BSPACM_INHIBIT_MAKE_RULES: Define to a nonzero value to exclude the
+# Make rules while leaving all the variable declarations in place.
+# This allows the BSPACM build infrastructure to provide toolchain
+# and platform declarations to an external build infrastructure
+# like that for Contiki, which wants to provide its own rules.
+BSPACM_INHIBIT_MAKE_RULES ?= 0
+ifeq (0,$(BSPACM_INHIBIT_MAKE_RULES))
+
+# Use GCC to generate dependency files
+%.d: %.c
+	set -e; $(RM) $@; \
+	 $(CC) -MM -MT$*.o $(CPPFLAGS) $(CFLAGS) $< > $@.$$$$; \
+	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	 $(RM) $@.$$$$
+
+%.d: %.cc
+	set -e; $(RM) $@; \
+	 $(CXX) -MM -MT$*.o $(CPPFLAGS) $(CXXFLAGS) $< > $@.$$$$; \
+	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	 $(RM) $@.$$$$
+
+# Object file derived from C source
+%.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+
+# Object file derived from assembler source including preprocessor
+%.o: %.S
+	$(CC) $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
+
+# Interleaved source/object-code/asm listing
+%.lst: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -ggdb -Wa,-ahdlns=$@ -c $<
+CLEAN += $(call subst_src_suffix,.lst)
+
+# On realclean remove all object files even if they aren't in $(OBJ)
+# (e.g., when BOARD is not set).  Note the pattern may be
+# toolchain-dependent.
+REALCLEAN_OBJ ?= *.o
+REALCLEAN += $(REALCLEAN_OBJ)
+
+# AOUT.axf: The name of the application image as Arm Executable
+AOUT.axf = app.axf
+
+# The default rule
+.PHONY: delayed_default
+delayed_default: $(AOUT.axf)
+
+$(AOUT.axf): $(OBJ)
+	$(LINKER) -o $@ $(LDFLAGS) $(OBJ) $(LDLIBS)
+	$(SIZE) $@
+
+# AOUT.bin: The name of the application image as binary
+AOUT.bin = $(AOUT.axf:%.axf=%.bin)
+$(AOUT.bin): $(AOUT.axf)
+	$(OBJCOPY) -O binary $< $@
+	@$(LS) -ld $@
+
+# Rule for building the standard startup file.  This uses additional C
+# preprocessor flags that might not be appropriate for application
+# code.
+startup_ARMC$(ARM_PROCESSOR).o: startup_ARMC$(ARM_PROCESSOR).S
+	$(COMPILE.S) $(STARTUP_CPPFLAGS) -o $@ $<
+
+# CLEAN: Additional files to be removed on make clean
+.PHONY: clean
+clean:
+	-$(RM) $(OBJ) $(CLEAN)
+
+# REALCLEAN: Additional files to be removed on make realclean
+.PHONY: realclean
+realclean: clean
+	-$(RM) $(AOUT.bin) $(AOUT.axf) $(DEP) $(REALCLEAN) *.d *.o
+
+# device Makefile.series generally defines a make function that
+# expands to the command used to write an image to a board.
+.PHONY: install
+install: $(AOUT.bin)
+	$(call DO_FLASH_IMAGE,$^)
+
+endif # BSPACM_INHIBIT_MAKE_RULES
+
+# Local Variables:
+# mode:makefile
+# End:

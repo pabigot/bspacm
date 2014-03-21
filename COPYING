@@ -1,0 +1,14 @@
+The majority of files in this package are copyright Peter A. Bigot, are
+released under the BSD-3-Clause license, and are so-marked in the source.
+
+Most material in the examples subdirectory is placed in the public domain
+and is so-marked.
+
+Trivial files are not marked and may be assumed to be in the public
+domain.  In some cases these files originated from an external source;
+their provenance is recorded in the git repository.
+
+Exceptions are listed below; see each file for specific details
+
+File                 License        Copyright                  Comment
+------------         ------------   ----------------------     ---------------
