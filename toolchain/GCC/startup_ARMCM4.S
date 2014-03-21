@@ -3,7 +3,7 @@
  *   GCC for ARM Embedded Processors
  * Version: V2.0
  * Date: 16 August 2013
- *
+ * !! MODIFIED to support BSPACM (http://github.com/pabigot/bspacm)
  */
 /* Copyright (c) 2011 - 2013 ARM LIMITED
 
@@ -90,38 +90,11 @@ __isr_vector:
 	.long	SysTick_Handler       /* SysTick Handler */
 
 	/* External interrupts */
-	.long	WDT_IRQHandler        /*  0:  Watchdog Timer            */
-	.long	RTC_IRQHandler        /*  1:  Real Time Clock           */
-	.long	TIM0_IRQHandler       /*  2:  Timer0 / Timer1           */
-	.long	TIM2_IRQHandler       /*  3:  Timer2 / Timer3           */
-	.long	MCIA_IRQHandler       /*  4:  MCIa                      */
-	.long	MCIB_IRQHandler       /*  5:  MCIb                      */
-	.long	UART0_IRQHandler      /*  6:  UART0 - DUT FPGA          */
-	.long	UART1_IRQHandler      /*  7:  UART1 - DUT FPGA          */
-	.long	UART2_IRQHandler      /*  8:  UART2 - DUT FPGA          */
-	.long	UART4_IRQHandler      /*  9:  UART4 - not connected     */
-	.long	AACI_IRQHandler       /* 10: AACI / AC97                */
-	.long	CLCD_IRQHandler       /* 11: CLCD Combined Interrupt    */
-	.long	ENET_IRQHandler       /* 12: Ethernet                   */
-	.long	USBDC_IRQHandler      /* 13: USB Device                 */
-	.long	USBHC_IRQHandler      /* 14: USB Host Controller        */
-	.long	CHLCD_IRQHandler      /* 15: Character LCD              */
-	.long	FLEXRAY_IRQHandler    /* 16: Flexray                    */
-	.long	CAN_IRQHandler        /* 17: CAN                        */
-	.long	LIN_IRQHandler        /* 18: LIN                        */
-	.long	I2C_IRQHandler        /* 19: I2C ADC/DAC                */
-	.long	0                     /* 20: Reserved                   */
-	.long	0                     /* 21: Reserved                   */
-	.long	0                     /* 22: Reserved                   */
-	.long	0                     /* 23: Reserved                   */
-	.long	0                     /* 24: Reserved                   */
-	.long	0                     /* 25: Reserved                   */
-	.long	0                     /* 26: Reserved                   */
-	.long	0                     /* 27: Reserved                   */
-	.long	CPU_CLCD_IRQHandler   /* 28: Reserved - CPU FPGA CLCD   */
-	.long	0                     /* 29: Reserved - CPU FPGA        */
-	.long	UART3_IRQHandler      /* 30: UART3    - CPU FPGA        */
-	.long	SPI_IRQHandler        /* 31: SPI Touchscreen - CPU FPGA */
+#define BSPACM_INC_EXPAND_RESERVED(x_)	.long	0
+#define BSPACM_INC_EXPAND_IRQ_REFERENCE(x_)	.long	x_##_IRQHandler
+#include <bspacm/internal/device/vector_table.inc>
+#undef BSPACM_INC_EXPAND_IRQ_REFERENCE
+#undef BSPACM_INC_EXPAND_RESERVED
 
 	.size	__isr_vector, . - __isr_vector
 
@@ -287,28 +260,10 @@ Default_Handler:
 	def_irq_handler	PendSV_Handler
 	def_irq_handler	SysTick_Handler
 
-	def_irq_handler	WDT_IRQHandler
-	def_irq_handler	RTC_IRQHandler
-	def_irq_handler	TIM0_IRQHandler
-	def_irq_handler	TIM2_IRQHandler
-	def_irq_handler	MCIA_IRQHandler
-	def_irq_handler	MCIB_IRQHandler
-	def_irq_handler	UART0_IRQHandler
-	def_irq_handler	UART1_IRQHandler
-	def_irq_handler	UART2_IRQHandler
-	def_irq_handler	UART3_IRQHandler
-	def_irq_handler	UART4_IRQHandler
-	def_irq_handler	AACI_IRQHandler
-	def_irq_handler	CLCD_IRQHandler
-	def_irq_handler	ENET_IRQHandler
-	def_irq_handler	USBDC_IRQHandler
-	def_irq_handler	USBHC_IRQHandler
-	def_irq_handler	CHLCD_IRQHandler
-	def_irq_handler	FLEXRAY_IRQHandler
-	def_irq_handler	CAN_IRQHandler
-	def_irq_handler	LIN_IRQHandler
-	def_irq_handler	I2C_IRQHandler
-	def_irq_handler	CPU_CLCD_IRQHandler
-	def_irq_handler	SPI_IRQHandler
+#define BSPACM_INC_EXPAND_IRQ_REFERENCE(x_)	def_irq_handler x_##_IRQHandler
+#define BSPACM_INC_EXPAND_RESERVED(x_)
+#include <bspacm/internal/device/vector_table.inc>
+#undef BSPACM_INC_EXPAND_IRQ_REFERENCE
+#undef BSPACM_INC_EXPAND_RESERVED
 
 	.end

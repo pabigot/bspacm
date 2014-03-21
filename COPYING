@@ -11,5 +11,5 @@ their provenance is recorded in the git repository.
 Exceptions are listed below; see each file for specific details
 
 File                 License        Copyright                  Comment
-------------         ------------   ----------------------     ---------------
-toolchain/GCC/*      BSD-3-Clause   2011-2013 ARM LIMITED      From CMSIS 4.0
+------------         ------------   ----------------------     -----------------------
+toolchain/GCC/*      BSD-3-Clause   2011-2013 ARM LIMITED      Derived; From CMSIS 4.0
