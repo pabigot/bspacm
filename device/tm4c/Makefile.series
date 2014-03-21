@@ -1,0 +1,121 @@
+# Copyright 2014, Peter A. Bigot
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the software nor the names of its contributors may be
+#   used to endorse or promote products derived from this software without
+#   specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# BSPACM (http://github.com/pabigot/bspacm) vendor series build support:
+# Texas Instruments Tiva&trade; C series
+
+DEVICE_SERIES=tm4c
+
+ifndef DEVICE_LINE
+$(error DEVICE_LINE has not been set: include Makefile.line first)
+endif
+
+# Get upper-case versions of some variables that are upper-case in the
+# vendor directory structure.
+DEVICE_SERIES_UC=$(call uc,$(DEVICE_SERIES))
+DEVICE_LINE_UC=$(call uc,$(DEVICE_LINE))
+DEVICE_UC=$(call uc,$(DEVICE))
+BOARD_UC=$(call uc,$(BOARD))
+
+# Select the correct ARM startup script.  All Tiva C series are
+# Cortex-M4F.
+ARM_PROCESSOR=M4
+
+# TARGET_FLAGS: Target-specific compiler options.
+TARGET_MFLAGS = -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+
+# TIVAWARE_ROOT: Path to TivaWare&trade;.  This provides the
+# device-specific headers and the driver libraries.
+TIVAWARE_ROOT ?= /prj/arm/tivaware
+
+# TI does not provide CMSIS headers.  If you can find them, you can
+# use them.  BSPACM depends on CMSIS heavily so it's assumed you've
+# found them; if not, use CMSIS_ROOT= in your environment or command
+# line (i.e. provide an empty value).
+CMSIS_ROOT ?= /prj/arm/CMSIS
+
+ifneq (,$(CMSIS_ROOT))
+# Indicate that CMSIS is available
+TARGET_CPPFLAGS += -DBSPACM_CMSIS
+
+# Need to tell the CMSIS headers what device is being targeted
+TARGET_CPPFLAGS += -D$(DEVICE_UC)
+
+# Path to the CMSIS device-specific headers
+TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/Device/TI/$(DEVICE_SERIES_UC)/Include
+
+# Path to the CMSIS standard headers
+TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/CMSIS/Include
+
+# TI does not provide a CMSIS system layer.
+
+endif # CMSIS_ROOT
+
+ifneq (,$(TIVAWARE_ROOT))
+# Indicate that TivaWare is available
+TARGET_CPPFLAGS += -DBSPACM_TIVAWARE
+
+# Add the define for the target device
+TARGET_CPPFLAGS += -DPART_$(DEVICE_UC)
+
+# Add the path to the TivaWare headers
+TARGET_CPPFLAGS += -I$(TIVAWARE_ROOT)
+
+# Add the path where TivaWare put its pre-compiled driverlib libraries
+# for this toolchain.  grlib, sensorlib, usblib must be added by
+# applications that need them.
+ifeq (GCC,$(TOOLCHAIN))
+TARGET_LDFLAGS += -L$(TIVAWARE_ROOT)/driverlib/gcc
+endif # TOOLCHAIN
+
+# TivaWare standard target identifier.  This affects driverlib errata
+# workarounds and which functions may be redirected to ROM.
+ifdef TIVAWARE_TARGET
+TARGET_CPPFLAGS += -DTARGET_IS_$(TIVAWARE_TARGET)
+endif # TIVAWARE_TARGET
+
+# TivaWare depends on stdbool.h which shows up in C99.
+STD_CFLAGS = -std=c99
+
+endif # TIVAWARE_ROOT
+
+# LM4FLASH: Path to the lm4flash application
+LM4FLASH ?= lm4flash
+
+# LM4FLASH_OPTIONS: Options influencing lm4flash, such as the USB or
+# tty device to be used.
+LM4FLASH_OPTIONS ?=
+
+# The command used to flash an image to a Tiva C Series device
+DO_FLASH_IMAGE=$(LM4FLASH) $(LM4FLASH_OPTIONS) $(1)
+
+# Local Variables:
+# mode:makefile
+# End:

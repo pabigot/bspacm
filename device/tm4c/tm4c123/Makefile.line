@@ -1,0 +1,11 @@
+DEVICE_LINE=tm4c123
+
+ifndef DEVICE
+$(error DEVICE has not been set: include Makefile.device first)
+endif
+
+include $(BSPACM_ROOT)/device/tm4c/Makefile.series
+
+# Local Variables:
+# mode:makefile
+# End:

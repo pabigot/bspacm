@@ -1,0 +1,12 @@
+# http://www.ti.com/product/tm4c123gh6pm
+DEVICE=tm4c123gh6pm
+
+# TivaWare wants to know which silicon revision it's targeting
+# so it adjusts for errata and changes to the ROM.
+TIVAWARE_TARGET ?= TM4C123_RB1
+
+include $(BSPACM_ROOT)/device/tm4c/tm4c123/Makefile.line
+
+# Local Variables:
+# mode:makefile
+# End:
