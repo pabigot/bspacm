@@ -1,9 +1,10 @@
-/* Linker script to configure memory regions. */
-MEMORY
-{
-  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x40000   /* 256k */
-  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x08000   /*  32k */
-}
+/* From CMSIS 4.00 specification CMSIS-SP-00300-r4p0-00rel0.zip
+ * !! MODIFIED to support BSPACM (http://github.com/pabigot/bspacm)
+ */
+
+/* Include the device-specific memory map.  Pass 
+ * -L$(DEVICE_LDSCRIPT_PATH) to ld so the right one is located. */
+INCLUDE memory.ld
 
 /* Library configurations */
 GROUP(libgcc.a libc.a libm.a libnosys.a)
