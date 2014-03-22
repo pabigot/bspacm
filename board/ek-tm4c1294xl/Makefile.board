@@ -1,0 +1,6 @@
+# http://www.ti.com/tool/ek-tm4c1294xl
+include $(BSPACM_ROOT)/device/tm4c/tm4c129/tm4c1294ncpdt/Makefile.device
+
+# Local Variables:
+# mode:makefile
+# End:
