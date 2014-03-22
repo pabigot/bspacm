@@ -1,0 +1,15 @@
+DEVICE_LINE=efm32tg
+
+ifndef DEVICE
+$(error DEVICE has not been set: include Makefile.device first)
+endif
+
+# All EFM32 Tiny Gecko chips are Cortex-M3
+ARM_PROCESSOR=M3
+TARGET_MFLAGS = -mthumb -mcpu=cortex-m3
+
+include $(BSPACM_ROOT)/device/efm32/Makefile.series
+
+# Local Variables:
+# mode:makefile
+# End:

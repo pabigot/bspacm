@@ -1,0 +1,8 @@
+# http://www.silabs.com/products/mcu/lowpower/Pages/efm32tg-tiny-gecko.aspx
+DEVICE=efm32tg840f32
+
+include $(BSPACM_ROOT)/device/efm32/efm32tg/Makefile.line
+
+# Local Variables:
+# mode:makefile
+# End:
