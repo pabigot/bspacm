@@ -1,0 +1,100 @@
+# Copyright 2014, Peter A. Bigot
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the software nor the names of its contributors may be
+#   used to endorse or promote products derived from this software without
+#   specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# BSPACM (http://github.com/pabigot/bspacm) vendor series build support:
+# Energy Micro (SiLabs) EFM32&trade;
+DEVICE_SERIES=efm32
+
+ifndef DEVICE_LINE
+$(error DEVICE_LINE has not been set: include Makefile.line first)
+endif
+
+# Get upper-case versions of some variables that are upper-case in the
+# vendor directory structure.
+DEVICE_LINE_UC=$(call uc,$(DEVICE_LINE))
+DEVICE_UC=$(call uc,$(DEVICE))
+BOARD_UC=$(call uc,$(BOARD))
+
+# Where the vendor headers can be found.  This is the area created by
+# SimplicityStudio, containing top-level directories CMSIS, Device, emlib,
+# kits, ....
+EFM32_ROOT ?= /prj/arm/silabs
+
+# Where CMSIS device-specific headers can be found.  This should be
+# the directory with the CMSIS subdirectory from ARM, and a Device
+# subdirectory with vendor-specific subdirectories.  SiLabs
+# distribution includes one normally.
+CMSIS_ROOT = $(EFM32_ROOT)
+
+ifneq (,$(CMSIS_ROOT))
+# Indicate that CMSIS is available
+TARGET_CPPFLAGS += -DBSPACM_CMSIS
+
+# Need to tell the CMSIS headers what device is being targeted
+TARGET_CPPFLAGS += -D$(DEVICE_UC)
+
+# Path to the CMSIS device-specific headers
+TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/Device/EnergyMicro/$(DEVICE_LINE_UC)/Include
+
+# Path to the CMSIS standard headers
+TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/CMSIS/Include
+
+# EFM32 provides a CMSIS system layer; locate it and specify which
+# file to use.
+VPATH += $(CMSIS_ROOT)/Device/EnergyMicro/$(DEVICE_LINE_UC)/Source
+CMSIS_SRC_SYSTEM = system_$(DEVICE_LINE).c
+
+endif # CMSIS_ROOT
+
+# Header and source path to Energy Micro Peripheral Support library
+TARGET_CPPFLAGS += -I$(EFM32_ROOT)/emlib/inc
+VPATH += $(EFM32_ROOT)/emlib/src
+
+# Header and source path to common BSP for Energy Micro boards that are
+# evaluation boards.
+ifdef BOARD_STYLE
+TARGET_CPPFLAGS += -I$(EFM32_ROOT)/kits/$(BOARD_UC)/config
+TARGET_CPPFLAGS += -I$(EFM32_ROOT)/kits/common/bsp
+VPATH += $(EFM32_ROOT)/kits/common/bsp
+endif # BOARD_STYLE
+
+# EACOMMANDER: Path to the eACommander application
+EACOMMANDER ?= eACommander
+
+# EACOMMANDER_OPTIONS: Options influencing eACommander, such as the USB
+# port or JLink serial number to be used.
+EACOMMANDER_OPTIONS ?=
+
+# The command used to flash an image to a Energy Micro device
+DO_FLASH_IMAGE=$(EACOMMANDER) $(EACOMMANDER_OPTIONS) --flash $(1) --reset
+
+# Local Variables:
+# mode:makefile
+# End:

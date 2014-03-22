@@ -1,0 +1,11 @@
+# http://www.silabs.com/products/mcu/lowpower/pages/efm32gg-stk3700.aspx
+
+# This is an STK-style board, as opposed to a DK-style board.  This
+# affects which kit BSP file needs to be used.
+BOARD_STYLE=stk
+
+include $(BSPACM_ROOT)/device/efm32/efm32gg/efm32gg990f1024/Makefile.device
+
+# Local Variables:
+# mode:makefile
+# End:

@@ -54,7 +54,9 @@
 #if (BSPACM_CMSIS - 0)
 #include <TIVA.h>
 #endif /* BSPACM_CMSIS */
-#else
+#elif defined(BSPACM_DEVICE_SERIES_EFM32)
+#include <em_device.h>
+#else /* BSPACM_DEVICE_SERIES */
 #error No support for device series
 #endif /* BSPACM_DEVICE_SERIES */
 
