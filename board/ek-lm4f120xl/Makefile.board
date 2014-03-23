@@ -1,0 +1,9 @@
+# http://www.ti.com/tool/ek-lm4f120xl
+#
+# This is a pre-Tiva board with an LM4F120H5QR.  The equivalent TM4C123
+# processor is the TM4C1233H6PM.
+include $(BSPACM_ROOT)/device/tm4c/tm4c123/tm4c1233h6pm/Makefile.device
+
+# Local Variables:
+# mode:makefile
+# End:

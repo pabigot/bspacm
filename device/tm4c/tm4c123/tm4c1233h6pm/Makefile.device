@@ -1,0 +1,14 @@
+# http://www.ti.com/product/tm4c1233h6pm
+# Equivalent to LM4F120H5QR
+DEVICE=tm4c1233h6pm
+
+# TivaWare wants to know which silicon revision it's targeting
+# so it adjusts for errata and changes to the ROM.  A3 is what
+# the lm4f120hq5q4 on my ek-lm4f120xl claims to be.
+TIVAWARE_TARGET ?= TM4C123_RA3
+
+include $(BSPACM_ROOT)/device/tm4c/tm4c123/Makefile.line
+
+# Local Variables:
+# mode:makefile
+# End:
