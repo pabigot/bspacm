@@ -95,6 +95,22 @@ EACOMMANDER_OPTIONS ?=
 # The command used to flash an image to a Energy Micro device
 DO_FLASH_IMAGE=$(EACOMMANDER) $(EACOMMANDER_OPTIONS) --flash $(1) --reset
 
+# The archive containing emlib as built for this board.
+BOARD_LIBEMLIB_A=$(BSPACM_ROOT)/board/$(BOARD)/libemlib.a
+
+# Don't bother with dependencies or trickiness: just whack everything
+# in the emlib src area into an archive that's stored in the board
+# directory.
+$(BOARD_LIBEMLIB_A): $(EFM32_ROOT)/emlib/src/*.c
+	cd $(dirname $@) && \
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ && \
+	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
+	rm $(notdir $(^:%.c=%.o))
+
+# Dummy rule to manually build emlib for the current board
+.PHONY: board_emlib
+board_emlib: $(BOARD_LIBEMLIB_A)
+
 # Local Variables:
 # mode:makefile
 # End:

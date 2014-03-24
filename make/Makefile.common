@@ -240,6 +240,13 @@ CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_
 ASFLAGS = $(TARGET_ASFLAGS) $(TARGET_MFLAGS)
 LDFLAGS = $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
 
+# GENERATED_LDLIBS: Generated files, such as archives (not -llibname
+# directives), that must be in LDLIBS (as opposed to OBJ) but that
+# cannot be assumed to exist a priori.  These are added as an
+# order-only dependency to the target executable.
+REALCLEAN += $(GENERATED_LDLIBS)
+LDLIBS += $(GENERATED_LDLIBS)
+
 # Append any extra flags pre-defined in the Makefile (AUX_*) or passed
 # on the make command line (EXT_*).
 CPPFLAGS += $(AUX_CPPFLAGS) $(EXT_CPPFLAGS)
@@ -318,7 +325,9 @@ AOUT.axf = app.axf
 .PHONY: delayed_default
 delayed_default: $(AOUT.axf)
 
-$(AOUT.axf): $(OBJ)
+# Build the executable; make sure the subset of LDLIBS that's the
+# responsibility of the BSPACM infrastructure is built first.
+$(AOUT.axf): $(OBJ) | $(GENERATED_LDLIBS)
 	$(LINKER) -o $@ $(LDFLAGS) $(OBJ) $(LDLIBS)
 	$(SIZE) $@
 
