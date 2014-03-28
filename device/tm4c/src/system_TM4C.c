@@ -5,7 +5,9 @@
  * @version  V1.08
  * @date     23. November 2012
  *
- * @note
+ * @note     This version modified from the original to support use in
+ *           Tiva&trade; C Series Cortex-M4 devices using
+ *           BSPACM.  See: http://github.com/pabigot/bspacm
  *
  ******************************************************************************/
 /* Copyright (c) 2011 - 2012 ARM LIMITED
@@ -36,21 +38,17 @@
    ---------------------------------------------------------------------------*/
 
 
-#include "ARMCM4.h"
+#include <TIVA.h>
 
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define __HSI             ( 8000000UL)
-#define __XTAL            ( 5000000UL)    /* Oscillator frequency             */
-
-#define __SYSTEM_CLOCK    (5*__XTAL)
 
 
 /*----------------------------------------------------------------------------
   Clock Variable definitions
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock = __SYSTEM_CLOCK;/*!< System Clock Frequency (Core Clock)*/
+uint32_t SystemCoreClock = 0    ;/*!< System Clock Frequency (Core Clock)*/
 
 
 /*----------------------------------------------------------------------------
@@ -58,9 +56,7 @@ uint32_t SystemCoreClock = __SYSTEM_CLOCK;/*!< System Clock Frequency (Core Cloc
  *----------------------------------------------------------------------------*/
 void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 {
-
-  SystemCoreClock = __SYSTEM_CLOCK;
-
+  SystemCoreClock = 0;
 }
 
 /**
@@ -74,15 +70,9 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
  */
 void SystemInit (void)
 {
-  #if (__FPU_USED == 1)
-    SCB->CPACR |= ((3UL << 10*2) |                 /* set CP10 Full Access */
-                   (3UL << 11*2)  );               /* set CP11 Full Access */
-  #endif
-
-#ifdef UNALIGNED_SUPPORT_DISABLE
-  SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
-#endif
-
-  SystemCoreClock = __SYSTEM_CLOCK;
-
+  /* Unconditionally enable floating point.  The standard toolchain
+   * flags do this, which introduce hidden dependencies even if there
+   * appears no use of the FPU in an application. */
+  SCB->CPACR |= (3UL << (10*2)) | (3U << (11*2));
+  FPU->FPCCR |= FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk;
 }

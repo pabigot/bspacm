@@ -74,7 +74,9 @@ TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/Device/TI/$(DEVICE_SERIES_UC)/Include
 # Path to the CMSIS standard headers
 TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/CMSIS/Include
 
-# TI does not provide a CMSIS system layer.
+# TI does not provide a CMSIS system layer, so BSPACM does if nobody's
+# provide one first..
+CMSIS_SYSTEM_SRC ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/system_$(DEVICE_SERIES_UC).c
 
 endif # CMSIS_ROOT
 
