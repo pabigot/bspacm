@@ -57,6 +57,27 @@ TOOLCHAIN=GCC
 # (assuming a POSIX shell environment)
 uc=$(shell echo $(1) | tr '[a-z-]' '[A-Z_]')
 
+# Function to transform the path to a source file to an object file
+# that is to be placed in the board-specific subdirectory.
+board_objpath=$(BSPACM_ROOT)/board/$(BOARD)/$(basename $(notdir $(1)))$(OBJ_EXT)
+
+# Function to transform the path to a source file to an object file
+# that is to be placed in the current directory.
+app_objpath=$(basename $(notdir $(1)))$(OBJ_EXT)
+
+# Function to generate a rule that builds an object file (in some
+# directory) from a source file (in some other directory).  C and
+# assembly files are recognized.
+define create_makerule
+$(1): $(2)
+ifeq (.S,$(suffix $(2)))
+	$(CC) $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
+endif
+ifeq (.c,$(suffix $(2)))
+	$$(CC) $$(CPPFLAGS) $$(CFLAGS) -c -o $$@ $$<
+endif
+endef # create_makerule
+
 # At this time we support only the GNU toolchain.
 ifneq (GCC,$(TOOLCHAIN))
 $(error Unsupported toolchain $(TOOLCHAIN))
@@ -139,23 +160,20 @@ STARTUP_CPPFLAGS += -D__STACK_SIZE=$(STARTUP_STACK_SIZE)
 STARTUP_HEAP_SIZE ?= 0
 STARTUP_CPPFLAGS += -D__HEAP_SIZE=$(STARTUP_HEAP_SIZE)
 
-# Unless told otherwise, use the standard startup source, which is an
-# asm file.
-ifndef CMSIS_SRC_STARTUP
-VPATH += $(BSPACM_ROOT)/toolchain/$(TOOLCHAIN)
-CMSIS_SRC_STARTUP = startup_ARMC$(ARM_PROCESSOR).S
-SRC += $(CMSIS_SRC_STARTUP)
-endif # STARTUP
+# Unless told otherwise, use the standard startup source for the
+# toolchain.
+CMSIS_STARTUP_SRC ?= $(BSPACM_ROOT)/toolchain/$(TOOLCHAIN)/startup_ARMC$(ARM_PROCESSOR).S
 
-# CMSIS_SRC_SYSTEM : The source file that provides the CMSIS system
+# CMSIS_SYSTEM_SRC : The source file that provides the CMSIS system
 # layer for the device; normally defined in Makefile.series or
-# Makefile.line.  If absent, the call to SystemInit is elided from the
-# startup.
-ifdef CMSIS_SRC_SYSTEM
-SRC += $(CMSIS_SRC_SYSTEM)
-else # CMSIS_SRC_SYSTEM
+# Makefile.line.  If nobody's provided one, ensure the startup does
+# not try to invoke functions from it.
+ifdef CMSIS_SYSTEM_SRC
+CMSIS_SYSTEM_OBJ = $(call app_objpath, $(CMSIS_SYSTEM_SRC))
+OBJ += $(CMSIS_SYSTEM_OBJ)
+else # CMSIS_SYSTEM_SRC
 STARTUP_CPPFLAGS += -D__NO_SYSTEM_INIT
-endif # CMSIS_SRC_SYSTEM
+endif # CMSIS_SYSTEM_SRC
 
 # __STARTUP_USE_UNIQUE_DEFAULT_HANDLER : An extension to generate
 # unique default handlers so when one gets invoked unexpectedly you
@@ -240,10 +258,35 @@ CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_
 ASFLAGS = $(TARGET_ASFLAGS) $(TARGET_MFLAGS)
 LDFLAGS = $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
 
+# The name of the board-specific library holding BSPACM
+# implementation.
+BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
+
+# The list of full paths to sources to components going into
+# $(BOARD_LIBBSPACM_A).  This does not include startup code.  It
+# should include utility_led.c provided by something in the
+# board/device/line/series hierarchy.
+BOARD_LIBBSPACM_SRC ?= 
+
+# At this time, all boards implement their LED infrastructure at the
+# device series level, so if nobody's provided utility_led.c add one
+# from that layer.
+ifeq (,$(filter %/utility_led.c,$(BOARD_LIBBSPACM_SRC)))
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility_led.c
+endif # utility_led.c
+
 # GENERATED_LDLIBS: Generated files, such as archives (not -llibname
 # directives), that must be in LDLIBS (as opposed to OBJ) but that
 # cannot be assumed to exist a priori.  These are added as an
 # order-only dependency to the target executable.
+GENERATED_LDLIBS += $(BOARD_LIBBSPACM_A)
+
+# Most applications will need something from a vendor-specific
+# library, which is normally identified in Makefile.series.
+ifdef BOARD_LIBVENDOR_A
+GENERATED_LDLIBS += $(BOARD_LIBVENDOR_A)
+endif # BOARD_LIBVENDOR_A
+
 REALCLEAN += $(GENERATED_LDLIBS)
 LDLIBS += $(GENERATED_LDLIBS)
 
@@ -266,9 +309,13 @@ endif # linker
 # OBJ_EXT above.
 OBJ_EXT ?= .o
 
-# Utility function to replace the .c, .cc, and .S suffixes of source files
+# Utility function to replace the .c, .cc, and .S suffixes of some set
+# of source files with some derived file extension.
+subst_suffix=$(patsubst %.c,%$(1),$(patsubst %.cc,%$(1),$(patsubst %.S,%$(1),$(2))))
+
+# Utility function to replace the .c, .cc, and .S suffixes in $(SRC)
 # with some derived file extension.
-subst_src_suffix=$(patsubst %.c,%$(1),$(patsubst %.cc,%$(1),$(patsubst %.S,%$(1),$(SRC))))
+subst_src_suffix=$(call subst_suffix,$(1),$(SRC))
 
 # Object files derive from C source files and preprocessed assembly files
 OBJ += $(call subst_src_suffix,$(OBJ_EXT))
@@ -277,6 +324,13 @@ OBJ += $(call subst_src_suffix,$(OBJ_EXT))
 # these stuffed in a hidden subdirectory, haven't worked that one yet.
 # Also see http://locklessinc.com/articles/makefile_tricks/
 DEP += $(call subst_src_usffix,.d)
+
+# The CMSIS startup routine is currently considered
+# application-specific, although its source is probably not the
+# application source directory.
+CMSIS_STARTUP_OBJ=$(call app_objpath, $(CMSIS_STARTUP_SRC))
+
+OBJ += $(CMSIS_STARTUP_OBJ)
 
 # BSPACM_INHIBIT_MAKE_RULES: Define to a nonzero value to exclude the
 # Make rules while leaving all the variable declarations in place.
@@ -340,8 +394,14 @@ $(AOUT.bin): $(AOUT.axf)
 # Rule for building the standard startup file.  This uses additional C
 # preprocessor flags that might not be appropriate for application
 # code.
-startup_ARMC$(ARM_PROCESSOR).o: startup_ARMC$(ARM_PROCESSOR).S
+$(CMSIS_STARTUP_OBJ): $(CMSIS_STARTUP_SRC)
 	$(COMPILE.S) $(STARTUP_CPPFLAGS) -o $@ $<
+
+# Create the rule for building the standard system file, if there is
+# one.
+ifdef CMSIS_SYSTEM_OBJ
+$(eval $(call create_makerule,$(CMSIS_SYSTEM_OBJ),$(CMSIS_SYSTEM_SRC)))
+endif # CMSIS_SYSTEM_OBJ
 
 # CLEAN: Additional files to be removed on make clean
 .PHONY: clean
@@ -358,6 +418,30 @@ realclean: clean
 .PHONY: install
 install: $(AOUT.bin)
 	$(call DO_FLASH_IMAGE,$^)
+
+# Generate rules to build each component of $(BOARD_LIBBSPACM_A).
+# Object files are stored in the board directory.
+$(foreach src,$(BOARD_LIBBSPACM_SRC),$(eval $(call create_makerule, $(call board_objpath, $(src)), $(src))))
+
+# The object files that comprise BOARD_LIBBSPACM_A.
+BOARD_LIBBSPACM_OBJ=$(foreach src,$(BOARD_LIBBSPACM_SRC),$(call board_objpath,$(src)))
+CLEAN += $(BOARD_LIBBSPACM_OBJ)
+
+# Don't bother with dependencies or trickiness: just whack everything
+# in the emlib src area into an archive that's stored in the board
+# directory.
+$(BOARD_LIBBSPACM_A): $(BOARD_LIBBSPACM_OBJ)
+	$(AR) cr $@ $^
+
+# Dummy rule to manually build libbspacm for the current board
+.PHONY: libbspacm
+libbspacm: $(BOARD_LIBBSPACM_A)
+
+ifdef BOARD_LIBVENDOR_A
+# Dummy rule to manually build libvendor
+.PHONE: libvendor
+libvendor: $(BOARD_LIBVENDOR_A)
+endif # BOARD_LIBVENDOR_A
 
 endif # BSPACM_INHIBIT_MAKE_RULES
 

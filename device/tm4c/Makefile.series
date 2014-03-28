@@ -85,7 +85,14 @@ TARGET_CPPFLAGS += -DBSPACM_TIVAWARE
 # Add the define for the target device
 TARGET_CPPFLAGS += -DPART_$(DEVICE_UC)
 
-# Add the path to the TivaWare headers
+# Add the path to the TivaWare headers.  These are the standard
+# device-layer ones that substitute for CMSIS device headers in TI's
+# concept.
+TARGET_CPPFLAGS += -I$(TIVAWARE_ROOT)
+
+# Add the path to the TivaWare headers.  Note that headers supporting
+# BOARD_LIBVENDOR_A are in subdirectories off this, accessed through
+# (e.g.) driverlib/rom.h.
 TARGET_CPPFLAGS += -I$(TIVAWARE_ROOT)
 
 # Add the path where TivaWare put its pre-compiled driverlib libraries
@@ -115,6 +122,20 @@ LM4FLASH_OPTIONS ?=
 
 # The command used to flash an image to a Tiva C Series device
 DO_FLASH_IMAGE=$(LM4FLASH) $(LM4FLASH_OPTIONS) $(1)
+
+# The archive containing driverlib as built for this board.
+BOARD_LIBVENDOR_A=$(BSPACM_ROOT)/board/$(BOARD)/libtivaware.a
+
+# Don't bother with dependencies or trickiness: just whack everything
+# in the driverlib src area into an archive that's stored in the board
+# directory.
+# NB: TI provides onewire.c, but not the header it depends on, so
+# remove it.
+$(BOARD_LIBVENDOR_A): $(filter-out %/onewire.c, $(wildcard $(TIVAWARE_ROOT)/driverlib/*.c))
+	cd $(dir $@) && \
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ && \
+	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
+	rm $(notdir $(^:%.c=%.o))
 
 # Local Variables:
 # mode:makefile

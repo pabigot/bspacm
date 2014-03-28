@@ -66,23 +66,20 @@ TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/Device/EnergyMicro/$(DEVICE_LINE_UC)/Include
 # Path to the CMSIS standard headers
 TARGET_CPPFLAGS += -I$(CMSIS_ROOT)/CMSIS/Include
 
-# EFM32 provides a CMSIS system layer; locate it and specify which
-# file to use.
-VPATH += $(CMSIS_ROOT)/Device/EnergyMicro/$(DEVICE_LINE_UC)/Source
-CMSIS_SRC_SYSTEM = system_$(DEVICE_LINE).c
+# EFM32 provides a CMSIS system implementation that is line-specific.
+CMSIS_SYSTEM_SRC = $(CMSIS_ROOT)/Device/EnergyMicro/$(DEVICE_LINE_UC)/Source/system_$(DEVICE_LINE).c
 
 endif # CMSIS_ROOT
 
-# Header and source path to Energy Micro Peripheral Support library
+# Header and source path to Energy Micro Peripheral Support library,
+# which is supported by BOARD_LIBVENDOR_A.
 TARGET_CPPFLAGS += -I$(EFM32_ROOT)/emlib/inc
-VPATH += $(EFM32_ROOT)/emlib/src
 
 # Header and source path to common BSP for Energy Micro boards that are
 # evaluation boards.
 ifdef BOARD_STYLE
 TARGET_CPPFLAGS += -I$(EFM32_ROOT)/kits/$(BOARD_UC)/config
 TARGET_CPPFLAGS += -I$(EFM32_ROOT)/kits/common/bsp
-VPATH += $(EFM32_ROOT)/kits/common/bsp
 endif # BOARD_STYLE
 
 # EACOMMANDER: Path to the eACommander application
@@ -96,20 +93,16 @@ EACOMMANDER_OPTIONS ?=
 DO_FLASH_IMAGE=$(EACOMMANDER) $(EACOMMANDER_OPTIONS) --flash $(1) --reset
 
 # The archive containing emlib as built for this board.
-BOARD_LIBEMLIB_A=$(BSPACM_ROOT)/board/$(BOARD)/libemlib.a
+BOARD_LIBVENDOR_A=$(BSPACM_ROOT)/board/$(BOARD)/libemlib.a
 
 # Don't bother with dependencies or trickiness: just whack everything
 # in the emlib src area into an archive that's stored in the board
 # directory.
-$(BOARD_LIBEMLIB_A): $(EFM32_ROOT)/emlib/src/*.c
-	cd $(dirname $@) && \
+$(BOARD_LIBVENDOR_A): $(EFM32_ROOT)/emlib/src/*.c
+	cd $(dir $@) && \
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ && \
 	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
 	rm $(notdir $(^:%.c=%.o))
-
-# Dummy rule to manually build emlib for the current board
-.PHONY: board_emlib
-board_emlib: $(BOARD_LIBEMLIB_A)
 
 # Local Variables:
 # mode:makefile
