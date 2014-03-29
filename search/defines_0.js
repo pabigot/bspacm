@@ -7,5 +7,6 @@ var searchData=
   ['bspacm_5fcore_5fpacked_5fstruct',['BSPACM_CORE_PACKED_STRUCT',['../core_8h.html#a067cdbba9dbc1fb5b12afea1b3faa27f',1,'core.h']]],
   ['bspacm_5fcore_5freenable_5finterrupt',['BSPACM_CORE_REENABLE_INTERRUPT',['../core_8h.html#ac7281bb17c886941c500c4d545511f03',1,'core.h']]],
   ['bspacm_5fcore_5frestore_5finterrupt_5fstate',['BSPACM_CORE_RESTORE_INTERRUPT_STATE',['../core_8h.html#a7774eaf391d7ad86abce29d8f0542aab',1,'core.h']]],
-  ['bspacm_5fcore_5fsaved_5finterrupt_5fstate',['BSPACM_CORE_SAVED_INTERRUPT_STATE',['../core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468',1,'core.h']]]
+  ['bspacm_5fcore_5fsaved_5finterrupt_5fstate',['BSPACM_CORE_SAVED_INTERRUPT_STATE',['../core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468',1,'core.h']]],
+  ['bspacm_5fversion',['BSPACM_VERSION',['../core_8h.html#a334d2789d3560b3630f2c1c633c3998a',1,'core.h']]]
 ];

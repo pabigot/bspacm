@@ -8,5 +8,6 @@ var searchData=
   ['bspacm_5fcore_5freenable_5finterrupt',['BSPACM_CORE_REENABLE_INTERRUPT',['../core_8h.html#ac7281bb17c886941c500c4d545511f03',1,'core.h']]],
   ['bspacm_5fcore_5frestore_5finterrupt_5fstate',['BSPACM_CORE_RESTORE_INTERRUPT_STATE',['../core_8h.html#a7774eaf391d7ad86abce29d8f0542aab',1,'core.h']]],
   ['bspacm_5fcore_5fsaved_5finterrupt_5fstate',['BSPACM_CORE_SAVED_INTERRUPT_STATE',['../core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468',1,'core.h']]],
+  ['bspacm_5fversion',['BSPACM_VERSION',['../core_8h.html#a334d2789d3560b3630f2c1c633c3998a',1,'core.h']]],
   ['bspacm_3a_20a_20development_20environment_20for_20arm_20cortex_2dm_20devices',['BSPACM: A development environment for ARM Cortex-M Devices',['../index.html',1,'']]]
 ];

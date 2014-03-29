@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140327</span>
+   &#160;<span id="projectnumber">20140329</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -94,11 +94,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Common header included by all BSPACM leaf headers.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br/>
+<code>#include &lt;stddef.h&gt;</code><br/>
 </div>
 <p><a href="core_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a334d2789d3560b3630f2c1c633c3998a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">BSPACM_VERSION</a>&#160;&#160;&#160;20140329</td></tr>
+<tr class="separator:a334d2789d3560b3630f2c1c633c3998a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a>()&#160;&#160;&#160;__disable_irq()</td></tr>
 <tr class="separator:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab52275d819776e77d27303749a51965a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a>()&#160;&#160;&#160;__enable_irq()</td></tr>
@@ -225,7 +228,7 @@ Macros</h2></td></tr>
 <div class="line"><a class="code" href="core_8h.html#ab52275d819776e77d27303749a51965a">      BSPACM_CORE_ENABLE_INTERRUPT</a>();             \</div>
 <div class="line">    }                                             \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:69</div></div>
+<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:78</div></div>
 </div><!-- fragment --><p>If interrupts were enabled when <code>var_</code> was declared (generally by <a class="el" href="core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468">BSPACM_CORE_SAVED_INTERRUPT_STATE()</a>), then enable them; otherwise leave them in their current state. </p>
 
 </div>
@@ -250,8 +253,8 @@ Macros</h2></td></tr>
 <div class="line"><a class="code" href="core_8h.html#ab52275d819776e77d27303749a51965a">      BSPACM_CORE_ENABLE_INTERRUPT</a>();                  \</div>
 <div class="line">    }                                                  \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="core_8h_html_aa62b35cf6685650b3c9a7b38699c6c0f"><div class="ttname"><a href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_DISABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:65</div></div>
-<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:69</div></div>
+<div class="ttc" id="core_8h_html_aa62b35cf6685650b3c9a7b38699c6c0f"><div class="ttname"><a href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_DISABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:74</div></div>
+<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:78</div></div>
 </div><!-- fragment --><p>Restore the interrupt enable state to what it was when <code>var_</code> was assigned. This will invoke either <a class="el" href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT()</a> or <a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT()</a>. You may want <a class="el" href="core_8h.html#ac7281bb17c886941c500c4d545511f03">BSPACM_CORE_REENABLE_INTERRUPT()</a> instead. </p>
 
 </div>
@@ -280,10 +283,24 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a334d2789d3560b3630f2c1c633c3998a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_VERSION&#160;&#160;&#160;20140329</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Version identifier for the BSPACM infrastructure</p>
+<p>A monotonically non-decreasing integer reflecting the version of BSPACM that is being used. The value represents a development freeze date in the form YYYYMMDD as a decimal number. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Mar 29 2014 06:26:08 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Mar 29 2014 06:39:28 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
