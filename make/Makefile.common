@@ -65,17 +65,30 @@ board_objpath=$(BSPACM_ROOT)/board/$(BOARD)/$(basename $(notdir $(1)))$(OBJ_EXT)
 # that is to be placed in the current directory.
 app_objpath=$(basename $(notdir $(1)))$(OBJ_EXT)
 
-# Function to generate a rule that builds an object file (in some
-# directory) from a source file (in some other directory).  C and
-# assembly files are recognized.
+# Function to generate the rule that builds an object file (in some
+# directory) from a source file (in some other directory).  C, C++
+# (cc), and assembly files are recognized.  A parallel rule to build
+# the dependency file is also created.
 define create_makerule
-$(1): $(2)
+$(1)$$(OBJ_EXT): $(2)
 ifeq (.S,$(suffix $(2)))
-	$(CC) $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
-endif
+	$$(CC) $$(CPPFLAGS) $(ASFLAGS) -c -o $$@ $$<
+endif # ASM source
 ifeq (.c,$(suffix $(2)))
 	$$(CC) $$(CPPFLAGS) $$(CFLAGS) -c -o $$@ $$<
-endif
+endif # C source
+ifeq (.cc,$(suffix $(2)))
+	$$(CXX) $$(CPPFLAGS) $$(CXXFLAGS) -c -o $$@ $$<
+endif # CXX source
+ifneq (,$(filter %.c %.cc,$(suffix $(2))))
+$(1).d: $(2)
+ifeq (.c,$(suffix $(2)))
+	$$(TOOLCHAIN_DEP_RULE_CC)
+endif # C source
+ifeq (.cc,$(suffix $(2)))
+	$$(TOOLCHAIN_DEP_RULE_CC)
+endif # CXX source
+endif # Not ASM source
 endef # create_makerule
 
 # At this time we support only the GNU toolchain.
@@ -91,6 +104,22 @@ AR=$(CROSS_COMPILE)ar
 SIZE=$(CROSS_COMPILE)size
 OBJCOPY=$(CROSS_COMPILE)objcopy
 LS=ls
+
+# Rule to build a dependency file from a C source file using GCC
+define TOOLCHAIN_DEP_RULE_CC
+	set -e; $(RM) $@; \
+	 $(CC) -MM -MT$*.o $(CPPFLAGS) $(CFLAGS) $< > $@.$$$$; \
+	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	 $(RM) $@.$$$$
+endef # TOOLCHAIN_DEP_RULE_CC
+
+# Rule to build a dependency file from a C++ source file using GCC
+define TOOLCHAIN_DEP_RULE_CXX
+	set -e; $(RM) $@; \
+	 $(CXX) -MM -MT$*.o $(CPPFLAGS) $(CXXFLAGS) $< > $@.$$$$; \
+	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	 $(RM) $@.$$$$
+endef # TOOLCHAIN_DEP_RULE_CXX
 
 # TARGET_CPPFLAGS: Target-specific preprocessor flags.
 TARGET_CPPFLAGS ?=
@@ -275,6 +304,16 @@ ifeq (,$(filter %/utility_led.c,$(BOARD_LIBBSPACM_SRC)))
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility_led.c
 endif # utility_led.c
 
+# The object files that comprise BOARD_LIBBSPACM_A.
+BOARD_LIBBSPACM_OBJ=$(foreach src,$(BOARD_LIBBSPACM_SRC),$(call board_objpath,$(src)))
+
+# Rebuild LIBBSPACM if changes occur
+DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
+
+# Only remove the LIBBSPACM object files with realclean; otherwise the
+# board library gets rebuilt every time we clean an application.
+REALCLEAN += $(BOARD_LIBBSPACM_OBJ)
+
 # GENERATED_LDLIBS: Generated files, such as archives (not -llibname
 # directives), that must be in LDLIBS (as opposed to OBJ) but that
 # cannot be assumed to exist a priori.  These are added as an
@@ -323,7 +362,7 @@ OBJ += $(call subst_src_suffix,$(OBJ_EXT))
 # Dependency files derive from anything that was preprocessed.  I'd like
 # these stuffed in a hidden subdirectory, haven't worked that one yet.
 # Also see http://locklessinc.com/articles/makefile_tricks/
-DEP += $(call subst_src_usffix,.d)
+DEP += $(call subst_src_suffix,.d)
 
 # The CMSIS startup routine is currently considered
 # application-specific, although its source is probably not the
@@ -342,16 +381,9 @@ ifeq (0,$(BSPACM_INHIBIT_MAKE_RULES))
 
 # Use GCC to generate dependency files
 %.d: %.c
-	set -e; $(RM) $@; \
-	 $(CC) -MM -MT$*.o $(CPPFLAGS) $(CFLAGS) $< > $@.$$$$; \
-	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-	 $(RM) $@.$$$$
-
+	$(TOOLCHAIN_DEP_RULE_CC)
 %.d: %.cc
-	set -e; $(RM) $@; \
-	 $(CXX) -MM -MT$*.o $(CPPFLAGS) $(CXXFLAGS) $< > $@.$$$$; \
-	 sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-	 $(RM) $@.$$$$
+	$(TOOLCHAIN_DEP_RULE_CXX)
 
 # Object file derived from C source
 %.o: %.c
@@ -400,7 +432,7 @@ $(CMSIS_STARTUP_OBJ): $(CMSIS_STARTUP_SRC)
 # Create the rule for building the standard system file, if there is
 # one.
 ifdef CMSIS_SYSTEM_OBJ
-$(eval $(call create_makerule,$(CMSIS_SYSTEM_OBJ),$(CMSIS_SYSTEM_SRC)))
+$(eval $(call create_makerule,$(basename $(CMSIS_SYSTEM_OBJ)),$(CMSIS_SYSTEM_SRC)))
 endif # CMSIS_SYSTEM_OBJ
 
 # CLEAN: Additional files to be removed on make clean
@@ -421,11 +453,7 @@ install: $(AOUT.bin)
 
 # Generate rules to build each component of $(BOARD_LIBBSPACM_A).
 # Object files are stored in the board directory.
-$(foreach src,$(BOARD_LIBBSPACM_SRC),$(eval $(call create_makerule, $(call board_objpath, $(src)), $(src))))
-
-# The object files that comprise BOARD_LIBBSPACM_A.
-BOARD_LIBBSPACM_OBJ=$(foreach src,$(BOARD_LIBBSPACM_SRC),$(call board_objpath,$(src)))
-CLEAN += $(BOARD_LIBBSPACM_OBJ)
+$(foreach src,$(BOARD_LIBBSPACM_SRC),$(eval $(call create_makerule, $(basename $(call board_objpath, $(src))), $(src))))
 
 # Don't bother with dependencies or trickiness: just whack everything
 # in the emlib src area into an archive that's stored in the board
@@ -442,6 +470,16 @@ ifdef BOARD_LIBVENDOR_A
 .PHONE: libvendor
 libvendor: $(BOARD_LIBVENDOR_A)
 endif # BOARD_LIBVENDOR_A
+
+# Include dependencies unless we're cleaning
+ifeq ($(filter-out realclean clean emit-test-platforms test-platforms, $(MAKECMDGOALS)),$(MAKECMDGOALS))
+-include $(DEP)
+endif # make [real]clean
+
+dep:
+	@echo $(DEP)
+	@echo $(BOARD_LIBBSPACM_SRC)
+	@echo $(BOARD_LIBBSPACM_OBJ)
 
 endif # BSPACM_INHIBIT_MAKE_RULES
 
