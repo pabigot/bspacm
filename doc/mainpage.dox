@@ -1,0 +1,100 @@
+/* Copyright 2014, Peter A. Bigot
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * * Neither the name of the software nor the names of its contributors may be
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*! \mainpage BSPACM: A development environment for ARM Cortex-M Devices
+
+\tableofcontents
+
+BSPACM is a build environment and development framework for ARM
+Cortex<sup>&reg;</sup>-M applications.
+
+@warning BSPACM is in early development stages.  The build
+infrastructure is stable enough to use; higher-level capabilities are
+mostly absent.
+
+BSPACM features:
+
+<ul>
+<li>A common Make-based infrastructure for cross-platform
+applications;</li>
+
+<li>Support for several experimenter boards across two vendor lines (two
+Tiva&trade; C Series launchpads; two Silicon Labs EFM32&trade; Gecko
+STKs);</li>
+
+<li>Leverages:<ul>
+  <li><a
+  href="http://www.arm.com/products/processors/cortex-m/cortex-microcontroller-software-interface-standard.php">CMSIS</a>
+  for the low-level API across platforms;</li>
+
+  <li>Access to vendor-specific libraries and CMSIS device headers for
+    full control of specific peripherals;</li>
+
+  <li>A higher-level API to abstract the vendor-specific peripherals
+    into common capabilities (such as LED control, UARTs, etc.)</li>
+</ul></li>
+</ul>
+
+BSPACM requires:
+<ul>
+<li>A POSIX command-line development environment including GNU make;</li>
+
+<li><a href="https://launchpad.net/gcc-arm-embedded">GNU Tools for ARM
+Embedded Processors</a> 4_8-2013q4 or later release;</li>
+
+<li>Vendor-specific CMSIS files for the target device.  These are
+readily provided by most vendors; CMSIS for some Texas Instruments
+devices may be found.</li>
+</ul>
+
+The overall concept is similar to <a
+href="http://pabigot.github.io/bsp430/">BSP430</a>, which provides a
+similar solution for the TI MSP430&trade; microcontroller.  The Cortex-M
+is much more architecturally consistent and allows use of board-specific
+libraries without relying on a complex application-specific compile-time
+configuration infrastructure.
+
+BSPACM is released as open source under the <a
+href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
+license.
+
+The project page is at http://github.com/pabigot/bspacm.  Releases can be
+obtained by cloning the git repository:
+
+@code
+git clone git://github.com/pabigot/bspacm.git
+@endcode
+
+Please file support requests and bug reports on the <a
+href="http://github.com/pabigot/bspacm/issues">issue tracker</a>.
+
+@copyright_doc
+*/

@@ -42,8 +42,10 @@
 
 #if (__cplusplus - 0)
 #include <cstdint>
+#include <cstddef>
 #else /* __cplusplus */
 #include <stdint.h>
+#include <stddef.h>
 #endif /* __cplusplus */
 
 #if defined(BSPACM_DEVICE_SERIES_TM4C)
@@ -59,6 +61,13 @@
 #else /* BSPACM_DEVICE_SERIES */
 #error No support for device series
 #endif /* BSPACM_DEVICE_SERIES */
+
+/** Version identifier for the BSPACM infrastructure
+ *
+ * A monotonically non-decreasing integer reflecting the version of
+ * BSPACM that is being used.  The value represents a development
+ * freeze date in the form YYYYMMDD as a decimal number. */
+#define BSPACM_VERSION 20140329
 
 /** Gratuitous alternative spelling of standard CMSIS core
  * intrinsic. */
