@@ -56,17 +56,14 @@ const uint8_t nBSPACMleds = sizeof(xBSPACMleds)/sizeof(*xBSPACMleds);
 void
 vBSPACMledConfigure ()
 {
-  /* Enable the GPIO peripherals required for LEDs.  NB: Tag for
-   * peripheral differs from tag for port for some ports in the
-   * TM4C129 line. */
+  /* Enable the GPIO peripherals required for LEDs.  NOTE: We assume
+   * that the GPIO is in its power-up configuration, that you didn't
+   * pick a commit-controlled register as an LED, that 2mA drive is
+   * sufficient, and that LEDs are active-high. */
 #define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_) do { \
     GPIO_Type * const port = port_;                               \
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_##periph_);          \
     port->DIR |= (bits_);                                         \
-    port->AFSEL &= ~(bits_);                                      \
-    port->DR2R |= (bits_);                                        \
-    port->DR4R &= ~(bits_);                                       \
-    port->DR8R &= ~(bits_);                                       \
     port->PDR |= (bits_);                                         \
     port->DEN |= (bits_);                                         \
   } while (0);
