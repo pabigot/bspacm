@@ -42,6 +42,8 @@
 
 #include <bspacm/core.h>
 
+/* @cond DOXYGEN_EXCLUDE */
+
 /* Include file to get names of each LED */
 #define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_)
 #define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_)
@@ -70,5 +72,7 @@ vBSPACMledSet_ (int idx, int mode)
     *lp = -1;
   }
 }
+
+/* @endcond */
 
 #endif /* BSPACM_DEVICE_TM4C_UTILITY_LED_H */

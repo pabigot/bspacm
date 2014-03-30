@@ -37,7 +37,8 @@
  * Unfortunately, even though a particular peripheral instance has the
  * same address on any device that supports it, there is no clean
  * mechanism to calculate the base address from the instance number or
- * vice versa (especially for GPIOs, of which there are two flavors).
+ * vice versa (especially for GPIOs, of which there are two flavors
+ * with discontinuous strides).
  *
  * This matters because on some cases we know the base address, but
  * need to figure out which bit in a register such as
@@ -71,6 +72,9 @@
  * the time these data were created the shift counts were not adjusted
  * for any such case, so if this can happen there will be zero-valued
  * base addresses in the arrays.
+ *
+ * These arrays can also be used to iterate through the available
+ * peripherals on a device to inspect their configuration.
  *
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>

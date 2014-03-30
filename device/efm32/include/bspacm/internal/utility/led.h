@@ -43,6 +43,8 @@
 
 #include <bspacm/core.h>
 
+/* @cond DOXYGEN_EXCLUDE */
+
 /* Include file to get names of each LED */
 #define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_)
 #include <bspacm/internal/board/led.inc>
@@ -69,5 +71,7 @@ vBSPACMledSet_ (int idx, int mode)
     lp->port->DOUTSET = lp->bits;
   }
 }
+
+/* @endcond */
 
 #endif /* BSPACM_DEVICE_EFM32_UTILITY_LED_H */
