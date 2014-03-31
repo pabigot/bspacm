@@ -84,7 +84,11 @@ configuration infrastructure.
 
 BSPACM is released as open source under the <a
 href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
-license.
+license.  Files that have no significant IP and might reasonably be the
+basis of derived works by users of BSPACM are released under <a
+href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Public
+Domain</a>.  A few files are derived from BSD-3-Clause works copyrighted
+by others; see the COPYING file for details.
 
 The project page is at http://github.com/pabigot/bspacm.  Releases can be
 obtained by cloning the git repository:

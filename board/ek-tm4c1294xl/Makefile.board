@@ -1,3 +1,17 @@
+# BSPACM - Makefile.board for ek-tm4c1294xl
+#
+# Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to
+# the public domain worldwide. This software is distributed without
+# any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+#
+
 # http://www.ti.com/tool/ek-tm4c1294xl
 include $(BSPACM_ROOT)/device/tm4c/tm4c129/tm4c1294ncpdt/Makefile.device
 

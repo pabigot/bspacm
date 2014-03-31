@@ -1,3 +1,17 @@
+/* BSPACM - LED configuration include file for efm32gg-stk3700
+ *
+ * Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+ *
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to
+ * the public domain worldwide. This software is distributed without
+ * any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 /* LED locations for EFM32GG-STK3700 "Giant Gecko" starter kit */
 #ifndef BSPACM_LED_YELLOW
 #define BSPACM_LED_YELLOW 0
