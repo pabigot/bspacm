@@ -71,5 +71,3 @@ vBSPACMledConfigure ()
 #include <bspacm/internal/board/led.inc>
 #undef BSPACM_INC_EXPAND_LED_REFERENCE
 }
-
-

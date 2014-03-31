@@ -2,7 +2,7 @@
  * !! MODIFIED to support BSPACM (http://github.com/pabigot/bspacm)
  */
 
-/* Include the device-specific memory map.  Pass 
+/* Include the device-specific memory map.  Pass
  * -L$(DEVICE_LDSCRIPT_PATH) to ld so the right one is located. */
 INCLUDE memory.ld
 

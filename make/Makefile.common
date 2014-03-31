@@ -130,10 +130,10 @@ TARGET_CPPFLAGS ?=
 TARGET_MFLAGS ?=
 
 # TARGET_CFLAGS: Target-specific C compiler options.
-TARGET_CFLAGS ?= 
+TARGET_CFLAGS ?=
 
 # TARGET_ASFLAGS: Target-specific assembler-with-cpp options.
-TARGET_ASFLAGS ?= 
+TARGET_ASFLAGS ?=
 
 # TARGET_LDFLAGS: Target-specific linker options
 TARGET_LDFLAGS ?=
@@ -254,7 +254,7 @@ STD_CFLAGS ?= -std=c99
 
 # STD_CXXFLAGS : CXXFLAGS to select C++ language standard conformance.
 # BSPTIVA uses C++11.
-STD_CXXFLAGS ?= -std=c++11 
+STD_CXXFLAGS ?= -std=c++11
 
 # RT_CXXFLAGS: CXXFLAGS to control runtime support facilities.  The
 # defaults disable the infrastructure for runtime type inference and
@@ -295,7 +295,7 @@ BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
 # $(BOARD_LIBBSPACM_A).  This does not include startup code.  It
 # should include utility_led.c provided by something in the
 # board/device/line/series hierarchy.
-BOARD_LIBBSPACM_SRC ?= 
+BOARD_LIBBSPACM_SRC ?=
 
 # At this time, all boards implement their LED infrastructure at the
 # device series level, so if nobody's provided utility_led.c add one

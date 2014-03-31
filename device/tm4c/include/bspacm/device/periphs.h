@@ -116,4 +116,3 @@ extern const uint32_t wBSPACMdeviceTM4CperiphWTIMER[];
 extern const uint8_t nBSPACMdeviceTM4CperiphWTIMER;
 
 #endif /* BSPACM_DEVICE_TM4C_DEVICE_PERIPH_MAP_H */
-

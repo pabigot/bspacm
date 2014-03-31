@@ -59,4 +59,3 @@ https://github.com/pabigot/bspacm/tarball/master
 
 Copyright 2014, Peter A. Bigot, and licensed under
 [BSD-3-Clause](http://www.opensource.org/licenses/BSD-3-Clause)
-
