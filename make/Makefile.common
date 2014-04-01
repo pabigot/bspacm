@@ -467,7 +467,7 @@ libbspacm: $(BOARD_LIBBSPACM_A)
 
 ifdef BOARD_LIBVENDOR_A
 # Dummy rule to manually build libvendor
-.PHONE: libvendor
+.PHONY: libvendor
 libvendor: $(BOARD_LIBVENDOR_A)
 endif # BOARD_LIBVENDOR_A
 
@@ -480,6 +480,25 @@ dep:
 	@echo $(DEP)
 	@echo $(BOARD_LIBBSPACM_SRC)
 	@echo $(BOARD_LIBBSPACM_OBJ)
+
+# Get a list of all boards that are known
+BOARDS=$(filter-out README%, $(notdir $(wildcard $(BSPACM_ROOT)/board/*)))
+
+# Maintainer rule to build the application for all boards.
+.PHONY: buildall
+buildall:
+	@for b in $(BOARDS) ; do                           \
+          echo "=== Building for $${b}" ;                  \
+          ( ( $(MAKE) BOARD=$${b} realclean $(AOUT.axf) )  \
+            > $${b}.log 2>& 1                              \
+            && tail -3 $${b}.log                           \
+            && rm -f $${b}.log )                           \
+          || break ;                                       \
+        done ;                                             \
+        if test -f $${b}.log ; then                        \
+          echo "FAILED on $${b}:" ;                        \
+          cat $${b}.log ;                                  \
+        fi
 
 endif # BSPACM_INHIBIT_MAKE_RULES
 
