@@ -80,8 +80,8 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-#ifndef BSPACM_DEVICE_TM4C_DEVICE_PERIPH_MAP_H
-#define BSPACM_DEVICE_TM4C_DEVICE_PERIPH_MAP_H
+#ifndef BSPACM_DEVICE_TM4C_DEVICE_PERIPHS_H
+#define BSPACM_DEVICE_TM4C_DEVICE_PERIPHS_H
 
 #include <bspacm/core.h>
 
@@ -115,4 +115,4 @@ extern const uint32_t wBSPACMdeviceTM4CperiphWTIMER[];
 /** Number of WTIMER peripherals available on specific device */
 extern const uint8_t nBSPACMdeviceTM4CperiphWTIMER;
 
-#endif /* BSPACM_DEVICE_TM4C_DEVICE_PERIPH_MAP_H */
+#endif /* BSPACM_DEVICE_TM4C_DEVICE_PERIPHS_H */

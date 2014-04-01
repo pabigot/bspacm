@@ -38,8 +38,8 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-#ifndef BSPACM_DEVICE_EFM32_UTILITY_LED_H
-#define BSPACM_DEVICE_EFM32_UTILITY_LED_H
+#ifndef BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H
+#define BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H
 
 #include <bspacm/core.h>
 
@@ -74,4 +74,4 @@ vBSPACMledSet_ (int idx, int mode)
 
 /* @endcond */
 
-#endif /* BSPACM_DEVICE_EFM32_UTILITY_LED_H */
+#endif /* BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H */

@@ -29,7 +29,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 /** @file
  *
  * @brief Header for a first-in-first-out supporting datastructure
@@ -46,8 +45,8 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-#ifndef BSPACM_SUPPORT_FIFO_H
-#define BSPACM_SUPPORT_FIFO_H
+#ifndef BSPACM_INTERNAL_UTILITY_FIFO_H
+#define BSPACM_INTERNAL_UTILITY_FIFO_H
 
 #include <bspacm/core.h>
 #include <stddef.h>
@@ -290,4 +289,4 @@ fifo_pop_into_buffer (sFIFO * fp,
   return bp - bps;
 }
 
-#endif /* BSPACM_SUPPORT_FIFO_H */
+#endif /* BSPACM_INTERNAL_UTILITY_FIFO_H */
