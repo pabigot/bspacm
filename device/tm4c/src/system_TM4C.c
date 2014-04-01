@@ -44,11 +44,27 @@
   Define clocks
  *----------------------------------------------------------------------------*/
 
+/* TM4C devices power-up using PIOSC which is nominally 16 MHz.  On
+ * TM4C123 this default is obtained using:
+ *
+ *  MAP_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+ *
+ * and the current frequency can be obtained using MAP_SysCtlClockGet().
+ *
+ * On TM4C129 this default is obtained using:
+ *
+ *  MAP_SysCtlClockFreqSet((SYSCTL_OSC_INT | SYSCTL_USE_OSC | SYSCTL_MAIN_OSC_DIS), 16000000);
+ *
+ * and the only way to get the current frequency is to cache the
+ * return value from that function.
+ */
+#define __SYSTEM_CLOCK 16000000U
+
 
 /*----------------------------------------------------------------------------
   Clock Variable definitions
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock = 0    ;/*!< System Clock Frequency (Core Clock)*/
+uint32_t SystemCoreClock = __SYSTEM_CLOCK;   /*!< System Clock Frequency (Core Clock)*/
 
 
 /*----------------------------------------------------------------------------
@@ -56,7 +72,15 @@ uint32_t SystemCoreClock = 0    ;/*!< System Clock Frequency (Core Clock)*/
  *----------------------------------------------------------------------------*/
 void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 {
-  SystemCoreClock = 0;
+  /* CMSIS specifies that this should read the clock registers and
+   * determine the current setting.  This can only be done on TM4C123
+   * and requires headers that are not part of CMSIS, so we're
+   * skipping it for now. */
+#if 0 && (BSPACM_DEVICE_LINE_TM4C123 - 0)
+#elif 0 && (BSPACM_DEVICE_LINE_TM4C123 - 0)
+#else
+  SystemCoreClock = __SYSTEM_CLOCK;
+#endif
 }
 
 /**
@@ -70,9 +94,10 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
  */
 void SystemInit (void)
 {
-  /* Unconditionally enable floating point.  The standard toolchain
-   * flags do this, which introduce hidden dependencies even if there
-   * appears no use of the FPU in an application. */
+  /* The standard toolchain flags enable floating point, which
+   * introduces hidden dependencies even if there appears no use of
+   * the FPU in an application.  Make sure faults aren't generated if
+   * the FPU is referenced. */
   SCB->CPACR |= (3UL << (10*2)) | (3U << (11*2));
   FPU->FPCCR |= FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk;
 }
