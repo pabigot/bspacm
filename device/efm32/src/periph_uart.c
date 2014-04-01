@@ -146,10 +146,31 @@ usart_hw_txien (sBSPACMperiphUARTstate * usp,
   }
 }
 
+static int
+usart_fifo_state (sBSPACMperiphUARTstate * usp)
+{
+  USART_TypeDef * const usart = (USART_TypeDef *)usp->uart;
+  int rv = 0;
+  if (! (usart->STATUS & USART_STATUS_TXC)) {
+    rv |= eBSPACMperiphUARTfifoState_HWTX;
+  }
+  if (usart->STATUS & USART_STATUS_RXDATAV) {
+    rv |= eBSPACMperiphUARTfifoState_HWRX;
+  }
+  if (! fifo_empty(usp->tx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWTX;
+  }
+  if (! fifo_empty(usp->rx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWRX;
+  }
+  return rv;
+}
+
 const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations = {
   .configure = usart_configure,
   .hw_transmit = usart_hw_transmit,
-  .hw_txien = usart_hw_txien
+  .hw_txien = usart_hw_txien,
+  .fifo_state = usart_fifo_state,
 };
 
 void

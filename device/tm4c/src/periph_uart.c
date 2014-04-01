@@ -182,6 +182,27 @@ uart_hw_txien (sBSPACMperiphUARTstate * usp,
   }
 }
 
+static int
+uart_fifo_state (sBSPACMperiphUARTstate * usp)
+{
+  UART0_Type * const uart = (UART0_Type *)usp->uart;
+  int rv = 0;
+
+  if (UART_FR_TXFE != ((UART_FR_TXFE | UART_FR_BUSY) & uart->FR)) {
+    rv |= eBSPACMperiphUARTfifoState_HWTX;
+  }
+  if (! (UART_FR_RXFE & uart->FR)) {
+    rv |= eBSPACMperiphUARTfifoState_HWRX;
+  }
+  if (! fifo_empty(usp->tx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWTX;
+  }
+  if (! fifo_empty(usp->rx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWRX;
+  }
+  return rv;
+}
+
 void
 vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp)
 {
@@ -230,4 +251,5 @@ const sBSPACMperiphUARToperations xBSPACMdeviceTM4CperiphUARToperations = {
   .configure = uart_configure,
   .hw_transmit = uart_hw_transmit,
   .hw_txien = uart_hw_txien,
+  .fifo_state = uart_fifo_state,
 };

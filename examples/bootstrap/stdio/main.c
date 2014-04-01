@@ -111,7 +111,7 @@ void main ()
       BSPACM_CORE_ENABLE_INTERRUPT();
       errcount = fe + pe + be + oe + de;
 
-      printf(" %u %u %u\n", txcount, rxcount, errcount);
+      printf("  %u %u %u : %02x\n", txcount, rxcount, errcount, usp->ops->fifo_state(usp));
       vBSPACMledSet(BSPACM_LED_GREEN, -1);
 
       if (last_rxcount != rxcount) {
@@ -121,6 +121,9 @@ void main ()
           printf("read 0x%02x '%c'\n", ch, ch);
         }
         last_rxcount = rxcount;
+        while (0 != usp->ops->fifo_state(usp)) {
+          /* NOT SAFE for new RX */
+        }
         deconfigure_console();
 #if 1
         while (--delay) {

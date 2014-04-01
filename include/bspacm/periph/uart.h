@@ -118,6 +118,29 @@ typedef struct sBSPACMperiphUARTconfiguration {
   unsigned int speed_baud;
 } sBSPACMperiphUARTconfiguration;
 
+/** Bits set in the return code of iBSPACMperiphUARTfifoState() to
+ * indicate where there is unflushed material. */
+typedef enum eBSPACMperiphUARTfifoState {
+  /** Indicates there is material waiting to be read from the hardware
+   * receive buffer */
+  eBSPACMperiphUARTfifoState_HWRX = 0x01,
+
+  /** Indicates there is material waiting to be written in the
+   * hardware transmit buffer.  This includes material that is still
+   * in a shift register; the bit clears only when the transmission is
+   * fully complete to the point where the UART can be shut down
+   * without loss of data. */
+  eBSPACMperiphUARTfifoState_HWTX = 0x02,
+
+  /** Indicates there is material waiting to be read from the software
+   * receive FIFO */
+  eBSPACMperiphUARTfifoState_SWRX = 0x04,
+
+  /** Indicates there is material waiting to be written in the
+   * software transmit FIFO */
+  eBSPACMperiphUARTfifoState_SWTX = 0x08,
+} eBSPACMperiphUARTfifoState;
+
 /** The set of operations supported by UARTs.
  *
  * The underlying implementation is specific to a vendor peripheral
@@ -170,6 +193,18 @@ typedef struct sBSPACMperiphUARToperations {
    * will disable the interrupt (not a normal way to use this
    * function). */
   void (* hw_txien) (sBSPACMperiphUARTstate * usp, int enablep);
+
+  /** Determine whether there is anything pending in the device:
+   * material that has been received but not consumed by the
+   * application, or material that has been submitted for transmission
+   * but has not yet gone out over the channel.
+   *
+   * @return a combination of bits defined in
+   * #eBSPACMperiphUARTfifoState.  A value of zero indicates that no
+   * material is pending.  A negative value indicates an error,
+   * e.g. that the UART is unconfigured. */
+  int (* fifo_state) (sBSPACMperiphUARTstate * usp);
+
 } sBSPACMperiphUARToperations;
 
 /** If set any newline in the provided output is preceded by a
