@@ -52,4 +52,18 @@
 #include <TIVA.h>
 #endif /* BSPACM_CMSIS */
 
+/** Type alias for the native struct used for the GPIO module on
+ * specific lines of the TM4C series.  GPIOA_Type from TM4C123 is a
+ * prefix of GPIOA_AHB_Type from TM4C129, and it appears not all GPIOs
+ * on a TM4C129 device necessarily support the AHB interface
+ * (specifically, GPIOK and higher are publicized by name @c GPIOK
+ * rather than @c GPIOK_AHB).  Nonetheless, duplicating all the code
+ * that only cares about the material available on non-AHB instances
+ * is unacceptable. */
+#if (BSPACM_DEVICE_LINE_TM4C123 - 0)
+typedef GPIOA_Type GPIOCommon_Type;
+#elif (BSPACM_DEVICE_LINE_TM4C129 - 0)
+typedef GPIOA_AHB_Type GPIOCommon_Type;
+#endif /* DEVICE_LINE */
+
 #endif /* BSPACM_DEVICE_TM4C_H */

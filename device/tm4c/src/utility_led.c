@@ -38,12 +38,6 @@
 #include <driverlib/sysctl.h>
 #include <driverlib/rom.h>
 
-#if (BSPACM_DEVICE_LINE_TM4C123 - 0)
-typedef GPIOA_Type GPIO_Type;
-#elif (BSPACM_DEVICE_LINE_TM4C129 - 0)
-typedef GPIOA_AHB_Type GPIO_Type;
-#endif /* DEVICE_LINE */
-
 xBSPACMled const xBSPACMleds[] = {
 #define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_)
 #define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_) &(port_->DATA[1U << (pin_)]),
@@ -61,7 +55,7 @@ vBSPACMledConfigure ()
    * pick a commit-controlled register as an LED, that 2mA drive is
    * sufficient, and that LEDs are active-high. */
 #define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_) do { \
-    GPIO_Type * const port = port_;                               \
+    GPIOCommon_Type * const port = port_;                               \
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_##periph_);          \
     port->DIR |= (bits_);                                         \
     port->PDR |= (bits_);                                         \
