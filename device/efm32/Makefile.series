@@ -104,6 +104,16 @@ $(BOARD_LIBVENDOR_A): $(EFM32_ROOT)/emlib/src/*.c
 	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
 	rm $(notdir $(^:%.c=%.o))
 
+# Provide the device pinmux map, which is normally defined at the
+# board level.
+ifeq (,$(filter %/periph_config.c,$(BOARD_LIBBSPACM_SRC)))
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/board/$(BOARD)/src/periph_config.c
+endif # periph_config.c
+
+# These sources are not customizable
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_gpio.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_uart.c
+
 # Local Variables:
 # mode:makefile
 # End:

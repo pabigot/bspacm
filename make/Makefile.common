@@ -296,6 +296,7 @@ BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
 # should include utility_led.c provided by something in the
 # board/device/line/series hierarchy.
 BOARD_LIBBSPACM_SRC ?=
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/periph/uart.c
 
 # At this time, all boards implement their LED infrastructure at the
 # device series level, so if nobody's provided utility_led.c add one

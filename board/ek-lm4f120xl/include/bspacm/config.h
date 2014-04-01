@@ -15,4 +15,7 @@
 #ifndef BSPACM_CONFIG_H
 #define BSPACM_CONFIG_H
 
+/** The default UART device on this board */
+#define BSPACM_CONFIG_DEFAULT_UART_HANDLE (&xBSPACMdeviceTM4CperiphUART0)
+
 #endif /* BSPACM_CONFIG_H */
