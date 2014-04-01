@@ -48,19 +48,20 @@
 #include <stddef.h>
 #endif /* __cplusplus */
 
-#if defined(BSPACM_DEVICE_SERIES_TM4C)
-#if ! (__cplusplus - 0)
-/* TI headers require (C99) bool but do not include a definition */
-#include <stdbool.h>
-#endif /* __cplusplus */
-#if (BSPACM_CMSIS - 0)
-#include <TIVA.h>
-#endif /* BSPACM_CMSIS */
-#elif defined(BSPACM_DEVICE_SERIES_EFM32)
-#include <em_device.h>
-#else /* BSPACM_DEVICE_SERIES */
-#error No support for device series
-#endif /* BSPACM_DEVICE_SERIES */
+/* Device-specific material.  This includes device vendor and CMSIS
+ * headers, and provides any necessary bridging declarations.  The
+ * correct content should be located by the prioritization of include
+ * paths, but is generally found in the device/SERIES include
+ * hierarchy. */
+#include <bspacm/device.h>
+
+/* Application/board-specific material.  This corresponds to the
+ * material in @c periph_config.c, and has things such as the handle
+ * to the default system UART peripheral.  A default is provided in
+ * each board-specific include hierarchy, but it can be overridden by
+ * providing a higher-priority path in the application-specific
+ * Makefile. */
+#include <bspacm/config.h>
 
 /** Version identifier for the BSPACM infrastructure
  *
@@ -124,8 +125,6 @@
  */
 #if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
 #define BSPACM_CORE_INLINE __inline__
-#elif BSPACM_CORE_TOOLCHAIN_TI - 0
-#define BSPACM_CORE_INLINE __inline
 #else /* TOOLCHAIN */
 #define BSPACM_CORE_INLINE inline
 #endif /* TOOLCHAIN */
@@ -154,6 +153,5 @@
 #if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
 #define BSPACM_CORE_PACKED_STRUCT(nm_) struct __attribute__((__packed__)) nm_
 #endif /* TOOLCHAIN */
-
 
 #endif /* BSPACM_CORE_H */
