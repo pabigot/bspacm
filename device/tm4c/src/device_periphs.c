@@ -183,128 +183,128 @@
 const uint32_t wBSPACMdeviceTM4CperiphGPIO[] = {
 #if GPIOA_IDX <= GPIO_MAX_IDX
 #if defined(GPIOA_BASE)
-    GPIOA_BASE,
+  GPIOA_BASE,
 #else /* GPIOA available */
-    0,
+  0,
 #endif /* GPIOA available */
 #endif /* GPIOA below max index */
 #if GPIOB_IDX <= GPIO_MAX_IDX
 #if defined(GPIOB_BASE)
-    GPIOB_BASE,
+  GPIOB_BASE,
 #else /* GPIOB available */
-    0,
+  0,
 #endif /* GPIOB available */
 #endif /* GPIOB below max index */
 #if GPIOC_IDX <= GPIO_MAX_IDX
 #if defined(GPIOC_BASE)
-    GPIOC_BASE,
+  GPIOC_BASE,
 #else /* GPIOC available */
-    0,
+  0,
 #endif /* GPIOC available */
 #endif /* GPIOC below max index */
 #if GPIOD_IDX <= GPIO_MAX_IDX
 #if defined(GPIOD_BASE)
-    GPIOD_BASE,
+  GPIOD_BASE,
 #else /* GPIOD available */
-    0,
+  0,
 #endif /* GPIOD available */
 #endif /* GPIOD below max index */
 #if GPIOE_IDX <= GPIO_MAX_IDX
 #if defined(GPIOE_BASE)
-    GPIOE_BASE,
+  GPIOE_BASE,
 #else /* GPIOE available */
-    0,
+  0,
 #endif /* GPIOE available */
 #endif /* GPIOE below max index */
 #if GPIOF_IDX <= GPIO_MAX_IDX
 #if defined(GPIOF_BASE)
-    GPIOF_BASE,
+  GPIOF_BASE,
 #else /* GPIOF available */
-    0,
+  0,
 #endif /* GPIOF available */
 #endif /* GPIOF below max index */
 #if GPIOG_IDX <= GPIO_MAX_IDX
 #if defined(GPIOG_BASE)
-    GPIOG_BASE,
+  GPIOG_BASE,
 #else /* GPIOG available */
-    0,
+  0,
 #endif /* GPIOG available */
 #endif /* GPIOG below max index */
 #if GPIOH_IDX <= GPIO_MAX_IDX
 #if defined(GPIOH_BASE)
-    GPIOH_BASE,
+  GPIOH_BASE,
 #else /* GPIOH available */
-    0,
+  0,
 #endif /* GPIOH available */
 #endif /* GPIOH below max index */
 #if GPIOJ_IDX <= GPIO_MAX_IDX
 #if defined(GPIOJ_BASE)
-    GPIOJ_BASE,
+  GPIOJ_BASE,
 #else /* GPIOJ available */
-    0,
+  0,
 #endif /* GPIOJ available */
 #endif /* GPIOJ below max index */
 #if GPIOK_IDX <= GPIO_MAX_IDX
 #if defined(GPIOK_BASE)
-    GPIOK_BASE,
+  GPIOK_BASE,
 #else /* GPIOK available */
-    0,
+  0,
 #endif /* GPIOK available */
 #endif /* GPIOK below max index */
 #if GPIOL_IDX <= GPIO_MAX_IDX
 #if defined(GPIOL_BASE)
-    GPIOL_BASE,
+  GPIOL_BASE,
 #else /* GPIOL available */
-    0,
+  0,
 #endif /* GPIOL available */
 #endif /* GPIOL below max index */
 #if GPIOM_IDX <= GPIO_MAX_IDX
 #if defined(GPIOM_BASE)
-    GPIOM_BASE,
+  GPIOM_BASE,
 #else /* GPIOM available */
-    0,
+  0,
 #endif /* GPIOM available */
 #endif /* GPIOM below max index */
 #if GPION_IDX <= GPIO_MAX_IDX
 #if defined(GPION_BASE)
-    GPION_BASE,
+  GPION_BASE,
 #else /* GPION available */
-    0,
+  0,
 #endif /* GPION available */
 #endif /* GPION below max index */
 #if GPIOP_IDX <= GPIO_MAX_IDX
 #if defined(GPIOP_BASE)
-    GPIOP_BASE,
+  GPIOP_BASE,
 #else /* GPIOP available */
-    0,
+  0,
 #endif /* GPIOP available */
 #endif /* GPIOP below max index */
 #if GPIOQ_IDX <= GPIO_MAX_IDX
 #if defined(GPIOQ_BASE)
-    GPIOQ_BASE,
+  GPIOQ_BASE,
 #else /* GPIOQ available */
-    0,
+  0,
 #endif /* GPIOQ available */
 #endif /* GPIOQ below max index */
 #if GPIOR_IDX <= GPIO_MAX_IDX
 #if defined(GPIOR_BASE)
-    GPIOR_BASE,
+  GPIOR_BASE,
 #else /* GPIOR available */
-    0,
+  0,
 #endif /* GPIOR available */
 #endif /* GPIOR below max index */
 #if GPIOS_IDX <= GPIO_MAX_IDX
 #if defined(GPIOS_BASE)
-    GPIOS_BASE,
+  GPIOS_BASE,
 #else /* GPIOS available */
-    0,
+  0,
 #endif /* GPIOS available */
 #endif /* GPIOS below max index */
 #if GPIOT_IDX <= GPIO_MAX_IDX
 #if defined(GPIOT_BASE)
-    GPIOT_BASE,
+  GPIOT_BASE,
 #else /* GPIOT available */
-    0,
+  0,
 #endif /* GPIOT available */
 #endif /* GPIOT below max index */
 };
@@ -364,72 +364,72 @@ const uint8_t nBSPACMdeviceTM4CperiphGPIO = sizeof(wBSPACMdeviceTM4CperiphGPIO)/
 const uint32_t wBSPACMdeviceTM4CperiphI2C[] = {
 #if I2C0_IDX <= I2C_MAX_IDX
 #if defined(I2C0_BASE)
-    I2C0_BASE,
+  I2C0_BASE,
 #else /* I2C0 available */
-    0,
+  0,
 #endif /* I2C0 available */
 #endif /* I2C0 below max index */
 #if I2C1_IDX <= I2C_MAX_IDX
 #if defined(I2C1_BASE)
-    I2C1_BASE,
+  I2C1_BASE,
 #else /* I2C1 available */
-    0,
+  0,
 #endif /* I2C1 available */
 #endif /* I2C1 below max index */
 #if I2C2_IDX <= I2C_MAX_IDX
 #if defined(I2C2_BASE)
-    I2C2_BASE,
+  I2C2_BASE,
 #else /* I2C2 available */
-    0,
+  0,
 #endif /* I2C2 available */
 #endif /* I2C2 below max index */
 #if I2C3_IDX <= I2C_MAX_IDX
 #if defined(I2C3_BASE)
-    I2C3_BASE,
+  I2C3_BASE,
 #else /* I2C3 available */
-    0,
+  0,
 #endif /* I2C3 available */
 #endif /* I2C3 below max index */
 #if I2C4_IDX <= I2C_MAX_IDX
 #if defined(I2C4_BASE)
-    I2C4_BASE,
+  I2C4_BASE,
 #else /* I2C4 available */
-    0,
+  0,
 #endif /* I2C4 available */
 #endif /* I2C4 below max index */
 #if I2C5_IDX <= I2C_MAX_IDX
 #if defined(I2C5_BASE)
-    I2C5_BASE,
+  I2C5_BASE,
 #else /* I2C5 available */
-    0,
+  0,
 #endif /* I2C5 available */
 #endif /* I2C5 below max index */
 #if I2C6_IDX <= I2C_MAX_IDX
 #if defined(I2C6_BASE)
-    I2C6_BASE,
+  I2C6_BASE,
 #else /* I2C6 available */
-    0,
+  0,
 #endif /* I2C6 available */
 #endif /* I2C6 below max index */
 #if I2C7_IDX <= I2C_MAX_IDX
 #if defined(I2C7_BASE)
-    I2C7_BASE,
+  I2C7_BASE,
 #else /* I2C7 available */
-    0,
+  0,
 #endif /* I2C7 available */
 #endif /* I2C7 below max index */
 #if I2C8_IDX <= I2C_MAX_IDX
 #if defined(I2C8_BASE)
-    I2C8_BASE,
+  I2C8_BASE,
 #else /* I2C8 available */
-    0,
+  0,
 #endif /* I2C8 available */
 #endif /* I2C8 below max index */
 #if I2C9_IDX <= I2C_MAX_IDX
 #if defined(I2C9_BASE)
-    I2C9_BASE,
+  I2C9_BASE,
 #else /* I2C9 available */
-    0,
+  0,
 #endif /* I2C9 available */
 #endif /* I2C9 below max index */
 };
@@ -459,30 +459,30 @@ const uint8_t nBSPACMdeviceTM4CperiphI2C = sizeof(wBSPACMdeviceTM4CperiphI2C)/si
 const uint32_t wBSPACMdeviceTM4CperiphSSI[] = {
 #if SSI0_IDX <= SSI_MAX_IDX
 #if defined(SSI0_BASE)
-    SSI0_BASE,
+  SSI0_BASE,
 #else /* SSI0 available */
-    0,
+  0,
 #endif /* SSI0 available */
 #endif /* SSI0 below max index */
 #if SSI1_IDX <= SSI_MAX_IDX
 #if defined(SSI1_BASE)
-    SSI1_BASE,
+  SSI1_BASE,
 #else /* SSI1 available */
-    0,
+  0,
 #endif /* SSI1 available */
 #endif /* SSI1 below max index */
 #if SSI2_IDX <= SSI_MAX_IDX
 #if defined(SSI2_BASE)
-    SSI2_BASE,
+  SSI2_BASE,
 #else /* SSI2 available */
-    0,
+  0,
 #endif /* SSI2 available */
 #endif /* SSI2 below max index */
 #if SSI3_IDX <= SSI_MAX_IDX
 #if defined(SSI3_BASE)
-    SSI3_BASE,
+  SSI3_BASE,
 #else /* SSI3 available */
-    0,
+  0,
 #endif /* SSI3 available */
 #endif /* SSI3 below max index */
 };
@@ -532,58 +532,58 @@ const uint8_t nBSPACMdeviceTM4CperiphSSI = sizeof(wBSPACMdeviceTM4CperiphSSI)/si
 const uint32_t wBSPACMdeviceTM4CperiphTIMER[] = {
 #if TIMER0_IDX <= TIMER_MAX_IDX
 #if defined(TIMER0_BASE)
-    TIMER0_BASE,
+  TIMER0_BASE,
 #else /* TIMER0 available */
-    0,
+  0,
 #endif /* TIMER0 available */
 #endif /* TIMER0 below max index */
 #if TIMER1_IDX <= TIMER_MAX_IDX
 #if defined(TIMER1_BASE)
-    TIMER1_BASE,
+  TIMER1_BASE,
 #else /* TIMER1 available */
-    0,
+  0,
 #endif /* TIMER1 available */
 #endif /* TIMER1 below max index */
 #if TIMER2_IDX <= TIMER_MAX_IDX
 #if defined(TIMER2_BASE)
-    TIMER2_BASE,
+  TIMER2_BASE,
 #else /* TIMER2 available */
-    0,
+  0,
 #endif /* TIMER2 available */
 #endif /* TIMER2 below max index */
 #if TIMER3_IDX <= TIMER_MAX_IDX
 #if defined(TIMER3_BASE)
-    TIMER3_BASE,
+  TIMER3_BASE,
 #else /* TIMER3 available */
-    0,
+  0,
 #endif /* TIMER3 available */
 #endif /* TIMER3 below max index */
 #if TIMER4_IDX <= TIMER_MAX_IDX
 #if defined(TIMER4_BASE)
-    TIMER4_BASE,
+  TIMER4_BASE,
 #else /* TIMER4 available */
-    0,
+  0,
 #endif /* TIMER4 available */
 #endif /* TIMER4 below max index */
 #if TIMER5_IDX <= TIMER_MAX_IDX
 #if defined(TIMER5_BASE)
-    TIMER5_BASE,
+  TIMER5_BASE,
 #else /* TIMER5 available */
-    0,
+  0,
 #endif /* TIMER5 available */
 #endif /* TIMER5 below max index */
 #if TIMER6_IDX <= TIMER_MAX_IDX
 #if defined(TIMER6_BASE)
-    TIMER6_BASE,
+  TIMER6_BASE,
 #else /* TIMER6 available */
-    0,
+  0,
 #endif /* TIMER6 available */
 #endif /* TIMER6 below max index */
 #if TIMER7_IDX <= TIMER_MAX_IDX
 #if defined(TIMER7_BASE)
-    TIMER7_BASE,
+  TIMER7_BASE,
 #else /* TIMER7 available */
-    0,
+  0,
 #endif /* TIMER7 available */
 #endif /* TIMER7 below max index */
 };
@@ -633,58 +633,58 @@ const uint8_t nBSPACMdeviceTM4CperiphTIMER = sizeof(wBSPACMdeviceTM4CperiphTIMER
 const uint32_t wBSPACMdeviceTM4CperiphUART[] = {
 #if UART0_IDX <= UART_MAX_IDX
 #if defined(UART0_BASE)
-    UART0_BASE,
+  UART0_BASE,
 #else /* UART0 available */
-    0,
+  0,
 #endif /* UART0 available */
 #endif /* UART0 below max index */
 #if UART1_IDX <= UART_MAX_IDX
 #if defined(UART1_BASE)
-    UART1_BASE,
+  UART1_BASE,
 #else /* UART1 available */
-    0,
+  0,
 #endif /* UART1 available */
 #endif /* UART1 below max index */
 #if UART2_IDX <= UART_MAX_IDX
 #if defined(UART2_BASE)
-    UART2_BASE,
+  UART2_BASE,
 #else /* UART2 available */
-    0,
+  0,
 #endif /* UART2 available */
 #endif /* UART2 below max index */
 #if UART3_IDX <= UART_MAX_IDX
 #if defined(UART3_BASE)
-    UART3_BASE,
+  UART3_BASE,
 #else /* UART3 available */
-    0,
+  0,
 #endif /* UART3 available */
 #endif /* UART3 below max index */
 #if UART4_IDX <= UART_MAX_IDX
 #if defined(UART4_BASE)
-    UART4_BASE,
+  UART4_BASE,
 #else /* UART4 available */
-    0,
+  0,
 #endif /* UART4 available */
 #endif /* UART4 below max index */
 #if UART5_IDX <= UART_MAX_IDX
 #if defined(UART5_BASE)
-    UART5_BASE,
+  UART5_BASE,
 #else /* UART5 available */
-    0,
+  0,
 #endif /* UART5 available */
 #endif /* UART5 below max index */
 #if UART6_IDX <= UART_MAX_IDX
 #if defined(UART6_BASE)
-    UART6_BASE,
+  UART6_BASE,
 #else /* UART6 available */
-    0,
+  0,
 #endif /* UART6 available */
 #endif /* UART6 below max index */
 #if UART7_IDX <= UART_MAX_IDX
 #if defined(UART7_BASE)
-    UART7_BASE,
+  UART7_BASE,
 #else /* UART7 available */
-    0,
+  0,
 #endif /* UART7 available */
 #endif /* UART7 below max index */
 };
@@ -724,44 +724,44 @@ const uint8_t nBSPACMdeviceTM4CperiphUART = sizeof(wBSPACMdeviceTM4CperiphUART)/
 const uint32_t wBSPACMdeviceTM4CperiphWTIMER[] = {
 #if WTIMER0_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER0_BASE)
-    WTIMER0_BASE,
+  WTIMER0_BASE,
 #else /* WTIMER0 available */
-    0,
+  0,
 #endif /* WTIMER0 available */
 #endif /* WTIMER0 below max index */
 #if WTIMER1_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER1_BASE)
-    WTIMER1_BASE,
+  WTIMER1_BASE,
 #else /* WTIMER1 available */
-    0,
+  0,
 #endif /* WTIMER1 available */
 #endif /* WTIMER1 below max index */
 #if WTIMER2_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER2_BASE)
-    WTIMER2_BASE,
+  WTIMER2_BASE,
 #else /* WTIMER2 available */
-    0,
+  0,
 #endif /* WTIMER2 available */
 #endif /* WTIMER2 below max index */
 #if WTIMER3_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER3_BASE)
-    WTIMER3_BASE,
+  WTIMER3_BASE,
 #else /* WTIMER3 available */
-    0,
+  0,
 #endif /* WTIMER3 available */
 #endif /* WTIMER3 below max index */
 #if WTIMER4_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER4_BASE)
-    WTIMER4_BASE,
+  WTIMER4_BASE,
 #else /* WTIMER4 available */
-    0,
+  0,
 #endif /* WTIMER4 available */
 #endif /* WTIMER4 below max index */
 #if WTIMER5_IDX <= WTIMER_MAX_IDX
 #if defined(WTIMER5_BASE)
-    WTIMER5_BASE,
+  WTIMER5_BASE,
 #else /* WTIMER5 available */
-    0,
+  0,
 #endif /* WTIMER5 available */
 #endif /* WTIMER5 below max index */
 };

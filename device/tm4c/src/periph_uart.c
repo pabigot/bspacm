@@ -211,7 +211,7 @@ vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp)
 
   BSPACM_CORE_DISABLE_INTERRUPT();
   uart->ICR = (~ UART_MIS_TXMIS) & uart->MIS;
-  while(! (UART_FR_RXFE & uart->FR)) {
+  while (! (UART_FR_RXFE & uart->FR)) {
     uint8_t dr = uart->DR;
     uint32_t rsr = uart->RSR;
     if (rsr) {
@@ -237,7 +237,7 @@ vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp)
       usp->rx_count += 1;
     }
   }
-  while(! (fifo_empty(usp->tx_fifo) || (UART_FR_TXFF & uart->FR))) {
+  while (! (fifo_empty(usp->tx_fifo) || (UART_FR_TXFF & uart->FR))) {
     uart->DR = fifo_pop_tail(usp->tx_fifo, 0);
     usp->tx_count += 1;
   }

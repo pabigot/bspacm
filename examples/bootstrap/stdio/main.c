@@ -144,9 +144,9 @@ void main ()
       }
       ctr = 0;
 #if 1
-        while (--delay) {
-        }
-        delay = 1000001;
+      while (--delay) {
+      }
+      delay = 1000001;
 #endif
     } else {
       putchar('0' + (ctr % 10));

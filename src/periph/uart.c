@@ -64,7 +64,7 @@ iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t 
          || ((bp < bpe)         /* more to write */
              && (bp == bps)     /* haven't written anything */
              && ! (BSPACM_PERIPH_UART_FLAG_NONBLOCK & flags) /* have to write something */
-             )) {
+            )) {
     BSPACM_CORE_DISABLE_INTERRUPT();
     do {
       uint16_t head = usp->tx_fifo->head;

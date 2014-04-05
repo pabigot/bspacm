@@ -27,7 +27,8 @@
  * PS 16   PT 17
  */
 const sBSPACMdeviceTM4CpinmuxUART xBSPACMdeviceTM4CpinmuxUART[] = {
-  { .uart_base = UART0_BASE,
+  {
+    .uart_base = UART0_BASE,
     /* JP4/JP5 in UART configuration: virtual COM
      * JP4/JP5 in CAN configuration: A2.3, A2.4 */
     .rx_pinmux = { .port = GPIOA_AHB, .port_shift = 0, .pin = 0, .pctl = 1 },
