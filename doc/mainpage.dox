@@ -90,6 +90,9 @@ href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Public
 Domain</a>.  A few files are derived from BSD-3-Clause works copyrighted
 by others; see the COPYING file for details.
 
+For further details, please see the Background, Philosophy, @link coding
+Coding Style@endlink, and Maintenance pages.
+
 The project page is at http://github.com/pabigot/bspacm.  Releases can be
 obtained by cloning the git repository:
 

@@ -1,0 +1,500 @@
+/* Copyright 2012-2014, Peter A. Bigot
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * * Neither the name of the software nor the names of its contributors may be
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*! @page coding BSPACM Coding Style
+@tableofcontents
+
+The coding style for BSPACM is primarily the one the author converged to
+over the last twenty-five years, but has a few lingering influences from
+<a href="http://pabigot.github.io/bsp430">BSP430</a>.
+
+\section coding_style Indentation and Syntactic Style
+
+BSPACM's coding style may be obtained using the following Emacs <a
+href="http://cc-mode.sourceforge.net/">ccmode</a> style:
+
+@code
+(c-add-style "pab"
+	     '("gnu"
+	       (indent-tabs-mode . nil)	; No tabs in the source
+	       (c-offsets-alist
+		(case-label . 2)	; Indent the case labels
+		)))
+@endcode
+
+An acceptably close approximation can be had using the following <a
+href="http://astyle.sourceforge.net/">Artistic Style (astyle)</a> command
+line:
+
+@code
+astyle \
+  --options=none \
+  --style=1tbs \
+  --indent=spaces=2 \
+  --indent-switches \
+  --pad-header \
+  --max-instatement-indent=60 \
+  -r \
+    '*.c' \
+    '*.h' \
+    '*.inc'
+@endcode
+
+Where astyle and emacs reformat the other's code, astyle's decision is
+preferred.
+
+Note in particular that the one-true-brace-style expects single statements
+in loop, @c if and @c else bodies to be enclosed in braces, e.g.:
+
+@code
+  if (condition) {
+    f1();
+  } else {
+    f2();
+  }
+@endcode
+
+\section coding_naming Identifiers and Naming Conventions
+
+Care is taken in BSPACM to conform to the rules for C regarding global
+identifiers; in particular, underscores may not appear at the start of an
+identifier (including macro parameters), and certain suffixes like @c _t are
+reserved.
+
+@li All global symbols and macros encode that they are part of BSPACM by
+beginning with @c BSPACM with or without prefix characters that indicate
+type information.  The next section of the identifier encodes information
+about the BSPACM module to which it belongs.
+
+@li Macros are upper-case, underscore separated.
+
+@li Function names are intercapped.  An initial letter indicates the
+return type: @c i is used for @c int, @c ul for <c>unsigned long</c>, @c
+v for @c void, and @c h for a @HAL handle.  The letter @c x is used as a
+prefix for more complex types, such as <c>const char *</c>, other
+pointers, and structures.
+
+@li Type names (tags and typedefs) are intercapped.  An initial letter
+distinguishes the "type" of type: @c s is a @c struct, @c u is a @c
+union, @c e is an @c enum.  @c h indicates a handle for (pointer to) a
+structure type.  @c t is used for any typedef for a scalar type.
+
+@li Where user code may define or reference instances of a BSPACM @c struct,
+@c union, and @c enum type directly (i.e. not through a handle), those types
+should have typedef aliases that use the tag as the type name.
+
+@li Enumeration values are intercapped and begin with @c e.
+
+@li A concept of "protected" is indicated by a single trailing
+underscore.  Generally this is used in macro parameters, static storage
+class variables, and structure fields that should not be accessed by
+user code directly implementation.
+
+@li Global variables (e.g., state for device peripherals) follow the
+general convention of function names.
+
+@li Function parameters, structure/union member tags, local variables, and
+and file static variables should be lower case, underscore separated.  These
+identifiers do not encode type information.
+
+@li Where a function or value has an associated physical unit that is
+required for correct interpretation of the value, the unit should be
+expressed as an underscore-separated suffix consistent with the <a
+href="http://unitsofmeasure.org/">Unified Code for Units of Measure</a>.
+As an example, all BSPACM frequency values are annotated with the suffix
+@c _Hz.
+
+\if DOXYGEN_EXCLUDE
+
+@li Where a function, function macro, or structure tag must be manipulated
+with interrupts disabled, it ends with a suffix @c _ni (@c _NI for
+macros).
+
+\endif
+
+\section coding_types Type Selection
+
+Anybody using a Cortex-M device should know that they are operating on a
+32-bit device, and BSPACM is by design restricted to Cortex-M devices.
+Thus, except where a data type is used as part of an interface to an
+external system or to reflect a specific intent, @c int and <tt>unsigned
+int</tt> are used in preference to size-explicit types for index
+variables, return values, etc.
+
+@li <c>uint32_t</c> is the core type for reference to system and
+peripheral memory mapped registers, even though <a
+href="https://launchpad.net/gcc-arm-embedded">some toolchains</a> (ahem)
+typedef this to <tt>unsigned long</tt> when it could just as well be
+<tt>unsigned int</tt> This follows ARM standards.
+
+@li Smaller sized types (@c uint16_t, @c int8_t, etc) are used in
+preference to @c short and @c char for integral values where space is at
+a premium and the values will never exceed the type used.  Generally
+this applies only to stored data, but may also occur in temporary values
+used in expression evaluation, to make any truncation explicit.
+
+@li ASCII text characters and strings use @c char as the core type.
+
+@li Data transmitted to and from an external system using the @link
+bspacm/serial.h serial abstraction@endlink uses @c uint8_t as codified in
+<c><stdint.h></c>.
+
+@li Any parameter that is a pointer to data the function is expected not to
+modify should include the appropriate @c const qualifier.
+
+\section coding_misc Miscellaneous
+
+\subsection coding_misc_yoda Comparison Operands
+
+BSPACM places comparison operands which are lvalues on the right side of the
+operator, as with:
+
+@code
+if (4 <= len) {
+  /* Too long */
+}
+@endcode
+
+Yes, even if the conditional operator "couldn't possibly be mistyped" as an
+assignment operator.  <a
+href="http://www.dodgycoder.net/2011/11/yoda-conditions-pokemon-exception.html">Up
+with it you must put.</a>
+
+\subsection coding_misc_rv Function Return Values
+
+Where a function implements an operation that may succeed or fail, that
+state reflected in the return value following standard POSIX conventions: a
+zero indicates a successful execution and a negative value indicates an
+error.  Where useful information about a successful result may be expressed
+as a non-negative value (e.g., the number of bytes successfully
+transmitted), that may be included in the return value.
+
+This is often counter-intuitive to programmers unfamiliar with POSIX, but
+the correct test to see whether the I2C addresses were successfully set is
+indeed:
+
+@code
+  if (0 == iBSPACMserialI2CsetAddresses_rh(i2c, oa, sa)) {
+    /* Success here... */
+  }
+@endcode
+
+\if DOXYGEN_EXCLUDE
+
+\subsection coding_misc_critsect Critical Sections (Not-Interruptible and Resource Held)
+
+Statements that temporarily change interrupt enabled state should be
+enclosed in <tt>do ... while(0);</tt> blocks as shown in the documentation
+for #BSPACM_CORE_SAVED_INTERRUPT_STATE or in more complex situations like
+@ref h_resource_ex.
+
+The single-iteration loop construct used in these cases is strictly
+redundant but serves a purpose similar to the requirement for braces around
+single statements: it highlights that the content is conceptually a block
+with entry and exit operations and encourages the maintainer to read beyond
+a single statement to understand its context.  It also simplifies control
+flow by allowing @c break to be used to jump to the end of the critical
+section.  It is encouraged but not required when the protected statements
+are inherently within a scoped block anyway, as with:
+
+@code
+  if (0 == iBSPACMconsoleResourceClaim_ni()) {
+    rv = iBSPACMconsoleInitialize_rh_ni();
+    (void)iBSPACMconsoleResourceRelease_ni();
+  }
+@endcode
+
+\endif
+
+\subsection coding_misc_incl Include Files
+
+\subsubsection coding_misc_incl_protection Protection Against Nested Inclusion
+
+Be aware that in BSPACM the specific instance of a generic include file
+such as <bspacm/internal/utility/led.h> is located by compiler flags
+that provide a prioritized list of locations to look for that file.
+
+Include file protection symbols encode the path by which the include
+file is normally accessed, preceded by components from its
+containing path if appropriate, with non-alphanumeric characters
+replaced by underscores, and the resulting token expressed in upper
+case.  For example, when compiling for an EFM32 device the header
+<bspacm/internal/utility/led.h> will be located at
+<tt>\$(BSPACM_ROOT)/device/efm32/include/bspacm/internal/utility/led.h</tt>,
+and its include protection symbol is:
+
+@code
+#ifndef BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H
+#define BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H
+/* ... */
+#endif /* BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H */
+@endcode
+
+As a specific exception to avoid tedium, the include protector for
+<bspacm/config.h> does not contain an indication of where it came from.
+
+\subsubsection coding_misc_incl_use Standard Order for Include Files
+
+See also @ref bspacm_config for naming conventions and standards related
+overriding default configurations.
+
+\par Header Files (*.h)
+
+Every header file that does not include another BSPACM header file must
+include <bspacm/core.h> first to ensure the necessary preprocessor
+directives that are affected by <bspacm/config.h> are applied in the
+standard order.
+
+<bspacm/core.h> may be expected to include the following external material:
+
+@code
+#include <stdint.h>             /* Size-annotated integral types (uint8_t) */
+#include <stddef.h>             /* NULL and size_t */
+#include <bspacm/device.h>      /* device-specific header */
+#include <bspacm/config.h>      /* application-specific header */
+@endcode
+
+The files <bspacm/device.h> and <bspacm/config.h> do not exist in the
+primary include directory, but in alternative hierarchies placed within
+the device and board subdirectories.  <bspacm/config.h> in particular
+may also be superseded through use of an application-specific include
+hierarchy.
+
+\par Implementation Files (*.c)
+
+Every implementation file should include <bspacm/core.h> first to ensure
+that platform-specific overrides have been evaluated and are available
+to override defaults in other headers.
+
+\subsection coding_misc_cpp Preprocessor Feature Tests
+
+See also @ref bspacm_config for naming conventions and standards related to
+feature tests.
+
+Where a macro value is used for conditional compilation, the state of
+being true is determined with the following pattern:
+
+@code
+#if (FEATURE_FLAG - 0)
+/* Feature is enabled */
+#else /* MACRO_VALUE */
+/* Feature is not enabled */
+#endif /* MACRO_VALUE */
+@endcode
+
+This technique allows use of:
+
+@code
+#define FEATURE_FLAG 0
+@endcode
+
+to denote that the feature is being explicitly disabled.  Developers of
+application or infrastructure code should ensure that any feature test flag
+has a definition to either 1 or 0 (or to an expression that will evaluate to
+either a true or false value when used within a preprocessor condition).
+The documentation explicitly marks macro definitions that are expected to
+have such values with the <tt>@@cppflag</tt> annotation in the documentation
+block, which will produce:
+
+@cppflag
+
+@note While other macros may be documented to have true or false values that
+are valid in both code and preprocessor expressions, macros with the
+<tt>@@cppflag</tt> may have values that include preprocessor operators like
+@c defined which restrict their use to preprocessor directives.
+
+The ability to explicitly disable features that default to being enabled is
+critical and requires a value-based comparison.  The subtraction of 0 in the
+conditional expression allows syntactic correctness when somebody
+inappropriately defines the feature flag with no value: such a case is
+equivalent to disabling the feature.  For consistency these tests should be
+enclosed in parentheses.  The syntax also makes clear that the code was not
+intended to be <c>\#ifdef FEATURE_FLAG</c>.
+
+@warning When features identified with null macro definitions are processed
+according to the BSPACM standard conditional directives, they are
+interpreted as being turned off, not on.
+
+The correct way of detecting features when interoperating with external
+libraries using the null-definition style is:
+
+@code
+#if defined(FEATURE_FLAG)
+/* Function is available and feature is enabled */
+#else /* FEATURE */
+/* Function is missing or feature is disabled */
+#endif /* FEATURE */
+@endcode
+
+The short-hand <c>\#ifdef</c> may be used instead of the <c>defined()</c>
+test if no further conditions are required, but is discouraged for
+consistency.
+
+\section coding_doc Documentation Expectations
+
+BSPACM uses <a href="http://www.doxygen.org/">Doxygen</a> for architectural
+and API documentation.  The following macros are used in API documentation
+to highlight expectations of particular macros, variables, and functions.
+
+\if DOXYGEN_EXCLUDE
+
+\subsection coding_doc_defaulted @@defaulted
+
+Annotation to indicate that the value provided by the infrastructure may be
+overridden by an application.  The overriding value is normally provided
+through @c bspacm_config.h.  Example: #BSPACM_CLOCK_NOMINAL_MCLK_HZ
+
+Produces:
+
+@defaulted
+
+\subsection coding_doc_dependentvalue @@dependentvalue
+
+Annotation to highlight that the value provided by the infrastructure is
+dependent on other settings in a complex manner.  Normally used for
+configuration flags for dependent features.  Example:
+#configBSPACM_UPTIME_TIMER_HAL_CC0_ISR.
+
+Produces:
+
+@dependentvalue
+
+\subsection coding_doc_platformvalue @@platformvalue
+
+Annotation to indicate that the macro is only defined after
+<bspacm/platform.h> is included, and that the value of the macro is
+platform-dependent.  This may be combined with @ref coding_doc_defaulted if
+the value may be overridden.  It differs from @ref coding_doc_platformdep in
+that the latter may be referenced without including <bspacm/platform.h>.
+Example: #BSPACM_CLOCK_LFXT1_XCAP
+
+Produces:
+
+@platformvalue
+
+\subsection coding_doc_platformdep @@platformdep
+
+Annotation to indicate that the value of the macro depends on platform
+information (such as the type of peripheral providing the clock
+abstraction), so the value displayed in the documentation may not be
+correct.  This may be combined with @ref coding_doc_defaulted if the value
+may be overridden.  It differs from @ref coding_doc_platformvalue in that
+the value is dependent only on the header in which it is declared so may be
+used without including <bspacm/platform.h>.  Example:
+#BSPACM_CLOCK_IS_FAULTED_NI
+
+Produces:
+
+@platformdep
+
+\subsection coding_doc_deprecated @@deprecated
+
+Annotation to note that a function or capability has been superseded by an
+alternative that should be used in new code.  Such annotations @em should
+indicate a date by which the deprecated capability may be expected to be
+removed.
+
+Produces:
+
+@deprecated
+
+\subsection coding_doc_affects @@affects
+
+Annotation to note that the setting for the given macro affects one or more
+other settings.  Normally used for @c configBSPACM_FOO which determines the
+value of @c BSPACM_FOO which uses the companion @ref coding_doc_dependency
+annotation.  Example: #configBSPACM_PLATFORM_SPIN_FOR_JUMPER
+
+Produces:
+
+@affects <em>resource links</em>
+
+\subsection coding_doc_dependency @@dependency
+
+Annotation to note that the setting for the given macro is affected by the
+one or more other settings.  Normally used for @c BSPACM_FOO when the value
+depends on @c configBSPACM_FOO which uses the companion @ref
+coding_doc_affects annotation.  Example: #BSPACM_PLATFORM_SPIN_FOR_JUMPER
+
+Produces:
+
+@dependency <em>resource links</em>
+
+\subsection coding_doc_cppflag @@cppflag
+
+Annotation to indicate that the value of a macro may include preprocessor
+operations such as <tt>defined(BSPACM_FOO)</tt>, so may be used only within
+preprocessor directives.  Example: #configBSPACM_HAL_PORT1_ISR
+
+Produces:
+
+@cppflag
+
+\subsection coding_doc_blocking @@blocking
+
+Annotation to indicate that a function that normally runs with interrupts
+disabled may enable interrupts and block until conditions allow it to
+return.  Example: iBSPACMconsoleWaitForTxSpace_ni()
+
+@todo This should be reflected in the function name when the
+non-interruptable and resource lock frameworks are revised.
+
+Produces:
+
+@blocking
+
+\subsection coding_doc_consoleoutput @@consoleoutput
+
+Annotation to indicate that the function may enable interrupts and block due
+to an internal dependence on iBSPACMconsoleWaitForTxSpace_ni().  Example:
+cputchar()
+
+Produces:
+
+@consoleoutput
+
+\subsection coding_doc_resource @@resource
+
+Annotation to indicate that the function or data should only be invoked or
+accessed when a particular resource is held.  The resource may be implicit,
+but normally it should be explicitly identified with this annotation.  The
+annotation applies both to functions that require the resource be held
+before they are invoked, and functions that must internally acquire and
+release the resource.  Example: cgetchar(), cgetchar_rh()
+
+Produces:
+
+@resource @em resource_identifier
+
+\endif
+
+@copyright_doc
+*/
