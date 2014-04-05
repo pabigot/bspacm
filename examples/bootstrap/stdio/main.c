@@ -38,13 +38,17 @@ configure_console ()
 {
   sBSPACMperiphUARTstate * const usp = BSPACM_CONFIG_DEFAULT_UART_HANDLE;
   const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 115200 };
+  sBSPACMperiphUARTstate * rv;
 #if 1
-  /* Test whether deconfigure is safe when never configured */
-  usp->ops->configure(usp, 0);
+  /* Test whether deconfigure is safe when never configured, and in
+   * fact whether it works at all.  Spin here if this turns out to be
+   * unsafe, so we can fix things. */
+  rv = hBSPACMperiphUARTconfigure(usp, 0);
+  while (! rv);
 #endif
-  usp->ops->configure(usp, &cfg);
-  uart_statep = usp;
-  return usp;
+  rv = hBSPACMperiphUARTconfigure(usp, &cfg);
+  uart_statep = rv;
+  return rv;
 }
 
 int
@@ -71,7 +75,9 @@ _write (int fd, const void * buf,  size_t nbyte)
 
 static void deconfigure_console ()
 {
-  uart_statep->ops->configure(uart_statep, 0);
+  if (uart_statep) {
+    uart_statep = hBSPACMperiphUARTconfigure(uart_statep, 0);
+  }
 }
 
 void main ()
@@ -121,7 +127,7 @@ void main ()
       BSPACM_CORE_ENABLE_INTERRUPT();
       errcount = fe + pe + be + oe + de;
 
-      printf("  %u %u %u : %02x\n", txcount, rxcount, errcount, usp->ops->fifo_state(usp));
+      printf("  %u %u %u : %02x\n", txcount, rxcount, errcount, iBSPACMperiphUARTfifoState(usp));
       vBSPACMledSet(BSPACM_LED_GREEN, -1);
 
       if (last_rxcount != rxcount) {
@@ -131,7 +137,7 @@ void main ()
           printf("read 0x%02x '%c'\n", ch, ch);
         }
         last_rxcount = rxcount;
-        while (0 != usp->ops->fifo_state(usp)) {
+        while (0 != iBSPACMperiphUARTfifoState(usp)) {
           /* NOT SAFE for new RX */
         }
         deconfigure_console();

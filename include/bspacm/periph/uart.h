@@ -157,7 +157,7 @@ typedef struct sBSPACMperiphUARToperations {
    * configure the peripheral.  If null, a sign that the peripheral is
    * no longer being used and should be shut down/deconfigured.
    *
-   * @return zero on successfull (de-)configuration, otherwise a
+   * @return zero on successful (de-)configuration, otherwise a
    * negative error code. */
   int (* configure) (sBSPACMperiphUARTstate * usp,
                      const sBSPACMperiphUARTconfiguration * cfgp);
@@ -191,16 +191,19 @@ typedef struct sBSPACMperiphUARToperations {
    * is constant buffer-space-available signal, for which filling the
    * hardware fifo is fine albeit not necessary.
    *
-   * @param usp the UART abstraction being used @param enablep a
-   * non-zero value if the interrupt is to be enabled; a zero value
-   * will disable the interrupt (not a normal way to use this
-   * function). */
+   * @param usp the UART abstraction being used
+   *
+   * @param enablep a non-zero value if the interrupt is to be
+   * enabled; a zero value will disable the interrupt (not a normal
+   * way to use this function). */
   void (* hw_txien) (sBSPACMperiphUARTstate * usp, int enablep);
 
   /** Determine whether there is anything pending in the device:
    * material that has been received but not consumed by the
    * application, or material that has been submitted for transmission
    * but has not yet gone out over the channel.
+   *
+   * @param usp the UART abstraction being used
    *
    * @return a combination of bits defined in
    * #eBSPACMperiphUARTfifoState.  A value of zero indicates that no
@@ -236,6 +239,26 @@ typedef struct sBSPACMperiphUARToperations {
  * transmission.
  */
 #define BSPACM_PERIPH_UART_FLAG_NONBLOCK 0x02
+
+/** Configure (or deconfigure) a UART.
+ *
+ * @param usp the UART peripheral state
+ *
+ * @param cfgp if non-null, a pointer to information used to
+ * configure the peripheral.  If null, a sign that the peripheral is
+ * no longer being used and should be shut down/deconfigured.
+ *
+ * @return @p usp on successful (de-)configuration, otherwise a null
+ * pointer value to indicate an error. */
+static BSPACM_CORE_INLINE
+sBSPACMperiphUARTstate *
+hBSPACMperiphUARTconfigure (sBSPACMperiphUARTstate * usp,
+                            const sBSPACMperiphUARTconfiguration * cfgp) {
+  if (!!usp && (0 == usp->ops->configure(usp, cfgp))) {
+    return usp;
+  }
+  return 0;
+}
 
 /** Read data from a UART.
  *
@@ -276,6 +299,26 @@ int iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t coun
  * depending on UART configuration flags and transmitter state), or a
  * negative error code. */
 int iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t count);
+
+/** Determine whether there is anything pending in the device:
+ * material that has been received but not consumed by the
+ * application, or material that has been submitted for transmission
+ * but has not yet gone out over the channel.
+ *
+ * @param usp the UART abstraction
+ *
+ * @return a combination of bits defined in
+ * #eBSPACMperiphUARTfifoState.  A value of zero indicates that no
+ * material is pending.  A negative value indicates an error,
+ * e.g. that the UART is unconfigured. */
+static BSPACM_CORE_INLINE
+int iBSPACMperiphUARTfifoState (sBSPACMperiphUARTstate * usp) {
+  if (! usp) {
+    return -1;
+  }
+  return usp->ops->fifo_state(usp);
+}
+
 
 /** Include the device-specific file that declares the objects and
  * functions that provide UART capability on the board. */
