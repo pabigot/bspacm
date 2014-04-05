@@ -65,6 +65,10 @@ board_objpath=$(BSPACM_ROOT)/board/$(BOARD)/$(basename $(notdir $(1)))$(OBJ_EXT)
 # that is to be placed in the current directory.
 app_objpath=$(basename $(notdir $(1)))$(OBJ_EXT)
 
+# Variable that is non-empty if buildall is one of the make goals.  In
+# that case certain checks are elided.
+BYPASS_CHECKS=$(if $(filter buildall,$(MAKECMDGOALS)),1,0)
+
 # Function to generate the rule that builds an object file (in some
 # directory) from a source file (in some other directory).  C, C++
 # (cc), and assembly files are recognized.  A parallel rule to build
@@ -143,18 +147,22 @@ TARGET_LDFLAGS ?=
 # includes the specific device within the device/series/line/device
 # hierarchy.  That in turn defines DEVICE, ARM_PROCESSOR, and other
 # flags, and includes parent line and series definitions.
+ifeq (0,$(BYPASS_CHECKS))
 ifndef BOARD
 $(error No BOARD identified)
 endif # BOARD
 include $(BSPACM_ROOT)/board/$(BOARD)/Makefile.board
+endif # BYPASS_CHECKS
 
 # DEVICE: The specific microcontroller for which the application is to
 # be built.  Must be defined, probably (indirectly) by Makefile.board.
 # DEVICE must be defined; parent identifiers DEVICE_SERIES (tm4c,
 # efm32) and DEVICE_LINE (tm4c123, efm32gg) are optional.
+ifeq (0,$(BYPASS_CHECKS))
 ifndef DEVICE
 $(error No DEVICE identified)
 endif # DEVICE
+endif # BYPASS_CHECKS
 
 # EVALUATE_AFTER_BOARD_INCLUSION: Optional Make variable that expands
 # into Makefile source that needs to be evaluated after the
@@ -485,8 +493,8 @@ ifdef BOARD_LIBVENDOR_A
 libvendor: $(BOARD_LIBVENDOR_A)
 endif # BOARD_LIBVENDOR_A
 
-# Include dependencies unless we're cleaning
-ifeq ($(filter-out realclean clean emit-test-platforms test-platforms, $(MAKECMDGOALS)),$(MAKECMDGOALS))
+# Include dependencies unless we're cleaning or doing buildall
+ifeq ($(filter-out realclean clean emit-test-platforms test-platforms buildall, $(MAKECMDGOALS)),$(MAKECMDGOALS))
 -include $(DEP)
 endif # make [real]clean
 
