@@ -39,6 +39,12 @@
  * Declares the public objects and functions that are required to make
  * use of a UART peripheral.
  *
+ * @warning Peripheral instance objects such as
+ * #xBSPACMdeviceTM4CperiphUART0 will exist only if they are supported
+ * on the device being used and a definition is provided in the
+ * peripheral configuration source file identified in the @c
+ * PERIPH_CONFIG_SRC make variable.
+ *
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
@@ -54,13 +60,21 @@ extern const sBSPACMperiphUARToperations xBSPACMdeviceTM4CperiphUARToperations;
  * state reference. */
 void vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp);
 
+/** State for UART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART0;
+/** State for UART1 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART1;
+/** State for UART2 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART2;
+/** State for UART3 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART3;
+/** State for UART4 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART4;
+/** State for UART5 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART5;
+/** State for UART6 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART6;
+/** State for UART7 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART7;
 
 #endif /* BSPACM_DEVICE_TM4C_INTERNAL_PERIPH_UART_H */

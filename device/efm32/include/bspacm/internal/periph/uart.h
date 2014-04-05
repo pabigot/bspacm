@@ -39,6 +39,12 @@
  * Declares the public data types, objects, and functions that are
  * required to make use of a UART peripheral.
  *
+ * @warning Peripheral instance objects such as
+ * #xBSPACMdeviceEFM32periphUSART0 will exist only if they are
+ * supported on the device being used and a definition is provided in
+ * the peripheral configuration source file identified in the @c
+ * PERIPH_CONFIG_SRC make variable.
+ *
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
@@ -77,12 +83,19 @@ void vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const u
  * state reference. */
 void vBSPACMdeviceEFM32periphUSARTtxirqhandler (sBSPACMperiphUARTstate * const usp);
 
+/** State for USART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUSART0;
+/** State for USART1 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUSART1;
+/** State for USART2 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUSART2;
+/** State for UART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUART0;
+/** State for UART1 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUART1;
+/** State for LEUART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphLEUART0;
+/** State for LEUART1 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphLEUART1;
 
 #endif /* BSPACM_DEVICE_EFM32_INTERNAL_PERIPH_UART_H */
