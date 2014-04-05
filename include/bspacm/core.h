@@ -59,8 +59,8 @@
  * material in @c periph_config.c, and has things such as the handle
  * to the default system UART peripheral.  A default is provided in
  * each board-specific include hierarchy, but it can be overridden by
- * providing a higher-priority path in the application-specific
- * Makefile. */
+ * providing a path to another file in the providing a higher-priority
+ * path in the application-specific Makefile. */
 #include <bspacm/config.h>
 
 /** Version identifier for the BSPACM infrastructure

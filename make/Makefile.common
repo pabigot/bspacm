@@ -204,6 +204,11 @@ else # CMSIS_SYSTEM_SRC
 STARTUP_CPPFLAGS += -D__NO_SYSTEM_INIT
 endif # CMSIS_SYSTEM_SRC
 
+# Provide the device pinmux map, which is normally defined at the
+# board level but can be overridden by applications or other layers.
+# The object file is application-specific.
+PERIPH_CONFIG_SRC ?= $(BSPACM_ROOT)/board/$(BOARD)/src/periph_config.c
+
 # __STARTUP_USE_UNIQUE_DEFAULT_HANDLER : An extension to generate
 # unique default handlers so when one gets invoked unexpectedly you
 # can tell which one needs to be provided (or at least what caused the
@@ -369,8 +374,13 @@ DEP += $(call subst_src_suffix,.d)
 # application-specific, although its source is probably not the
 # application source directory.
 CMSIS_STARTUP_OBJ=$(call app_objpath, $(CMSIS_STARTUP_SRC))
-
 OBJ += $(CMSIS_STARTUP_OBJ)
+
+# The peripheral configuration data structures are also
+# application-specific, though the source may be in the board-specific
+# directory.
+PERIPH_CONFIG_OBJ=$(call app_objpath, $(PERIPH_CONFIG_SRC))
+OBJ += $(PERIPH_CONFIG_OBJ)
 
 # BSPACM_INHIBIT_MAKE_RULES: Define to a nonzero value to exclude the
 # Make rules while leaving all the variable declarations in place.
@@ -435,6 +445,9 @@ $(CMSIS_STARTUP_OBJ): $(CMSIS_STARTUP_SRC)
 ifdef CMSIS_SYSTEM_OBJ
 $(eval $(call create_makerule,$(basename $(CMSIS_SYSTEM_OBJ)),$(CMSIS_SYSTEM_SRC)))
 endif # CMSIS_SYSTEM_OBJ
+
+# Create the rule for building the peripheral configuration definitions.
+$(eval $(call create_makerule,$(basename $(PERIPH_CONFIG_OBJ)),$(PERIPH_CONFIG_SRC)))
 
 # CLEAN: Additional files to be removed on make clean
 .PHONY: clean

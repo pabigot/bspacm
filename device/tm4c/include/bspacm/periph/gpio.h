@@ -45,9 +45,10 @@
  * all peripherals that are used by the application.  These mappings
  * are used by the generic TM4C peripheral configuration routines.
  * The application, board, or device should provide definitions for
- * the structure corresponding to each required peripheral by adding a
- * file named @c periph_config.c to @c BOARD_LIBBSPACM_SRC in an
- * application/board/device Makefile.
+ * the structure corresponding to each required peripheral in a source
+ * file named @c periph_config.c with an absolute path set in the make
+ * variable @c PERIPH_CONFIG_SRC.  By default the board-specific @c
+ * periph_config.c is used.
  *
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>

@@ -145,15 +145,8 @@ $(BOARD_LIBVENDOR_A): $(filter-out %/onewire.c, $(wildcard $(TIVAWARE_ROOT)/driv
 	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
 	rm $(notdir $(^:%.c=%.o))
 
-
-# Provide the device pinmux map, which is normally defined at the
-# board level.
-ifeq (,$(filter %/periph_config.c,$(BOARD_LIBBSPACM_SRC)))
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/board/$(BOARD)/src/periph_config.c
-endif # periph_config.c
-
-# BSPACM needs a file to map between peripheral base address and
-# ordinal of peripheral instance.  The contents of the file is
+# BSPACM needs a file to map between a TM4C peripheral base address
+# and ordinal of peripheral instance.  The contents of the file is
 # determined by the peripherals available on the device that it's
 # built for.
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/device_periphs.c
