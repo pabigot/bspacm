@@ -109,6 +109,10 @@ typedef struct sBSPACMperiphUARTstate {
   uint8_t rx_overrun_errors;
 } sBSPACMperiphUARTstate;
 
+/** Typedef for API that references UARTs as handles where the fact
+ * that there's state should not be relevant. */
+typedef sBSPACMperiphUARTstate * hBSPACMperiphUART;
+
 /** Collected configuration information used to enable a UART.
  *
  * @note At the moment, configuration options are sparse. */
@@ -251,8 +255,8 @@ typedef struct sBSPACMperiphUARToperations {
  * @return @p usp on successful (de-)configuration, otherwise a null
  * pointer value to indicate an error. */
 static BSPACM_CORE_INLINE
-sBSPACMperiphUARTstate *
-hBSPACMperiphUARTconfigure (sBSPACMperiphUARTstate * usp,
+hBSPACMperiphUART
+hBSPACMperiphUARTconfigure (hBSPACMperiphUART usp,
                             const sBSPACMperiphUARTconfiguration * cfgp) {
   if (!!usp && (0 == usp->ops->configure(usp, cfgp))) {
     return usp;
@@ -274,7 +278,7 @@ hBSPACMperiphUARTconfigure (sBSPACMperiphUARTstate * usp,
  *
  * @return the number of bytes actually read (which may be zero
  * depending on receiver state), or a negative error code. */
-int iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t count);
+int iBSPACMperiphUARTread (hBSPACMperiphUART usp, void * buf, size_t count);
 
 /** Write data to a UART.
  *
@@ -298,7 +302,7 @@ int iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t coun
  * @return the number of bytes actually written (which may be zero
  * depending on UART configuration flags and transmitter state), or a
  * negative error code. */
-int iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t count);
+int iBSPACMperiphUARTwrite (hBSPACMperiphUART usp, const void * buf,  size_t count);
 
 /** Determine whether there is anything pending in the device:
  * material that has been received but not consumed by the
@@ -312,7 +316,7 @@ int iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  siz
  * material is pending.  A negative value indicates an error,
  * e.g. that the UART is unconfigured. */
 static BSPACM_CORE_INLINE
-int iBSPACMperiphUARTfifoState (sBSPACMperiphUARTstate * usp) {
+int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp) {
   if (! usp) {
     return -1;
   }

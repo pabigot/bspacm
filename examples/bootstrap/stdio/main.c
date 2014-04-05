@@ -31,14 +31,14 @@
 #define _COMPILING_NEWLIB
 #include <sys/unistd.h>
 
-static sBSPACMperiphUARTstate * uart_statep;
+static hBSPACMperiphUART uart_statep;
 
 sBSPACMperiphUARTstate *
 configure_console ()
 {
-  sBSPACMperiphUARTstate * const usp = BSPACM_CONFIG_DEFAULT_UART_HANDLE;
+  hBSPACMperiphUART const usp = BSPACM_CONFIG_DEFAULT_UART_HANDLE;
   const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 115200 };
-  sBSPACMperiphUARTstate * rv;
+  hBSPACMperiphUART rv;
 #if 1
   /* Test whether deconfigure is safe when never configured, and in
    * fact whether it works at all.  Spin here if this turns out to be
@@ -84,7 +84,7 @@ void main ()
 {
   int ctr;
   unsigned int last_rxcount;
-  sBSPACMperiphUARTstate * usp;
+  hBSPACMperiphUART usp;
 
   vBSPACMledConfigure();
   usp = configure_console();
