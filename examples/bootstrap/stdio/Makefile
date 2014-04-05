@@ -14,6 +14,15 @@
 
 SRC=main.c
 
+# Transmit buffer length
+TXBLEN=32
+# Receive buffer length
+RXBLEN=8
+
+# Provide larger default UART buffer sizes
+AUX_CPPFLAGS=-DBSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE=$(TXBLEN)
+AUX_CPPFLAGS+=-DBSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE=$(RXBLEN)
+
 #WITH_LNOSYS=0
 # nano does not support setvbuf correctly
 WITH_NANO=0
