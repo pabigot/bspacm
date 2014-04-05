@@ -144,7 +144,10 @@ typedef enum eBSPACMperiphUARTfifoState {
 /** The set of operations supported by UARTs.
  *
  * The underlying implementation is specific to a vendor peripheral
- * capable of acting like a UART. */
+ * capable of acting like a UART.
+ *
+ * @note The contents of this structure are not intended to be public
+ * API. */
 typedef struct sBSPACMperiphUARToperations {
   /** Configure (or deconfigure) a UART.
    *
@@ -207,24 +210,72 @@ typedef struct sBSPACMperiphUARToperations {
 
 } sBSPACMperiphUARToperations;
 
-/** If set any newline in the provided output is preceded by a
- * locally-generated carriage return. */
+/** If set, iBSPACMperiphUARTwrite() will translate any newline (ASCII
+ * @c LF, hex @c 0x0a) in the output buffer output into a synthesized
+ * sequence <tt>CR LF</tt> (<tt>0x0d 0x0a</tt>). */
 #define BSPACM_PERIPH_UART_FLAG_ONLCR 0x01
 
-/** If set the output routine is permitted to return immediately if it
- * cannot output any data.  If this flag is set the output routine
- * will never enable interrupts, but may return without having written
- * anything (or after having written only the CR of a CR+LF pair
- * generated using #BSPACM_PERIPH_UART_FLAG_ONLCR). */
+/** Control whether the iBSPACMperiphUARTwrite() is permitted to
+ * return immediately if it cannot output any data.
+ *
+ * This flag has an effect only when the underlying UART has no more
+ * space in its hardware or software FIFOs.
+ *
+ * If clear (default), iBSPACMperiphUARTwrite() invoked with a
+ * positive @p count will enable interrupts and block until at least
+ * one byte is written; if no space is available after that, it will
+ * return with a partial write.
+ *
+ * If set, iBSPACMperiphUARTwrite() may return having written no data
+ * if there is no space.
+ *
+ * In any case, if #BSPACM_PERIPH_UART_FLAG_ONLCR or other flags
+ * require iBSPACMperiphUARTwrite() to translate a single byte into a
+ * multi-byte sequence, it will block with interrupts enabled until an
+ * error or the complete synthesized sequence has been queued for
+ * transmission.
+ */
 #define BSPACM_PERIPH_UART_FLAG_NONBLOCK 0x02
 
-/** If set _write must enable interrupts and block until all the data
- * it's been given has been output. */
-#define BSPACM_PERIPH_UART_FLAG_FLUSH 0x04
+/** Read data from a UART.
+ *
+ * This call attempts to read up to @p count bytes of data into the
+ * buffer at @p buf.
+ *
+ * @param usp the UART peripheral state.  The peripheral must be
+ * configured and active.
+ *
+ * @param buf location into which data should be stored
+ *
+ * @param count the number of bytes that should be read
+ *
+ * @return the number of bytes actually read (which may be zero
+ * depending on receiver state), or a negative error code. */
+int iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t count);
 
-int iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t nbyte);
-
-int iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t nbyte);
+/** Write data to a UART.
+ *
+ * @warning This function will enable interrupts at certain points to
+ * allow queued data to be transmitted.  Be aware that other
+ * interrupts may be serviced during these times, and that an
+ * arbitrary amount of data queued through this function may be
+ * transmitted prior to the function's return.
+ *
+ * @warning If interrupts were disabled when the function was entered,
+ * they will be disabled before it returns, and it is the caller's
+ * responsibility to ensure they are re-enabled if necessary to
+ * complete transmission of queued data.
+ *
+ * @param usp the UART peripheral state
+ *
+ * @param buf location from which transmitted data is read
+ *
+ * @param count the number of bytes that should be written
+ *
+ * @return the number of bytes actually written (which may be zero
+ * depending on UART configuration flags and transmitter state), or a
+ * negative error code. */
+int iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t count);
 
 /** Include the device-specific file that declares the objects and
  * functions that provide UART capability on the board. */

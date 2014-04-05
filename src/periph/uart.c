@@ -36,7 +36,7 @@
 #include <errno.h>
 
 int
-iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t nbyte)
+iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t count)
 {
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   uint8_t * const bps = (uint8_t *)buf;
@@ -44,23 +44,19 @@ iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t nbyte)
 
   BSPACM_CORE_DISABLE_INTERRUPT();
   do {
-    rv = fifo_pop_into_buffer(usp->rx_fifo, bps, bps+nbyte);
+    rv = fifo_pop_into_buffer(usp->rx_fifo, bps, bps+count);
   } while (0);
   BSPACM_CORE_REENABLE_INTERRUPT(istate);
-  if (0 == rv) {
-    errno = EAGAIN;
-    rv = -1;
-  }
   return rv;
 }
 
 int
-iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t nbyte)
+iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t count)
 {
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   const uint8_t * const bps = (const uint8_t *)buf;
   const uint8_t * bp = bps;
-  const uint8_t * const bpe = bp + nbyte;
+  const uint8_t * const bpe = bp + count;
   int state = -1;
   unsigned int flags = usp->flags;
 
@@ -117,12 +113,11 @@ iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t 
       /* Write back the updated head. */
       usp->tx_fifo->head = head;
     } while (0);
+    /* Design decision: we will enable interrupts here, rather than
+     * manage state in an attempt to avoid doing so when it is not
+     * strictly necessary. */
     BSPACM_CORE_ENABLE_INTERRUPT();
   }
   BSPACM_CORE_RESTORE_INTERRUPT_STATE(istate);
-  if (bp == bps) {
-    errno = EAGAIN;
-    return -1;
-  }
   return bp - bps;
 }

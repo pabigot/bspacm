@@ -50,13 +50,23 @@ configure_console ()
 int
 _read (int fd, void * buf, size_t nbyte)
 {
-  return iBSPACMperiphUARTread(uart_statep, buf, nbyte);
+  int rv = iBSPACMperiphUARTread(uart_statep, buf, nbyte);
+  if (0 == rv) {
+    errno = EAGAIN;
+    rv = -1;
+  }
+  return rv;
 }
 
 int
 _write (int fd, const void * buf,  size_t nbyte)
 {
-  return iBSPACMperiphUARTwrite(uart_statep, buf, nbyte);
+  int rv = iBSPACMperiphUARTwrite(uart_statep, buf, nbyte);
+  if (0 == rv) {
+    errno = EAGAIN;
+    rv = -1;
+  }
+  return rv;
 }
 
 static void deconfigure_console ()
