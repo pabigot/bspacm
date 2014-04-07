@@ -187,13 +187,15 @@ TARGET_LDFLAGS += -L$(DEVICE_LDSCRIPT_PATH)
 
 # Extra preprocessor flags used when compiling the startup code.
 
-# STARTUP_STACK_SIZE: Explicit definition of the number of words to
-# reserve for the initial stack.
+# STARTUP_STACK_SIZE: Explicit definition of the number of bytes to
+# reserve for the initial stack.  This should almost certainly be a
+# multiple of four.
 STARTUP_STACK_SIZE ?= 0x400
 STARTUP_CPPFLAGS += -D__STACK_SIZE=$(STARTUP_STACK_SIZE)
 
-# STARTUP_HEAP_SIZE: Explicit definition of the number of words to
-# reserve for the heap.
+# STARTUP_HEAP_SIZE: Explicit definition of the number of bytes to
+# reserve for the heap.  This should almost certainly be a multiple of
+# four.
 STARTUP_HEAP_SIZE ?= 0
 STARTUP_CPPFLAGS += -D__HEAP_SIZE=$(STARTUP_HEAP_SIZE)
 
@@ -321,7 +323,7 @@ endif # utility_led.c
 # The object files that comprise BOARD_LIBBSPACM_A.
 BOARD_LIBBSPACM_OBJ=$(foreach src,$(BOARD_LIBBSPACM_SRC),$(call board_objpath,$(src)))
 
-# Rebuild LIBBSPACM if changes occur
+# Rebuild LIBBSPACM if changes occur to sources or dependencies
 DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
 
 # Only remove the LIBBSPACM object files with realclean; otherwise the
