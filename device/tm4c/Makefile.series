@@ -140,10 +140,12 @@ endif # GCC
 # NB: TI provides onewire.c, but not the header it depends on, so
 # remove it.
 $(BOARD_LIBVENDOR_A): $(filter-out %/onewire.c, $(wildcard $(TIVAWARE_ROOT)/driverlib/*.c))
-	cd $(dir $@) && \
-	$(CC) $(CPPFLAGS) $(LIBVENDOR_CPPFLAGS) $(CFLAGS) -c $^ && \
-	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
-	rm $(notdir $(^:%.c=%.o))
+	BUILDDIR="$(dir $@)/obj/tivaware" \
+	&& rm -rf "$${BUILDDIR}" \
+	&& mkdir -p "$${BUILDDIR}" \
+	&& ( cd "$${BUILDDIR}" \
+	     && $(CC) $(CPPFLAGS) $(LIBVENDOR_CPPFLAGS) $(CFLAGS) -c $^ \
+	     && $(AR) cr $@ $(notdir $(^:%.c=%$(OBJ_EXT))) )
 
 # BSPACM needs a file to map between a TM4C peripheral base address
 # and ordinal of peripheral instance.  The contents of the file is

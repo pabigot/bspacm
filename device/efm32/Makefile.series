@@ -99,10 +99,12 @@ BOARD_LIBVENDOR_A=$(BSPACM_ROOT)/board/$(BOARD)/libemlib.a
 # in the emlib src area into an archive that's stored in the board
 # directory.
 $(BOARD_LIBVENDOR_A): $(EFM32_ROOT)/emlib/src/*.c
-	cd $(dir $@) && \
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ && \
-	$(AR) cr $@ $(notdir $(^:%.c=%.o)) && \
-	rm $(notdir $(^:%.c=%.o))
+	BUILDDIR="$(dir $@)/obj/emlib" \
+	&& rm -rf "$${BUILDDIR}" \
+	&& mkdir -p "$${BUILDDIR}" \
+	&& ( cd "$${BUILDDIR}" \
+	     && $(CC) $(CPPFLAGS) $(CFLAGS) -c $^ \
+	     && $(AR) cr $@ $(notdir $(^:%.c=%$(OBJ_EXT))) )
 
 # These sources are not customizable
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/gpio_.c
