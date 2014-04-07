@@ -90,3 +90,6 @@ const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/
 #undef BSPACM_INC_PERIPHNUM
 #undef BSPACM_INC_RX_BUFFER_SIZE
 #undef BSPACM_INC_TX_BUFFER_SIZE
+
+/** Override the weak default that references no peripheral */
+hBSPACMperiphUART hBSPACMutilityCONSOLEuart = &xBSPACMdeviceTM4CperiphUART0;

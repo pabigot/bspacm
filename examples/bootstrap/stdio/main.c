@@ -15,6 +15,7 @@
 #include <bspacm/core.h>
 #include <bspacm/utility/led.h>
 #include <bspacm/periph/uart.h>
+#include <bspacm/utility/console.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -36,17 +37,20 @@ static hBSPACMperiphUART uart_statep;
 sBSPACMperiphUARTstate *
 configure_console ()
 {
-  hBSPACMperiphUART const usp = BSPACM_CONFIG_DEFAULT_UART_HANDLE;
   const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 115200 };
   hBSPACMperiphUART rv;
+
+  while (! hBSPACMutilityCONSOLEuart) {
+    /* Somebody didn't provide a uart */
+  }
 #if 1
   /* Test whether deconfigure is safe when never configured, and in
    * fact whether it works at all.  Spin here if this turns out to be
    * unsafe, so we can fix things. */
-  rv = hBSPACMperiphUARTconfigure(usp, 0);
+  rv = hBSPACMperiphUARTconfigure(hBSPACMutilityCONSOLEuart, 0);
   while (! rv);
 #endif
-  rv = hBSPACMperiphUARTconfigure(usp, &cfg);
+  rv = hBSPACMperiphUARTconfigure(hBSPACMutilityCONSOLEuart, &cfg);
   uart_statep = rv;
   return rv;
 }
