@@ -239,20 +239,45 @@ OPT_LDFLAGS =
 # be placed in board directory.
 BSPACM_LDFLAGS=-L$(BSPACM_ROOT)/board/$(BOARD)
 
-# WITH_LNOSYS: Using -lnosys provides default stubs for a bunch of
-# newlib functions that otherwise have to be provided by the
-# application framework.  nosys.specs ensures -lnosys is placed in the
-# right location relative to -lc and the object files.
-WITH_LNOSYS ?= 1
-ifneq (0,$(WITH_LNOSYS))
-BSPACM_LDFLAGS += -specs=nosys.specs
-endif # WITH_LNOSYS
+# GENERATED_ARCHIVES: Generated files, such as archives (not -llibname
+# directives), that will be referenced through LDLIBS (as opposed to
+# OBJ) but that cannot be assumed to exist a priori.  These are added
+# as an order-only dependency to the target executable, and are
+# normally built to be stored in the board directory.
+GENERATED_ARCHIVES += $(BOARD_LIBBSPACM_A)
+
+# BSPACM_LDLIBS: Library arguments required to support BSPACM.  These
+# are core libraries which have tricky interdependencies and may or
+# may not be present.
+BSPACM_LDLIBS=-lbspacm
+
+# NEWLIB_SBRK: Select the BSPACM implementation of sbrk that is
+# desired.  Reserved heap (STARTUP_HEAP_SIZE) and stack sizes
+# (STARTUP_STACK_SIZE) influence the behavior of different policies.
+# Options are:
+#  (empty string): no non-trivial _sbrk provided automatically
+#  heap: allocate from a fixed heap; see STARTUP_HEAP_SIZE
+#  fatal: any invocation of _sbrk will invoke _newlib_sbrk_error
+#  fixedstack: heap grows to bottom of fixed stack (use if active stack is in task memory)
+#  dynstack: heap and stack grow towards each other, no minimum stack reservation
+#  unlimitedstack: heap and stack grow towards each other, minimum stack size reserved
+# For specific details on the policy see the implementation in
+# src/newlib/newlib_sbrk.c.
+NEWLIB_SBRK ?= unlimitedstack
+ifneq (,$(NEWLIB_SBRK))
+# Force desired symbol to be undefined so it's located, then define
+# _sbrk to reference it.
+BSPACM_LDFLAGS += -Wl,--undefined=_bspacm_sbrk_$(NEWLIB_SBRK),--defsym=_sbrk=_bspacm_sbrk_$(NEWLIB_SBRK)
+endif # NEWLIB_SBRK
 
 # WITH_NANO: The gcc-arm-embedded toolchain offers a space-optimized
 # variant of newlib which is much smaller.
 WITH_NANO ?= 1
 ifneq (0,$(WITH_NANO))
+LIBC_FLAG=-lc_s
 OPT_LDFLAGS += -specs=nano.specs
+else # WITH_NANO
+LIBC_FLAG=-lc
 endif # WITH_NANO
 
 # Unconditionally add the flags for link-time optimization by removing
@@ -274,7 +299,7 @@ endif # WITH_WARN_ERROR
 STD_CFLAGS ?= -std=c99
 
 # STD_CXXFLAGS : CXXFLAGS to select C++ language standard conformance.
-# BSPTIVA uses C++11.
+# BSPACM assumes C++11.
 STD_CXXFLAGS ?= -std=c++11
 
 # RT_CXXFLAGS: CXXFLAGS to control runtime support facilities.  The
@@ -308,7 +333,17 @@ CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_
 ASFLAGS = $(TARGET_ASFLAGS) $(TARGET_MFLAGS)
 LDFLAGS = $(BSPACM_LDFLAGS) $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
 
-# The name of the board-specific library holding BSPACM
+# Most applications will need something from a vendor-specific
+# library, which is normally identified in Makefile.series.  Add the
+# archive to the order dependencies, and the link argument to
+# BSPACM_LDLIBS.
+ifdef BOARD_LIBVENDOR_A
+VENDOR_LDLIB=$(patsubst lib%.a,-l%,$(notdir $(BOARD_LIBVENDOR_A)))
+GENERATED_ARCHIVES += $(BOARD_LIBVENDOR_A)
+BSPACM_LDLIBS += $(VENDOR_LDLIB)
+endif # BOARD_LIBVENDOR_A
+
+# The name of the board-specific library holding BSPACM common
 # implementation.
 BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
 
@@ -326,6 +361,11 @@ ifeq (,$(filter %/utility_led.c,$(BOARD_LIBBSPACM_SRC)))
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility_led.c
 endif # utility_led.c
 
+# Newlib system components.  These are added to libbspacm so they can
+# be found or overridden as desired.
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/newlib/newlib_sbrk.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/newlib/newlib_nosys.c
+
 # The object files that comprise BOARD_LIBBSPACM_A.
 BOARD_LIBBSPACM_OBJ=$(foreach src,$(BOARD_LIBBSPACM_SRC),$(call board_objpath,$(src)))
 
@@ -336,29 +376,21 @@ DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
 # board library gets rebuilt every time we clean an application.
 REALCLEAN += $(BOARD_LIBBSPACM_OBJ)
 
-# GENERATED_ARCHIVES: Generated files, such as archives (not -llibname
-# directives), that will be referenced through LDLIBS (as opposed to
-# OBJ) but that cannot be assumed to exist a priori.  These are added
-# as an order-only dependency to the target executable.
-GENERATED_ARCHIVES += $(BOARD_LIBBSPACM_A)
-
-# GENERATED_LDLIBS: These are references to GENERATED_ARCHIVES as
-# standard library specifications.
-GENERATED_LDLIBS += -lbspacm
-
-# Most applications will need something from a vendor-specific
-# library, which is normally identified in Makefile.series.  Add the
-# archive to the order dependencies, and the link argument to LDLIBS.
-ifdef BOARD_LIBVENDOR_A
-GENERATED_ARCHIVES += $(BOARD_LIBVENDOR_A)
-GENERATED_LDLIBS += $(patsubst lib%.a,-l%,$(notdir $(BOARD_LIBVENDOR_A)))
-endif # BOARD_LIBVENDOR_A
-
 # Remove the generated archives on realclean
 REALCLEAN += $(GENERATED_ARCHIVES)
 
-# Include the generated library options when linking
-LDLIBS += $(GENERATED_LDLIBS)
+# All BSPACM libraries, in the order they must be searched.  For
+# example, the fdops library must be searched before the nosys
+# elements in the core bspacm library.  If the application doesn't use
+# one of these, that's fine; it won't be added.
+ORDERED_BSPACM_LDLIBS=$(VENDOR_LDLIB) -lbspacm
+
+# Include the generated library options when linking, in the required
+# order, and in a group so dependency cycles are resolved.
+LDLIBS += -Wl,--start-group $(LIBC_FLAG) \
+  $(foreach lib,$(ORDERED_BSPACM_LDLIBS),$(filter $(lib),$(BSPACM_LDLIBS))) \
+  $(filter-out $(ORDERED_BSPACM_LDLIBS),$(BSPACM_LDLIBS)) \
+ -Wl,--end-group
 
 # Append any extra flags pre-defined in the Makefile (AUX_*) or passed
 # on the make command line (EXT_*).
