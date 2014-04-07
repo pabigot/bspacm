@@ -93,5 +93,4 @@ void
 vBSPACMledSet_ (int idx, int mode) { }
 #endif /* BSPACM_DOXYGEN */
 
-
 #endif /* BSPACM_UTILITY_LED_H */
