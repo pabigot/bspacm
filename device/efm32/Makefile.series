@@ -105,8 +105,8 @@ $(BOARD_LIBVENDOR_A): $(EFM32_ROOT)/emlib/src/*.c
 	rm $(notdir $(^:%.c=%.o))
 
 # These sources are not customizable
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_gpio.c
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_uart.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/gpio_.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/uart_.c
 
 # Local Variables:
 # mode:makefile

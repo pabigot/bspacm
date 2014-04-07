@@ -149,11 +149,11 @@ $(BOARD_LIBVENDOR_A): $(filter-out %/onewire.c, $(wildcard $(TIVAWARE_ROOT)/driv
 # and ordinal of peripheral instance.  The contents of the file is
 # determined by the peripherals available on the device that it's
 # built for.
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/device_periphs.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/device/periphs_.c
 
 # These sources are not customizable
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_gpio.c
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_uart.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/gpio_.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/uart_.c
 
 # Local Variables:
 # mode:makefile
