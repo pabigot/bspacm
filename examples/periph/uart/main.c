@@ -33,13 +33,17 @@ void main ()
   vBSPACMledConfigure();
   BSPACM_CORE_ENABLE_CYCCNT();
   BSPACM_CORE_ENABLE_INTERRUPT();
-  usp = hBSPACMperiphUARTconfigure(usp, &cfg);
   while (usp) {
     int rc;
     unsigned int len;
     char * sp;
 
-    vBSPACMledSet(BSPACM_LED_GREEN, -1);
+    usp = hBSPACMperiphUARTconfigure(usp, &cfg);
+    if (! usp) {
+      break;
+    }
+    vBSPACMledSet(BSPACM_LED_GREEN, 11);
+    BSPACM_CORE_DELAY_CYCLES(SystemCoreClock / 2);
     rc = iBSPACMperiphUARTread(usp, rx_buffer, sizeof(rx_buffer)-1);
     if (0 < rc) {
       rx_buffer[rc] = 0;
@@ -56,7 +60,17 @@ void main ()
         sp += rc;
       }
     }
-    BSPACM_CORE_DELAY_CYCLES(SystemCoreClock);
+    /* Wait until everything we've queued for transmission has been
+     * flushed.  (Ignore RX material which we are not reading any
+     * more.) */
+    while ((eBSPACMperiphUARTfifoState_HWTX
+            | eBSPACMperiphUARTfifoState_SWTX)
+           & iBSPACMperiphUARTfifoState(usp)) {
+      /* spin */
+    }
+    usp = hBSPACMperiphUARTconfigure(usp, NULL);
+    vBSPACMledSet(BSPACM_LED_GREEN, 0);
+    BSPACM_CORE_DELAY_CYCLES(SystemCoreClock/2);
     ++ctr;
   }
   vBSPACMledSet(BSPACM_LED_RED, 1);
