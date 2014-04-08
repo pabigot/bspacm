@@ -198,14 +198,7 @@ _readlink (const char * path,
   return -1;
 }
 
-/* Full support for sbrk is in newlib/sbrk.c */
-__attribute__((__weak__))
-void *
-_sbrk (intptr_t increment)
-{
-  errno = ENOSYS;
-  return (void*)-1;
-}
+/* The weak default for sbrk is in newlib/sbrk.c */
 
 __attribute__((__weak__))
 int

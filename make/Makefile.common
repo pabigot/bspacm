@@ -320,7 +320,7 @@ BSPACM_LDLIBS=-lbspacm
 # desired.  Reserved heap (STARTUP_HEAP_SIZE) and stack sizes
 # (STARTUP_STACK_SIZE) influence the behavior of different policies.
 # Options are:
-#  (empty string): no non-trivial _sbrk provided automatically
+#  (empty string): unlimitedstack weakly provided as _sbrk
 #  heap: allocate from a fixed heap; see STARTUP_HEAP_SIZE
 #  fatal: any invocation of _sbrk will invoke _newlib_sbrk_error
 #  fixedstack: heap grows to bottom of fixed stack (use if active stack is in task memory)
@@ -328,10 +328,12 @@ BSPACM_LDLIBS=-lbspacm
 #  unlimitedstack: heap and stack grow towards each other, minimum stack size reserved
 # For specific details on the policy see the implementation in
 # src/newlib/sbrk.c.
-NEWLIB_SBRK ?= unlimitedstack
+NEWLIB_SBRK ?=
 ifneq (,$(NEWLIB_SBRK))
 # Force desired symbol to be undefined so it's located, then define
-# _sbrk to reference it.
+# _sbrk to reference it.  Note that -gc-sections will be subverted:
+# _sbrk will be in the application even if it is not explicitly
+# invoked.
 BSPACM_LDFLAGS += -Wl,--undefined=_bspacm_sbrk_$(NEWLIB_SBRK),--defsym=_sbrk=_bspacm_sbrk_$(NEWLIB_SBRK)
 endif # NEWLIB_SBRK
 

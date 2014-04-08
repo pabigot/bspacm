@@ -190,3 +190,8 @@ _bspacm_sbrk_unlimitedstack (ptrdiff_t increment)
   }
   return common_sbrk(upper_bound, increment);
 }
+
+/* Provide a weak alias that will resolve to the unlimitedstack
+ * implementation in the case where _sbrk() is requested.  This
+ * matches the nosys behavior of newlib. */
+void * _sbrk (ptrdiff_t increment) __attribute__((__weak__,__alias__("_bspacm_sbrk_unlimitedstack")));
