@@ -33,6 +33,18 @@
 #ifndef BSPACM_APPCONF_H
 #define BSPACM_APPCONF_H
 
+/* Propagate to each supported peripheral.  USART1 is the default
+ * UART, and is the only one implicitly enabled. */
+#ifndef BSPACM_CONFIG_ENABLE_USART1
+#define BSPACM_CONFIG_ENABLE_USART1 (BSPACM_CONFIG_ENABLE_UART - 0)
+#endif /* BSPACM_CONFIG_ENABLE_USART1 */
+#ifndef BSPACM_CONFIG_ENABLE_UART0
+#define BSPACM_CONFIG_ENABLE_UART0 0
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
+#ifndef BSPACM_CONFIG_ENABLE_LEUART0
+#define BSPACM_CONFIG_ENABLE_LEUART0 0
+#endif /* BSPACM_CONFIG_ENABLE_LEUART0 */
+
 /* Propagate default UART constants to USART1 */
 
 #if defined(BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE) \

@@ -18,12 +18,15 @@
 #include <em_cmu.h>
 #include <em_gpio.h>
 #include <em_usart.h>
+#include <em_leuart.h>
 
 #if (BSPACM_CONFIG_ENABLE_UART - 0)
 
 const sBSPACMdeviceEFM32pinmuxUART xBSPACMdeviceEFM32pinmuxUART[] = {
+#if (BSPACM_CONFIG_ENABLE_USART1 - 0)
   {
     .uart_base = USART1_BASE,
+    /* LOC1 */
     .tx_pinmux = {
       .port = GPIO->P + gpioPortD,
       .pin = 0,
@@ -37,9 +40,47 @@ const sBSPACMdeviceEFM32pinmuxUART xBSPACMdeviceEFM32pinmuxUART[] = {
     .rx_irqn = USART1_RX_IRQn,
     .tx_irqn = USART1_TX_IRQn,
   },
+#endif /* BSPACM_CONFIG_ENABLE_USART1 */
+#if (BSPACM_CONFIG_ENABLE_UART0 - 0)
+  {
+    .uart_base = UART0_BASE,
+    /* LOC1 */
+    .tx_pinmux = {
+      .port = GPIO->P + gpioPortE,
+      .pin = 0,
+      .mode = gpioModePushPull,
+    },
+    .rx_pinmux = {
+      .port = GPIO->P + gpioPortE,
+      .pin = 1,
+      .mode = gpioModeInput,
+    },
+    .rx_irqn = UART0_RX_IRQn,
+    .tx_irqn = UART0_TX_IRQn,
+  },
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
+#if (BSPACM_CONFIG_ENABLE_LEUART0 - 0)
+  {
+    .uart_base = LEUART0_BASE,
+    /* LOC0 */
+    .tx_pinmux = {
+      .port = GPIO->P + gpioPortD,
+      .pin = 4,
+      .mode = gpioModePushPull,
+    },
+    .rx_pinmux = {
+      .port = GPIO->P + gpioPortD,
+      .pin = 5,
+      .mode = gpioModeInput,
+    },
+    .rx_irqn = LEUART0_IRQn,
+    .tx_irqn = LEUART0_IRQn,
+  },
+#endif /* BSPACM_CONFIG_ENABLE_LEUART0 */
 };
 const uint8_t nBSPACMdeviceEFM32pinmuxUART = sizeof(xBSPACMdeviceEFM32pinmuxUART)/sizeof(*xBSPACMdeviceEFM32pinmuxUART);
 
+#if (BSPACM_CONFIG_ENABLE_USART1 - 0)
 #ifdef BSPACM_PERIPH_USART1_TX_BUFFER_SIZE
 #define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_USART1_TX_BUFFER_SIZE
 #endif /* BSPACM_PERIPH_USART1_TX_BUFFER_SIZE */
@@ -53,6 +94,23 @@ const uint8_t nBSPACMdeviceEFM32pinmuxUART = sizeof(xBSPACMdeviceEFM32pinmuxUART
 #undef BSPACM_INC_PERIPHNUM
 #undef BSPACM_INC_RX_BUFFER_SIZE
 #undef BSPACM_INC_TX_BUFFER_SIZE
+#endif /* BSPACM_CONFIG_ENABLE_USART1 */
+
+#if (BSPACM_CONFIG_ENABLE_UART0 - 0)
+#ifdef BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART0_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART0_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART0_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART0_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 0
+#define BSPACM_INC_LOCATION UART_ROUTE_LOCATION_LOC1
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_LOCATION
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
 
 /** Override the weak default that references no peripheral */
 const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceEFM32periphUSART1;
