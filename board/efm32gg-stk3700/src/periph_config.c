@@ -19,6 +19,8 @@
 #include <em_gpio.h>
 #include <em_usart.h>
 
+#if (BSPACM_CONFIG_ENABLE_UART - 0)
+
 const sBSPACMdeviceEFM32pinmuxUART xBSPACMdeviceEFM32pinmuxUART[] = {
   {
     .uart_base = USART1_BASE,
@@ -53,4 +55,6 @@ const uint8_t nBSPACMdeviceEFM32pinmuxUART = sizeof(xBSPACMdeviceEFM32pinmuxUART
 #undef BSPACM_INC_TX_BUFFER_SIZE
 
 /** Override the weak default that references no peripheral */
-hBSPACMperiphUART hBSPACMutilityCONSOLEuart = &xBSPACMdeviceEFM32periphUSART1;
+const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceEFM32periphUSART1;
+
+#endif /* BSPACM_CONFIG_ENABLE_UART */

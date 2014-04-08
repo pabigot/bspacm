@@ -323,6 +323,13 @@ int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp) {
   return usp->ops->fifo_state(usp);
 }
 
+/** The default UART device for the application/board.
+ *
+ * @weakdef A weak definition that references no valid UART is
+ * provided in the library.  Generally a board-specific default should
+ * be defined in @c periph_config.c, when #BSPACM_CONFIG_ENABLE_UART
+ * is true. */
+extern const hBSPACMperiphUART hBSPACMdefaultUART;
 
 /** Include the device-specific file that declares the objects and
  * functions that provide UART capability on the board. */

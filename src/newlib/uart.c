@@ -40,7 +40,6 @@
 #include <bspacm/core.h>
 #include <bspacm/periph/uart.h>
 #include <bspacm/newlib/fdops.h>
-#include <bspacm/utility/console.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -130,7 +129,7 @@ hBSPACMnewlibFDOPSdriverUARTbind (hBSPACMperiphUART usp)
       errno = EINVAL;
       break;
     }
-    if ((hBSPACMutilityCONSOLEuart == usp)
+    if ((hBSPACMdefaultUART == usp)
         && (0 != console_state.references)) {
       errno = EBUSY;
       break;
@@ -143,7 +142,7 @@ hBSPACMnewlibFDOPSdriverUARTbind (hBSPACMperiphUART usp)
     }
     fp->dev = usp;
     fp->ops = &xBSPACMnewlibFDOPSopsUART;
-    if (hBSPACMutilityCONSOLEuart == usp) {
+    if (hBSPACMdefaultUART == usp) {
       console_state.references = -1;
     }
   } while (0);
@@ -210,7 +209,7 @@ fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
   do {
     hBSPACMperiphUART usp;
 
-    usp = hBSPACMperiphUARTconfigure(hBSPACMutilityCONSOLEuart, &cfg);
+    usp = hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, &cfg);
     if (! usp) {
       errno = ENXIO;
       break;

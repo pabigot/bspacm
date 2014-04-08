@@ -35,6 +35,9 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+__attribute__((__weak__))
+const hBSPACMperiphUART hBSPACMdefaultUART = 0;
+
 int
 iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t count)
 {

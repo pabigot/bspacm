@@ -1,4 +1,4 @@
-/* BSPACM - config header for ek-tm4c123gxl
+/* BSPACM - config header for ek-lm4f120xl
  *
  * Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
  *
@@ -14,22 +14,26 @@
 
 /** @file
  *
- * @brief Board-specific configuration header for ek-tm4c123gxl
+ * @brief Board-specific configuration header for ek-lm4f120xl
+ *
+ * This file is included by <bspacm/config.h> which defines general
+ * defaults that are overridden/extended/used here to apply
+ * information to the board-specific configuration. Its contents
+ * should be consistent with the peripheral configuration identified
+ * in the @c PERIPH_CONFIG_SRC make variable.
  *
  * This file may be copied, modified, and installed in an
- * application-specific include directory to supersede the board
- * default configuration.  Its contents should be consistent with the
- * peripheral configuration identified in the @c PERIPH_CONFIG_SRC
- * make variable.
+ * application-specific include directory to supersede the copy in the
+ * board-specific include hierarchy.
  *
  * @homepage http://github.com/pabigot/bspacm
  * @publicdomain @cc0_doc
  */
 
-#ifndef BSPACM_CONFIG_H
-#define BSPACM_CONFIG_H
+#ifndef BSPACM_APPCONF_H
+#define BSPACM_APPCONF_H
 
-/* @cond DOXYGEN_EXCLUDE */
+/* Propagate default UART constants to UART0 */
 
 #if defined(BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE) \
   && ! defined(BSPACM_PERIPH_UART0_TX_BUFFER_SIZE)
@@ -41,6 +45,4 @@
 #define BSPACM_PERIPH_UART0_RX_BUFFER_SIZE BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE
 #endif /* Copy RX_BUFFER_SIZE */
 
-/* @endcond */
-
-#endif /* BSPACM_CONFIG_H */
+#endif /* BSPACM_APPCONF_H */

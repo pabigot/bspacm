@@ -20,6 +20,8 @@
 #include <bspacm/periph/uart.h>
 #include <bspacm/internal/utility/fifo.h>
 
+#if (BSPACM_CONFIG_ENABLE_UART - 0)
+
 /* PA 0    PB 1    PC 2    PD 3
  * PE 4    PF 5    PG 6    PH 7
  * *PJ 8   PK 9    PL 10   PM 11
@@ -51,4 +53,6 @@ const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/
 #undef BSPACM_INC_TX_BUFFER_SIZE
 
 /** Override the weak default that references no peripheral */
-hBSPACMperiphUART hBSPACMutilityCONSOLEuart = &xBSPACMdeviceTM4CperiphUART0;
+const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceTM4CperiphUART0;
+
+#endif /* BSPACM_CONFIG_ENABLE_UART */

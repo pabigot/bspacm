@@ -31,23 +31,54 @@
 
 /** @file
  *
- * @brief Generic interface to LEDs
+ * @brief Application/board-specific header
+ *
+ * This file is a wrapper that provides fallback definitions for the
+ * <bspacm/appconf.h> must exist somewhere in the application, board,
+ * or device include hieararchies.  The purpose of these two files is
+ * to control the features of the application-specific @c
+ * periph_config.c file, which provides infrastructure for generic
+ * access to resources such as UARTs and interrupt demultiplexers.
+ *
+ * Nothing in this file is permitted to affect the compilation of
+ * material that is not application-specific.
  *
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-#ifndef BSPACM_UTILITY_CONSOLE_H
-#define BSPACM_UTILITY_CONSOLE_H
+#ifndef BSPACM_CONFIG_H
+#define BSPACM_CONFIG_H
 
-#include <bspacm/core.h>
-#include <bspacm/periph/uart.h>
-
-/** The device that will be used for console operations.
+#ifndef BSPACM_CONFIG_ENABLE_UART
+/** Define to a true value to create the data structures and functions
+ * that support UART operations on the target board or for the current
+ * application.
  *
- * @weakdef A weak definition that references no valid UART is
- * provided in the library.  Generally a board-specific default should
- * be defined in @c periph_config.c */
-extern hBSPACMperiphUART hBSPACMutilityCONSOLEuart;
+ * @cppflag
+ * @defaulted */
+#define BSPACM_CONFIG_ENABLE_UART 0
+#endif /* BSPACM_CONFIG_ENABLE_UART */
 
-#endif /* BSPACM_UTILITY_CONSOLE_H */
+/** The size of the transmit buffer for the default UART device.
+ *
+ * @defaulted
+ * @dependency #BSPACM_CONFIG_ENABLE_UART
+ */
+#ifndef BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE
+#define BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE 32
+#endif /* BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE */
+
+/** The size of the receive buffer for the default UART device.
+ *
+ * @defaulted
+ * @dependency #BSPACM_CONFIG_ENABLE_UART
+ */
+#ifndef BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE
+#define BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE 8
+#endif /* BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE */
+
+/* Include the application-specific configuration data.  */
+#include <bspacm/appconf.h>
+
+#endif /* BSPACM_CONFIG_H */

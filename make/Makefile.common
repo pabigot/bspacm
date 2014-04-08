@@ -421,7 +421,6 @@ BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
 # periph/uart_.c (the device-specific interface).
 BOARD_LIBBSPACM_SRC ?=
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/periph/uart.c
-BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/utility/console.c
 
 # At this time, all boards implement their LED infrastructure at the
 # device series level, so if nobody's provided utility/led_.c add it
