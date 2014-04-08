@@ -50,7 +50,7 @@ usart_configure (sBSPACMperiphUARTstate * usp,
   const sBSPACMdeviceEFM32pinmuxUART * const pmpe = pmp + nBSPACMdeviceEFM32pinmuxUART;
   USART_TypeDef * usart;
   uint32_t usart_base;
-  const sBSPACMdeviceEFM32periphUARTdevcfg * devcfgp;
+  const sBSPACMdeviceEFM32periphUSARTdevcfg * devcfgp;
 
   if (! (usp && usp->uart)) {
     return -1;
@@ -71,7 +71,7 @@ usart_configure (sBSPACMperiphUARTstate * usp,
   }
   (void)usart_base;
   (void)pmpe;
-  devcfgp = (const sBSPACMdeviceEFM32periphUARTdevcfg *)usp->devcfg.ptr;
+  devcfgp = (const sBSPACMdeviceEFM32periphUSARTdevcfg *)usp->devcfg.ptr;
 
   /* Enable the high-frequency peripheral clock, and the clock for the
    * uart itself */

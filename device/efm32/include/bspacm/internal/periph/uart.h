@@ -39,6 +39,16 @@
  * Declares the public data types, objects, and functions that are
  * required to make use of a UART peripheral.
  *
+ * There are three matching functional capabilities on EFM32: USART,
+ * UART, and LEUART.  Any device that has at least one UART also has
+ * at least one USART.  The USART functionality is a superset of UART
+ * functionality, and the register map is identical except for
+ * unimplemented functionality in UART.  We shall share much of the
+ * USART implementation with the UART, and shall use the USART
+ * designation for shared data structures and functions.  Individual
+ * peripherals will be named uniquely and correctly representing their
+ * module type.
+ *
  * @warning Peripheral instance objects such as
  * #xBSPACMdeviceEFM32periphUSART0 will exist only if they are
  * supported on the device being used and a definition is provided in
@@ -49,26 +59,22 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-/** Device-specific information for an EFM32 UART.
+/** Device-specific information for an EFM32 USART/UART instances.
  *
  * Contains the information that cannot be easily deduced from the
  * peripheral base address. */
-typedef struct sBSPACMdeviceEFM32periphUARTdevcfg {
+typedef struct sBSPACMdeviceEFM32periphUSARTdevcfg {
   uint32_t clock;           /**< The peripheral clock configuration */
   int16_t tx_irqn;          /**< Transmit interrupt offset in NVIC */
   int16_t rx_irqn;          /**< Receive interrupt offset in NVIC */
-  uint32_t location;        /**< Routing selection for UART */
-} sBSPACMdeviceEFM32periphUARTdevcfg;
+  uint32_t location;        /**< Routing selection for USART */
+} sBSPACMdeviceEFM32periphUSARTdevcfg;
 
-/** The operations table for UART devices.
+/** The operations table for USART/UART devices.
  *
  * This is used to initialize sBSPACMperiphUARTstate::ops.
  *
- * @note EFM32 uses UART and USART.  Any device that has at least one
- * UART also has at least one USART, the USART functionality is a
- * superset of UART functionality, and the register map is identical
- * except for unimplemented functionality in UART.  We shall refer to
- * the device as USART.*/
+*/
 extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations;
 
 /** The IRQHandler for UART RX interrupts.

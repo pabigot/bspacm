@@ -65,7 +65,8 @@
 
 /* @cond DOXYGEN_EXCLUDE */
 
-static sBSPACMdeviceEFM32periphUARTdevcfg BSPACM_INC_CATENATE3(xBSPACMdeviceEFM32periphUART,BSPACM_INC_PERIPHNUM,devcfg) = {
+/* NB: Using compatible USART device configuration structure */
+static sBSPACMdeviceEFM32periphUSARTdevcfg BSPACM_INC_CATENATE3(xBSPACMdeviceEFM32periphUART,BSPACM_INC_PERIPHNUM,devcfg) = {
   .clock = BSPACM_INC_CATENATE(cmuClock_UART,BSPACM_INC_PERIPHNUM),
   .tx_irqn = BSPACM_INC_CATENATE3(UART,BSPACM_INC_PERIPHNUM,_TX_IRQn),
   .rx_irqn = BSPACM_INC_CATENATE3(UART,BSPACM_INC_PERIPHNUM,_RX_IRQn),
