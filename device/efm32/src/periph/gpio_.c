@@ -60,10 +60,10 @@ void vBSPACMdeviceEFM32pinmuxConfigure (const sBSPACMdeviceEFM32pinmux * cfgp,
   }
   if (8 > cfgp->pin) {
     const unsigned int shift = 0x1F & (4 * cfgp->pin);
-    port->MODEL = (port->MODEL & (~0x0F << shift)) | (mode << shift);
+    port->MODEL = (port->MODEL & ~(0x0F << shift)) | (mode << shift);
   } else {
     const unsigned int shift = 0x1F & (4 * (cfgp->pin - 8));
-    port->MODEH = (port->MODEH & (~0x0F << shift)) | (mode << shift);
+    port->MODEH = (port->MODEH & ~(~0x0F << shift)) | (mode << shift);
   }
   if (doutp && ! mode) {
     *doutp = bit;
