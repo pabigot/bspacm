@@ -104,12 +104,14 @@ uart_configure (sBSPACMperiphUARTstate * usp,
     SYSCTL->RCGCGPIO |= rcgcgpio;
     SYSCTL->RCGCUART |= (SYSCTL_RCGCUART_R0 << uart_idx);
   } else {
-    /* Disable the UART, disable its interrupt vector, then turn off its clock. */
+    /* Disable and clear interrupts at the NVIC, then disable the
+     * UART if it's currently enabled. */
+    NVIC_DisableIRQ(pmp->irqn);
+    NVIC_ClearPendingIRQ(pmp->irqn);
     if (SYSCTL->RCGCUART & (SYSCTL_RCGCUART_R0 << uart_idx)) {
       uart->CTL = 0;
       SYSCTL->RCGCUART &= ~(SYSCTL_RCGCUART_R0 << uart_idx);
     }
-    NVIC->ISER[pmp->irqn / 32] &= ~(1U << (pmp->irqn % 32));
   }
 
   /* Enable or disable GPIO pins used by UART, as long as the GPIO
@@ -153,8 +155,11 @@ uart_configure (sBSPACMperiphUARTstate * usp,
     /* 8-bit, no parity, one stop bit, enable FIFOs*/
     uart->LCRH = UART_LCRH_WLEN_8 | UART_LCRH_FEN;
 
-    /* Enable the UART */
-    NVIC->ISER[pmp->irqn / 32] |= (1U << (pmp->irqn % 32));
+    /* Clear all interrupts at the module and at the NVIC; enable at
+     * the NVIC, then enable the UART */
+    uart->ICR = uart->RIS;
+    NVIC_ClearPendingIRQ(pmp->irqn);
+    NVIC_EnableIRQ(pmp->irqn);
     uart->IM = UART_IM_RXIM | UART_IM_RTIM;
     uart->CTL = UART_CTL_UARTEN | UART_CTL_TXE | UART_CTL_RXE;
   }

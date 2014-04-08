@@ -73,11 +73,18 @@ usart_configure (sBSPACMperiphUARTstate * usp,
   (void)pmpe;
   devcfgp = (const sBSPACMdeviceEFM32periphUSARTdevcfg *)usp->devcfg.ptr;
 
-  /* Enable the high-frequency peripheral clock, and the clock for the
-   * uart itself */
+  /* If enabling configuration, enable the high-frequency peripheral
+   * clock and the clock for the uart itself.
+   *
+   * If disabling configuration, disable the interrupts. */
   if (cfgp) {
     CMU_ClockEnable(cmuClock_HFPER, true);
     CMU_ClockEnable(devcfgp->clock, true);
+  } else {
+    NVIC_DisableIRQ(devcfgp->rx_irqn);
+    NVIC_DisableIRQ(devcfgp->tx_irqn);
+    NVIC_ClearPendingIRQ(devcfgp->rx_irqn);
+    NVIC_ClearPendingIRQ(devcfgp->tx_irqn);
   }
   USART_Reset(usart);
   fifo_reset(usp->rx_fifo);
@@ -94,6 +101,9 @@ usart_configure (sBSPACMperiphUARTstate * usp,
     usart->CTRL |= USART_CTRL_TXBIL_HALFFULL;
     USART_BaudrateAsyncSet(usart, 0, baud_rate, usartOVS16);
     CMU_ClockEnable(cmuClock_GPIO, true);
+  } else {
+    /* Done with device; turn it off */
+    CMU_ClockEnable(devcfgp->clock, false);
   }
 
   /* Enable or disable UART pins. To avoid false start, when enabling
@@ -118,8 +128,6 @@ usart_configure (sBSPACMperiphUARTstate * usp,
 
     /* Configuration complete; enable the USART */
     usart->CMD = USART_CMD_RXEN | USART_CMD_TXEN;
-  } else {
-    CMU_ClockEnable(devcfgp->clock, false);
   }
 
   return 0;
