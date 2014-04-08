@@ -234,13 +234,18 @@ OPT_CFLAGS = -ggdb -Os
 # for garbage collection override after optional flags added.
 OPT_LDFLAGS =
 
+# BSPACM_LDFLAGS: LDFLAGS required to support BSPACM.  The expectation
+# is that any shared libraries that are not application-specific will
+# be placed in board directory.
+BSPACM_LDFLAGS=-L$(BSPACM_ROOT)/board/$(BOARD)
+
 # WITH_LNOSYS: Using -lnosys provides default stubs for a bunch of
 # newlib functions that otherwise have to be provided by the
 # application framework.  nosys.specs ensures -lnosys is placed in the
 # right location relative to -lc and the object files.
 WITH_LNOSYS ?= 1
 ifneq (0,$(WITH_LNOSYS))
-OPT_LDFLAGS += -specs=nosys.specs
+BSPACM_LDFLAGS += -specs=nosys.specs
 endif # WITH_LNOSYS
 
 # WITH_NANO: The gcc-arm-embedded toolchain offers a space-optimized
@@ -301,7 +306,7 @@ CPPFLAGS += -DBSPACM_CORE_TOOLCHAIN_$(TOOLCHAIN)
 CFLAGS = $(WARN_CFLAGS) $(STD_CFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
 CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
 ASFLAGS = $(TARGET_ASFLAGS) $(TARGET_MFLAGS)
-LDFLAGS = $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
+LDFLAGS = $(BSPACM_LDFLAGS) $(OPT_LDFLAGS) $(TARGET_LDFLAGS) $(TARGET_MFLAGS)
 
 # The name of the board-specific library holding BSPACM
 # implementation.
@@ -331,19 +336,28 @@ DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
 # board library gets rebuilt every time we clean an application.
 REALCLEAN += $(BOARD_LIBBSPACM_OBJ)
 
-# GENERATED_LDLIBS: Generated files, such as archives (not -llibname
-# directives), that must be in LDLIBS (as opposed to OBJ) but that
-# cannot be assumed to exist a priori.  These are added as an
-# order-only dependency to the target executable.
-GENERATED_LDLIBS += $(BOARD_LIBBSPACM_A)
+# GENERATED_ARCHIVES: Generated files, such as archives (not -llibname
+# directives), that will be referenced through LDLIBS (as opposed to
+# OBJ) but that cannot be assumed to exist a priori.  These are added
+# as an order-only dependency to the target executable.
+GENERATED_ARCHIVES += $(BOARD_LIBBSPACM_A)
+
+# GENERATED_LDLIBS: These are references to GENERATED_ARCHIVES as
+# standard library specifications.
+GENERATED_LDLIBS += -lbspacm
 
 # Most applications will need something from a vendor-specific
-# library, which is normally identified in Makefile.series.
+# library, which is normally identified in Makefile.series.  Add the
+# archive to the order dependencies, and the link argument to LDLIBS.
 ifdef BOARD_LIBVENDOR_A
-GENERATED_LDLIBS += $(BOARD_LIBVENDOR_A)
+GENERATED_ARCHIVES += $(BOARD_LIBVENDOR_A)
+GENERATED_LDLIBS += $(patsubst lib%.a,-l%,$(notdir $(BOARD_LIBVENDOR_A)))
 endif # BOARD_LIBVENDOR_A
 
-REALCLEAN += $(GENERATED_LDLIBS)
+# Remove the generated archives on realclean
+REALCLEAN += $(GENERATED_ARCHIVES)
+
+# Include the generated library options when linking
 LDLIBS += $(GENERATED_LDLIBS)
 
 # Append any extra flags pre-defined in the Makefile (AUX_*) or passed
@@ -435,8 +449,8 @@ delayed_default: $(AOUT.axf)
 
 # Build the executable; make sure the subset of LDLIBS that's the
 # responsibility of the BSPACM infrastructure is built first.
-$(AOUT.axf): $(OBJ) | $(GENERATED_LDLIBS)
-	$(LINKER) -o $@ $(LDFLAGS) $(OBJ) $(LDLIBS)
+$(AOUT.axf): $(OBJ) | $(GENERATED_ARCHIVES)
+	$(LINKER) -v -o $@ $(LDFLAGS) $(OBJ) $(LDLIBS)
 	$(SIZE) $@
 
 # AOUT.bin: The name of the application image as binary
