@@ -84,10 +84,15 @@ usart_configure (sBSPACMperiphUARTstate * usp,
   fifo_reset(usp->tx_fifo);
 
   if (cfgp) {
-    /* Configure the USART for 115200 8N1.  Set TXBL at half-full. */
+    unsigned int baud_rate = cfgp->speed_baud;
+
+    if (0 == baud_rate) {
+      baud_rate = 115200;
+    }
+    /* Configure the USART for 8N1.  Set TXBL at half-full. */
     usart->FRAME = USART_FRAME_DATABITS_EIGHT | USART_FRAME_PARITY_NONE | USART_FRAME_STOPBITS_ONE;
     usart->CTRL |= USART_CTRL_TXBIL_HALFFULL;
-    USART_BaudrateAsyncSet(usart, 0, cfgp->speed_baud, usartOVS16);
+    USART_BaudrateAsyncSet(usart, 0, baud_rate, usartOVS16);
     CMU_ClockEnable(cmuClock_GPIO, true);
   }
 

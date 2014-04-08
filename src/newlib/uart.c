@@ -180,7 +180,7 @@ fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
                                  int flags)
 {
   sBSPACMnewlibFDOPSfile * fp = NULL;
-  const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 115200 };
+  const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 0 };
   static const char dev_name[] = "/dev/console";
 
 #if 1

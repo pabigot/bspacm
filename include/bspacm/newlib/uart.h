@@ -65,7 +65,11 @@
  * something went wrong. */
 hBSPACMnewlibFDOPSfile hBSPACMnewlibFDOPSdriverUARTbind (hBSPACMperiphUART usp);
 
-/** A driver function to support @c /dev/console as a 115200 8N1 UART.
+/** A driver function to support @c /dev/console as a UART.
+ *
+ * The UART will be configured at a peripheral-specific speed.  This
+ * should be 115200 8N1 for most UARTs, but if a low-speed peripheral
+ * is selected it may be 9600 8N1.
  *
  * This should be placed into #xBSPACMnewlibFDOPSdriver if the BSPACM
  * board default UART is to be recognized as the console device for

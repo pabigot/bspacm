@@ -135,9 +135,13 @@ uart_configure (sBSPACMperiphUARTstate * usp,
 
   /* Configure UART as requested and bring it online. */
   if (cfgp) {
-    const uint32_t baud_rate = cfgp->speed_baud;
+    uint32_t baud_rate = cfgp->speed_baud;
     uint32_t uart_clk_Hz = SystemCoreClock;
     uint32_t baud_rate_f64;
+
+    if (0 == baud_rate) {
+      baud_rate = 115200;
+    }
 
     /* System clock divided by the UART divisor (16) and the baud
      * rate, scaled to represent in units of 1/64 bit (6-bit

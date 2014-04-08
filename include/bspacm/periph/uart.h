@@ -118,7 +118,8 @@ typedef sBSPACMperiphUARTstate * hBSPACMperiphUART;
  * @note At the moment, configuration options are sparse. */
 typedef struct sBSPACMperiphUARTconfiguration {
   /** The speed at which the UART should run, in baud (symbols to
-   * second; think 9600, 38400, 115200, etc.) */
+   * second; think 9600, 38400, 115200, etc.)  If zero, a
+   * peripheral-specific default speed will be selected. */
   unsigned int speed_baud;
 } sBSPACMperiphUARTconfiguration;
 
