@@ -40,6 +40,7 @@
 #include <em_cmu.h>
 #include <em_gpio.h>
 #include <em_usart.h>
+#include <em_leuart.h>
 
 static
 int
@@ -69,8 +70,6 @@ usart_configure (sBSPACMperiphUARTstate * usp,
   if (! (pmp->rx_pinmux.port && pmp->tx_pinmux.port)) {
     return -1;
   }
-  (void)usart_base;
-  (void)pmpe;
   devcfgp = (const sBSPACMdeviceEFM32periphUSARTdevcfg *)usp->devcfg.ptr;
 
   /* If enabling configuration, enable the high-frequency peripheral
@@ -186,6 +185,149 @@ const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations = {
   .fifo_state = usart_fifo_state,
 };
 
+static int
+leuart_configure (sBSPACMperiphUARTstate * usp,
+                  const sBSPACMperiphUARTconfiguration * cfgp)
+{
+  const sBSPACMdeviceEFM32pinmuxUART * pmp = xBSPACMdeviceEFM32pinmuxUART;
+  const sBSPACMdeviceEFM32pinmuxUART * const pmpe = pmp + nBSPACMdeviceEFM32pinmuxUART;
+  LEUART_TypeDef * leuart;
+  uint32_t leuart_base;
+  const sBSPACMdeviceEFM32periphLEUARTdevcfg * devcfgp;
+
+  if (! (usp && usp->uart)) {
+    return -1;
+  }
+  leuart = (LEUART_TypeDef *)usp->uart;
+  leuart_base = (uint32_t)usp->uart;
+
+  /* Find the pinmux configuration for the selected UART.  Fail if
+   * there isn't one, or if it doesn't provide at least RX and TX
+   * pins. */
+  while ((pmp < pmpe) && (pmp->uart_base != leuart_base)) {
+    ++pmp;
+  }
+  if (pmp >= pmpe) {
+    return -1;
+  }
+  if (! (pmp->rx_pinmux.port && pmp->tx_pinmux.port)) {
+    return -1;
+  }
+  devcfgp = (const sBSPACMdeviceEFM32periphLEUARTdevcfg *)usp->devcfg.ptr;
+
+  /* Configure LFB's source, enable the low-energy peripheral clock, and the clock for the
+   * leuart itself */
+  if (cfgp) {
+    /* LFB is required for LEUART.  Power-up is LFRCO which doesn't
+     * work so good; if we were told a source to use, override
+     * whatever was there. */
+    if (devcfgp->lfbsel) {
+      CMU_ClockSelectSet(cmuClock_LFB, devcfgp->lfbsel);
+    }
+    CMU_ClockEnable(cmuClock_CORELE, true);
+    CMU_ClockEnable(devcfgp->clock, true);
+  }
+  LEUART_Reset(leuart);
+  leuart->FREEZE = LEUART_FREEZE_REGFREEZE;
+  leuart->CMD = LEUART_CMD_RXDIS | LEUART_CMD_TXDIS;
+  fifo_reset(usp->rx_fifo);
+  fifo_reset(usp->tx_fifo);
+
+  if (cfgp) {
+    unsigned int speed_baud = cfgp->speed_baud;
+    if (0 == speed_baud) {
+      speed_baud = 9600;
+    }
+    /* Configure the LEUART for rate at 8N1. */
+    leuart->CTRL = LEUART_CTRL_DATABITS_EIGHT | LEUART_CTRL_PARITY_NONE | LEUART_CTRL_STOPBITS_ONE;
+    LEUART_BaudrateSet(leuart, 0, speed_baud);
+    CMU_ClockEnable(cmuClock_GPIO, true);
+  }
+
+  /* Enable or disable UART pins. To avoid false start, when enabling
+   * configure TX as high.  This relies on a comment in the EMLIB code
+   * that manipulating registers of disabled modules has no effect
+   * (unlike TM4C where it causes a HardFault).  We'll see. */
+  vBSPACMdeviceEFM32pinmuxConfigure(&pmp->rx_pinmux, !!cfgp, 1);
+  vBSPACMdeviceEFM32pinmuxConfigure(&pmp->tx_pinmux, !!cfgp, 0);
+
+  if (cfgp) {
+    leuart->ROUTE = LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN | devcfgp->location;
+
+    /* Clear and enable RX interrupts at the device.  Device TX
+     * interrupts are enabled at the peripheral when there's something
+     * to transmit.  Clear then enable interrupts at the NVIC. */
+    leuart->IFC = _LEUART_IF_MASK;
+    leuart->IEN = LEUART_IF_RXDATAV;
+    NVIC_ClearPendingIRQ(devcfgp->irqn);
+    NVIC_EnableIRQ(devcfgp->irqn);
+
+    /* Configuration complete; enable the LEUART, and release the
+     * registers to synchronize. */
+    leuart->CMD = LEUART_CMD_RXEN | LEUART_CMD_TXEN;
+    leuart->FREEZE = 0;
+  } else {
+    CMU_ClockEnable(devcfgp->clock, false);
+  }
+  return 0;
+}
+
+static int
+leuart_hw_transmit (sBSPACMperiphUARTstate * usp,
+                    uint8_t v)
+{
+  LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
+
+  if (! (LEUART_STATUS_TXBL & leuart->STATUS)) {
+    return -1;
+  }
+  while (LEUART_SYNCBUSY_TXDATA & leuart->SYNCBUSY) {
+    /* wait */
+  }
+  leuart->TXDATA = v;
+  usp->tx_count += 1;
+  return v;
+}
+
+static void
+leuart_hw_txien (sBSPACMperiphUARTstate * usp,
+                int enablep)
+{
+  LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
+  if (enablep) {
+    leuart->IEN |= LEUART_IF_TXBL;
+  } else {
+    leuart->IEN &= ~LEUART_IF_TXBL;
+  }
+}
+
+static int
+leuart_fifo_state (sBSPACMperiphUARTstate * usp)
+{
+  LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
+  int rv = 0;
+  if (! (leuart->STATUS & LEUART_STATUS_TXC)) {
+    rv |= eBSPACMperiphUARTfifoState_HWTX;
+  }
+  if (leuart->STATUS & LEUART_STATUS_RXDATAV) {
+    rv |= eBSPACMperiphUARTfifoState_HWRX;
+  }
+  if (! fifo_empty(usp->tx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWTX;
+  }
+  if (! fifo_empty(usp->rx_fifo)) {
+    rv |= eBSPACMperiphUARTfifoState_SWRX;
+  }
+  return rv;
+}
+
+const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphLEUARToperations = {
+  .configure = leuart_configure,
+  .hw_transmit = leuart_hw_transmit,
+  .hw_txien = leuart_hw_txien,
+  .fifo_state = leuart_fifo_state,
+};
+
 void
 vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const usp)
 {
@@ -229,6 +371,44 @@ vBSPACMdeviceEFM32periphUSARTtxirqhandler(sBSPACMperiphUARTstate * const usp)
     }
     if (fifo_empty(usp->tx_fifo)) {
       usart->IEN &= ~USART_IF_TXBL;
+    }
+  }
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+}
+
+void
+vBSPACMdeviceEFM32periphLEUARTirqhandler (sBSPACMperiphUARTstate * const usp)
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
+
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  if (LEUART_STATUS_RXDATAV & leuart->STATUS) {
+    while (LEUART_STATUS_RXDATAV & leuart->STATUS) {
+      uint16_t rxdatax = leuart->RXDATAX;
+      if (0 == ((LEUART_RXDATAX_PERR | LEUART_RXDATAX_FERR) & rxdatax)) {
+        if (0 > fifo_push_head(usp->rx_fifo, leuart->RXDATA)) {
+          usp->rx_dropped_errors += 1;
+        }
+        usp->rx_count += 1;
+      } else {
+        if (LEUART_RXDATAX_PERR & rxdatax) {
+          usp->rx_parity_errors += 1;
+        }
+        if (LEUART_RXDATAX_FERR & rxdatax) {
+          usp->rx_frame_errors += 1;
+        }
+      }
+    };
+  }
+  if (LEUART_STATUS_TXBL & leuart->STATUS) {
+    while ((LEUART_STATUS_TXBL & leuart->STATUS)
+           && (! fifo_empty(usp->tx_fifo))) {
+      leuart->TXDATA = fifo_pop_tail(usp->tx_fifo, 0);
+      usp->tx_count += 1;
+    }
+    if (fifo_empty(usp->tx_fifo)) {
+      leuart->IEN &= ~LEUART_IF_TXBL;
     }
   }
   BSPACM_CORE_REENABLE_INTERRUPT(istate);

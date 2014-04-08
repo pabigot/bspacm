@@ -34,8 +34,6 @@ const sBSPACMdeviceEFM32pinmuxUART xBSPACMdeviceEFM32pinmuxUART[] = {
       .pin = 1,
       .mode = gpioModeInput,
     },
-    .rx_irqn = USART1_RX_IRQn,
-    .tx_irqn = USART1_TX_IRQn,
   },
 };
 const uint8_t nBSPACMdeviceEFM32pinmuxUART = sizeof(xBSPACMdeviceEFM32pinmuxUART)/sizeof(*xBSPACMdeviceEFM32pinmuxUART);

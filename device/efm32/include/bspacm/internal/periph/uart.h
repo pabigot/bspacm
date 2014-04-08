@@ -59,7 +59,7 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-/** Device-specific information for an EFM32 USART/UART instances.
+/** Device-specific information for an EFM32 USART/UART instance.
  *
  * Contains the information that cannot be easily deduced from the
  * peripheral base address. */
@@ -70,24 +70,40 @@ typedef struct sBSPACMdeviceEFM32periphUSARTdevcfg {
   uint32_t location;        /**< Routing selection for USART */
 } sBSPACMdeviceEFM32periphUSARTdevcfg;
 
-/** The operations table for USART/UART devices.
+/** Device-specific information for an EFM32 LEUART instance.
  *
- * This is used to initialize sBSPACMperiphUARTstate::ops.
- *
-*/
+ * Contains the information that cannot be easily deduced from the
+ * peripheral base address. */
+typedef struct sBSPACMdeviceEFM32periphLEUARTdevcfg {
+  uint32_t clock;           /**< The peripheral clock configuration */
+  uint16_t location;        /**< Routing selection for LEART */
+  uint8_t irqn;             /**< Interrupt offset in NVIC */
+  uint8_t lfbsel;           /**< CMU_Select_TypeDef for LFB if not already configured */
+} sBSPACMdeviceEFM32periphLEUARTdevcfg;
+
+/** The operations table for USART/UART devices. */
 extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations;
 
-/** The IRQHandler for UART RX interrupts.
+/** The operations table for LEUART devices. */
+extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphLEUARToperations;
+
+/** The IRQHandler for USART/UART RX interrupts.
  *
  * The handler in the vector table invokes this with the appropriate
  * state reference. */
 void vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const usp);
 
-/** The IRQHandler for UART TX interrupts.
+/** The IRQHandler for USART/UART TX interrupts.
  *
  * The handler in the vector table invokes this with the appropriate
  * state reference. */
 void vBSPACMdeviceEFM32periphUSARTtxirqhandler (sBSPACMperiphUARTstate * const usp);
+
+/** The IRQHandler for LEUART interrupts.
+ *
+ * The handler in the vector table invokes this with the appropriate
+ * state reference. */
+void vBSPACMdeviceEFM32periphLEUARTirqhandler (sBSPACMperiphUARTstate * const usp);
 
 /** State for USART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUSART0;

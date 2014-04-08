@@ -115,12 +115,6 @@ typedef struct sBSPACMdeviceEFM32pinmuxUART {
   /** The port pin mux configuration for the UnCTS signal.  Leave as
    * zeros if not configured. */
   sBSPACMdeviceEFM32pinmux cts_pinmux;
-
-  /** The RX_IRQ number corresponding to #uart_base. */
-  int16_t rx_irqn;
-
-  /** The TX_IRQ number corresponding to #uart_base. */
-  int16_t tx_irqn;
 } sBSPACMdeviceEFM32pinmuxUART;
 
 /** Function to configure a GPIO according to @p *cfgp and provide an
