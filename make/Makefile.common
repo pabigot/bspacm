@@ -226,16 +226,13 @@ PERIPH_CONFIG_SRC ?= $(BSPACM_ROOT)/board/$(BOARD)/src/periph_config.c
 STARTUP_CPPFLAGS += -D__STARTUP_USE_UNIQUE_DEFAULT_HANDLER
 
 # OPT_CFLAGS: CFLAGS related to optimization and debugging.  The
-# default enables debugging and optimizes for size, and puts each
-# function and data object in its own section so it can be discarded
-# at link time if not needed.  Also review OPT_LDFLAGS.
-OPT_CFLAGS ?= -ggdb -Os -ffunction-sections -fdata-sections
+# default enables debugging and optimizes for size.  Look for garbage
+# collection override later and review OPT_LDFLAGS.
+OPT_CFLAGS = -ggdb -Os
 
-# OPT_LDFLAGS: LDFLAGS related to optimization and debugging.  THe
-# default value enables removal of unreferenced sections during
-# non-relocatable link.
-ifndef OPT_LDFLAGS
-OPT_LDFLAGS = -Wl,-gc-sections
+# OPT_LDFLAGS: LDFLAGS related to optimization and debugging.  Look
+# for garbage collection override after optional flags added.
+OPT_LDFLAGS =
 
 # WITH_LNOSYS: Using -lnosys provides default stubs for a bunch of
 # newlib functions that otherwise have to be provided by the
@@ -252,7 +249,11 @@ WITH_NANO ?= 1
 ifneq (0,$(WITH_NANO))
 OPT_LDFLAGS += -specs=nano.specs
 endif # WITH_NANO
-endif # OPT_LDFLAGS
+
+# Unconditionally add the flags for link-time optimization by removing
+# unreferenced code and data.
+override OPT_CFLAGS += -ffunction-sections -fdata-sections
+override OPT_LDFLAGS += -Wl,-gc-sections
 
 # WARN_CFLAGS: CFLAGS that control warnings
 WARN_CFLAGS ?= -Wall -Wno-main
