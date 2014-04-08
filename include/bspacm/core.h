@@ -111,6 +111,43 @@
     }                                             \
   } while (0)
 
+/** Functional macro to enable the cycle-counting capability of the
+ * core Data Watchpoint and Trace unit.
+ *
+ * Note that this functionality is optional, so may not be present on
+ * your device. */
+#define BSPACM_CORE_ENABLE_CYCCNT() do {              \
+    if (! (DWT_CTRL_NOCYCCNT_Msk & DWT->CTRL)) {      \
+      CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; \
+      DWT->CYCCNT = 0;                                \
+      DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            \
+    }                                                 \
+  } while (0)
+
+/** Functional macro to disable the cycle-counting capability of the
+ * core Data Watchpoint and Trace unit. */
+#define BSPACM_CORE_DISABLE_CYCCNT() do {              \
+    if (! (DWT_CTRL_NOCYCCNT_Msk & DWT->CTRL)) {       \
+      DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;            \
+      CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; \
+    }                                                  \
+  } while (0)
+
+/** Returns the current value of the cycle counter.
+ * @see BSPACM_CORE_ENABLE_CYCCNT() */
+#define BSPACM_CORE_CYCCNT() DWT->CYCCNT
+
+/** Delay for a specified number of cycles.
+ *
+ * This does not attempt to account for the overhead of the loop. */
+#define BSPACM_CORE_DELAY_CYCLES(cycles_) do {  \
+    uint32_t const delta = (cycles_);           \
+    uint32_t const cc0 = DWT->CYCCNT;           \
+    while ((DWT->CYCCNT - cc0) < delta) {       \
+      /* spin */                                \
+    }                                           \
+  } while (0)
+
 /** Mark a function to be inlined.
  *
  * Most toolchains support this feature, but the spelling of the
