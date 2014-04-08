@@ -447,6 +447,28 @@ DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
 # board library gets rebuilt every time we clean an application.
 REALCLEAN += $(BOARD_LIBBSPACM_OBJ)
 
+# The name of the board-specific library holding BSPACM
+# file-descriptor operations components.
+BOARD_LIBBSPACM_FDOPS_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm-fdops.a
+BOARD_LIBBSPACM_FDOPS_SRC += $(BSPACM_ROOT)/src/newlib/fdops.c
+BOARD_LIBBSPACM_FDOPS_SRC += $(BSPACM_ROOT)/src/newlib/uart.c
+CREATED_OBJ :=
+$(foreach src,$(BOARD_LIBBSPACM_FDOPS_SRC),$(eval $(call generate_makescript,$(call lib_objpath,fdops,$(src)),$(src))))
+BOARD_LIBBSPACM_FDOPS_OBJ := $(CREATED_OBJ)
+
+# Rebuild LIBBSPACM_FDOPS_A if changes occur to sources or dependencies
+DEP += $(BOARD_LIBBSPACM_FDOPS_OBJ:%$(OBJ_EXT)=%.d)
+
+# Only remove the LIBBSPACM object files with realclean; otherwise the
+# board library gets rebuilt every time we clean an application.
+REALCLEAN += $(BOARD_LIBBSPACM_FDOPS_OBJ)
+
+WITH_FDOPS ?= 0
+ifneq (0,$(WITH_FDOPS))
+GENERATED_ARCHIVES += $(BOARD_LIBBSPACM_FDOPS_A)
+BSPACM_LDLIBS += -lbspacm-fdops
+endif # WITH_FDOPS
+
 # Remove the generated archives on realclean
 REALCLEAN += $(GENERATED_ARCHIVES)
 
@@ -454,7 +476,7 @@ REALCLEAN += $(GENERATED_ARCHIVES)
 # example, the fdops library must be searched before the nosys
 # elements in the core bspacm library.  If the application doesn't use
 # one of these, that's fine; it won't be added.
-ORDERED_BSPACM_LDLIBS=$(VENDOR_LDLIB) -lbspacm
+ORDERED_BSPACM_LDLIBS=$(VENDOR_LDLIB) -lbspacm-fdops -lbspacm
 
 # Include the generated library options when linking, in the required
 # order, and in a group so dependency cycles are resolved.
@@ -588,10 +610,10 @@ realclean: clean
 install: $(AOUT.bin)
 	$(call DO_FLASH_IMAGE,$^)
 
-# Don't bother with dependencies or trickiness: just whack everything
-# in the emlib src area into an archive that's stored in the board
-# directory.
 $(BOARD_LIBBSPACM_A): $(BOARD_LIBBSPACM_OBJ)
+	$(AR) cr $@ $^
+
+$(BOARD_LIBBSPACM_FDOPS_A): $(BOARD_LIBBSPACM_FDOPS_OBJ)
 	$(AR) cr $@ $^
 
 # Dummy rule to manually build libbspacm for the current board
