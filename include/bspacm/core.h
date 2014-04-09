@@ -111,11 +111,22 @@
     }                                             \
   } while (0)
 
+/** Defined to true value if cycle-counting is supported on the
+ * architecture.  This is false on a Cortex-M0+ device. */
+#if defined(DWT_CTRL_NOCYCCNT_Msk)
+#define BSPACM_CORE_SUPPORTS_CYCCNT 1
+#else /* DWT_CTRL_NOCYCCNT_Msk */
+#define BSPACM_CORE_SUPPORTS_CYCCNT 0
+#endif /* DWT_CTRL_NOCYCCNT_Msk */
+
 /** Functional macro to enable the cycle-counting capability of the
  * core Data Watchpoint and Trace unit.
  *
  * Note that this functionality is optional, so may not be present on
- * your device. */
+ * your device.  This is a no-op in that case.
+ *
+ * @depends #BSPACM_CORE_SUPPORTS_CYCCNT */
+#if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_ENABLE_CYCCNT() do {              \
     if (! (DWT_CTRL_NOCYCCNT_Msk & DWT->CTRL)) {      \
       CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; \
@@ -123,23 +134,44 @@
       DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            \
     }                                                 \
   } while (0)
+#else /* BSPACM_CORE_SUPPORTS_CYCCNT */
+#define BSPACM_CORE_ENABLE_CYCCNT() do { } while (0)
+#endif /* BSPACM_CORE_SUPPORTS_CYCCNT */
 
 /** Functional macro to disable the cycle-counting capability of the
  * core Data Watchpoint and Trace unit. */
+#if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_DISABLE_CYCCNT() do {              \
     if (! (DWT_CTRL_NOCYCCNT_Msk & DWT->CTRL)) {       \
       DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;            \
       CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; \
     }                                                  \
   } while (0)
+#else /* BSPACM_CORE_SUPPORTS_CYCCNT */
+#define BSPACM_CORE_DISABLE_CYCCNT() do { } while (0)
+#endif /* BSPACM_CORE_SUPPORTS_CYCCNT */
 
 /** Returns the current value of the cycle counter.
+ *
+ * This returns a constant 0 if the cycle counter is not supported.
+ * (It returns an arbitrary constant if the cycle counter is supported
+ * but you didn't invoke BSPACM_CORE_ENABLE_CYCCNT()).
+ *
+ * @depends BSPACM_CORE_SUPPORTS_CYCCNT
  * @see BSPACM_CORE_ENABLE_CYCCNT() */
+#if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_CYCCNT() DWT->CYCCNT
+#else /* BSPACM_CORE_SUPPORTS_CYCCNT */
+#define BSPACM_CORE_CYCCNT() 0
+#endif /* BSPACM_CORE_SUPPORTS_CYCCNT */
 
 /** Delay for a specified number of cycles.
  *
- * This does not attempt to account for the overhead of the loop. */
+ * This does not attempt to account for the overhead of the loop.
+ *
+ * @warning On architectures that do not support a cycle counter, this
+ * is a rough estimate based on cycles-per-iteration of a loop. */
+#if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_DELAY_CYCLES(cycles_) do {  \
     uint32_t const delta = (cycles_);           \
     uint32_t const cc0 = DWT->CYCCNT;           \
@@ -147,6 +179,15 @@
       /* spin */                                \
     }                                           \
   } while (0)
+#else /* BSPACM_CORE_SUPPORTS_CYCCNT */
+#define BSPACM_CORE_DELAY_CYCLES(cycles_) do {  \
+    uint32_t const cycles_per_iter = 3;         \
+    uint32_t remaining = (cycles_);             \
+    while (remaining > cycles_per_iter) {       \
+      remaining -= cycles_per_iter;             \
+    }                                           \
+  } while (0)
+#endif /* BSPACM_CORE_SUPPORTS_CYCCNT */
 
 /** Mark a function to be inlined.
  *
