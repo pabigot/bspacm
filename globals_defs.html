@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140329</span>
+   &#160;<span id="projectnumber">20140408</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -39,6 +39,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -70,6 +72,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals_func.html"><span>Functions</span></a></li>
       <li><a href="globals_vars.html"><span>Variables</span></a></li>
       <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
       <li class="current"><a href="globals_defs.html"><span>Macros</span></a></li>
     </ul>
   </div>
@@ -79,7 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -90,8 +94,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="contents">
 &#160;<ul>
+<li>BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE
+: <a class="el" href="config_8h.html#a5053df85e01cf096ba74978b8faeeca0">config.h</a>
+</li>
+<li>BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE
+: <a class="el" href="config_8h.html#a70b70fcdbaca778fce0b82e1f772f513">config.h</a>
+</li>
+<li>BSPACM_CONFIG_ENABLE_UART
+: <a class="el" href="config_8h.html#a60dab6301520e7fecb45128e7c90e2a1">config.h</a>
+</li>
+<li>BSPACM_CORE_CYCCNT
+: <a class="el" href="core_8h.html#af63f9aa24006f142cb9c6e7793daf63a">core.h</a>
+</li>
+<li>BSPACM_CORE_DELAY_CYCLES
+: <a class="el" href="core_8h.html#a71408fa62082f2087fdacb2399b81774">core.h</a>
+</li>
+<li>BSPACM_CORE_DISABLE_CYCCNT
+: <a class="el" href="core_8h.html#a6cae26f54d0e526fa09ee2df92c6299c">core.h</a>
+</li>
 <li>BSPACM_CORE_DISABLE_INTERRUPT
 : <a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">core.h</a>
+</li>
+<li>BSPACM_CORE_ENABLE_CYCCNT
+: <a class="el" href="core_8h.html#ad9b725e1931a9b1a416bdd495390ced7">core.h</a>
 </li>
 <li>BSPACM_CORE_ENABLE_INTERRUPT
 : <a class="el" href="core_8h.html#ab52275d819776e77d27303749a51965a">core.h</a>
@@ -114,14 +139,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>BSPACM_CORE_SAVED_INTERRUPT_STATE
 : <a class="el" href="core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468">core.h</a>
 </li>
+<li>BSPACM_INC_CATENATE
+: <a class="el" href="cppinc_8h.html#a442c00ce031522254aadb3a9d875b76b">cppinc.h</a>
+</li>
+<li>BSPACM_INC_CATENATE3
+: <a class="el" href="cppinc_8h.html#aeab357c18087853889bb6dc225242bed">cppinc.h</a>
+</li>
+<li>BSPACM_PERIPH_UART_FLAG_NONBLOCK
+: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#ade26ff1e6b3d4877714fdbb53a8342bc">uart.h</a>
+</li>
+<li>BSPACM_PERIPH_UART_FLAG_ONLCR
+: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a98d8e76b6c1922416c17b4cecaa9c790">uart.h</a>
+</li>
 <li>BSPACM_VERSION
 : <a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">core.h</a>
+</li>
+<li>FIFO_ADJUST_OFFSET
+: <a class="el" href="fifo_8h.html#ad5aa192d3b7a536b64073a64a588408d">fifo.h</a>
+</li>
+<li>FIFO_DEFINE_ALLOCATION
+: <a class="el" href="fifo_8h.html#ac0b054d67fce60479c1b95b71c1b24c0">fifo.h</a>
+</li>
+<li>FIFO_FROM_ALLOCATION
+: <a class="el" href="fifo_8h.html#aae4ae108da38caa190f3f4a3f6919d5b">fifo.h</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Mar 29 2014 06:39:28 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

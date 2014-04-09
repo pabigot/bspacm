@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['xbspacmleds',['xBSPACMleds',['../led_8h.html#a2a08bd5f55d7fda246409186d4918b9f',1,'led.h']]]
+  ['dev',['dev',['../structsBSPACMnewlibFDOPSfile.html#aefceb5f7e7dcebb56ea0d61de4f682ba',1,'sBSPACMnewlibFDOPSfile']]],
+  ['devcfg',['devcfg',['../structsBSPACMperiphUARTstate.html#a19bce457d3353b0f4bd23155b87fddcf',1,'sBSPACMperiphUARTstate']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>BSPACM: include/bspacm/utility/led.h Source File</title>
+<title>BSPACM: device/tm4c/include/bspacm/internal/utility/led.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140329</span>
+   &#160;<span id="projectnumber">20140408</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -39,6 +39,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -69,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -80,7 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_84644856a1893ae35ec50fa71777950a.html">bspacm</a></li><li class="navelem"><a class="el" href="dir_2c71141559d1c2767c2a59a8347e9146.html">utility</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_820b2b9dd608784780e51ab49715a98b.html">device</a></li><li class="navelem"><a class="el" href="dir_4cea6d9a69bf7c3a4018104e88d734be.html">tm4c</a></li><li class="navelem"><a class="el" href="dir_8e3689fd2fd3ff3620ec3ae6a9aee11e.html">include</a></li><li class="navelem"><a class="el" href="dir_6b08ba2a2e9f1e42c521c6394decfa6e.html">bspacm</a></li><li class="navelem"><a class="el" href="dir_700696b458f7c4dc7d499270f37a5f8c.html">internal</a></li><li class="navelem"><a class="el" href="dir_e4a47dc0e136a172ed4526af270e6c59.html">utility</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,7 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">led.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="led_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
+<a href="device_2tm4c_2include_2bspacm_2internal_2utility_2led_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * All rights reserved.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
@@ -119,55 +121,52 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef BSPACM_UTILITY_LED_H</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define BSPACM_UTILITY_LED_H</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef BSPACM_DEVICE_TM4C_INTERNAL_UTILITY_LED_H</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define BSPACM_DEVICE_TM4C_INTERNAL_UTILITY_LED_H</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/* The actual implementation is board/device/series/line-specific.</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"> * This include file should declare the type xBSPACMled, the array</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"> * xBSPACMleds, and the inline function vBSPACMledSet_(). */</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;bspacm/internal/utility/led.h&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code" href="led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<a class="code" href="led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">vBSPACMledConfigure</a> ();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/* @cond DOXYGEN_EXCLUDE */</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/* Include file to get names of each LED */</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_)</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_)</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;bspacm/internal/board/led.inc&gt;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#undef BSPACM_INC_EXPAND_LED_REFERENCE</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#undef BSPACM_INC_EXPAND_LED_CONFIGURE</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">typedef</span> <span class="keyword">volatile</span> uint32_t * <a class="code" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">extern</span> <a class="code" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a> <span class="keyword">const</span> <a class="code" href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a>[];</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="led_8h.html#ac35beff536b4683f9646af0dc956bf16">   71</a></span>&#160;<a class="code" href="led_8h.html#ac35beff536b4683f9646af0dc956bf16">vBSPACMledSet</a> (<span class="keywordtype">int</span> idx, <span class="keywordtype">int</span> mode)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;{</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keywordflow">if</span> ((0 &lt;= idx) &amp;&amp; (idx &lt; <a class="code" href="led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a>)) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a>(idx, mode);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<a class="code" href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a> (<span class="keywordtype">int</span> idx, <span class="keywordtype">int</span> mode)</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <a class="code" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a> <span class="keyword">const</span> lp = <a class="code" href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a>[idx];</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="comment">/* Using a bit-banded reference so we don&#39;t care which pin gets</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">   * assigned. */</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordflow">if</span> (0 &gt; mode) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    *lp ^= -1;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (0 == mode) {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    *lp = 0;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    *lp = -1;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">/* @endcond */</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#if (BSPACM_DOXYGEN - 0)</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">   82</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">void</span> <a class="code" href="led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a> <a class="code" href="led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a>[];</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">   93</a></span>&#160;<a class="code" href="led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a> (<span class="keywordtype">int</span> idx, <span class="keywordtype">int</span> mode) { }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DOXYGEN */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_UTILITY_LED_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="led_8h_html_adfb33aeaf2b4ace3a2942bde967964ca"><div class="ttname"><a href="led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a></div><div class="ttdeci">void xBSPACMled</div><div class="ttdef"><b>Definition:</b> led.h:82</div></div>
-<div class="ttc" id="led_8h_html_a4ccecb84d22d8237adba3929ba9f8174"><div class="ttname"><a href="led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a></div><div class="ttdeci">const uint8_t nBSPACMleds</div></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DEVICE_TM4C_INTERNAL_UTILITY_LED_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_adfb33aeaf2b4ace3a2942bde967964ca"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a></div><div class="ttdeci">void xBSPACMled</div><div class="ttdef"><b>Definition:</b> led.h:82</div></div>
 <div class="ttc" id="core_8h_html"><div class="ttname"><a href="core_8h.html">core.h</a></div><div class="ttdoc">Common header included by all BSPACM leaf headers. </div></div>
-<div class="ttc" id="core_8h_html_a33aec9db511c37252fe188e680170085"><div class="ttname"><a href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div><div class="ttdeci">#define BSPACM_CORE_INLINE_FORCED</div><div class="ttdef"><b>Definition:</b> core.h:141</div></div>
-<div class="ttc" id="led_8h_html_ac35beff536b4683f9646af0dc956bf16"><div class="ttname"><a href="led_8h.html#ac35beff536b4683f9646af0dc956bf16">vBSPACMledSet</a></div><div class="ttdeci">static BSPACM_CORE_INLINE_FORCED void vBSPACMledSet(int idx, int mode)</div><div class="ttdef"><b>Definition:</b> led.h:71</div></div>
-<div class="ttc" id="led_8h_html_a32ac95cc26f1910f00ccbd09189e95c0"><div class="ttname"><a href="led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">vBSPACMledConfigure</a></div><div class="ttdeci">void vBSPACMledConfigure()</div></div>
-<div class="ttc" id="led_8h_html_af62251a222dbb5292dc1458ebeb6ebd6"><div class="ttname"><a href="led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a></div><div class="ttdeci">static BSPACM_CORE_INLINE_FORCED void vBSPACMledSet_(int idx, int mode)</div><div class="ttdef"><b>Definition:</b> led.h:93</div></div>
-<div class="ttc" id="led_8h_html_a2a08bd5f55d7fda246409186d4918b9f"><div class="ttname"><a href="led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a></div><div class="ttdeci">const xBSPACMled xBSPACMleds[]</div></div>
+<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_af62251a222dbb5292dc1458ebeb6ebd6"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a></div><div class="ttdeci">static BSPACM_CORE_INLINE_FORCED void vBSPACMledSet_(int idx, int mode)</div><div class="ttdef"><b>Definition:</b> led.h:93</div></div>
+<div class="ttc" id="core_8h_html_a33aec9db511c37252fe188e680170085"><div class="ttname"><a href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div><div class="ttdeci">#define BSPACM_CORE_INLINE_FORCED</div><div class="ttdef"><b>Definition:</b> core.h:177</div></div>
+<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_a2a08bd5f55d7fda246409186d4918b9f"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a></div><div class="ttdeci">const xBSPACMled xBSPACMleds[]</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Mar 29 2014 06:39:28 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
