@@ -1,5 +1,7 @@
 /* From CMSIS 4.00 specification CMSIS-SP-00300-r4p0-00rel0.zip
  * !! MODIFIED to support BSPACM (http://github.com/pabigot/bspacm)
+ * - Use external memory.ld instead of hard-coding constants
+ * - Remove GROUP command with hard-coded library list
  */
 
 /* Include the device-specific memory map.  Pass
@@ -7,7 +9,10 @@
 INCLUDE memory.ld
 
 /* Library configurations */
-GROUP(libgcc.a libc.a libm.a libnosys.a)
+/* !!REMOVED: GROUP(libgcc.a libc.a libm.a libnosys.a)
+ * These may not be the libraries we're using, and they force
+ * inclusion of impure_data and other material sucking up
+ * over 1 kB RAM */
 
 /* Linker script to place sections and symbol values. Should be used together
  * with other linker script that defines memory regions FLASH and RAM.
