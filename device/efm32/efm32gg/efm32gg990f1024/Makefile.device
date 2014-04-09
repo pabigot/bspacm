@@ -15,9 +15,6 @@
 # http://www.silabs.com/products/mcu/lowpower/pages/efm32gg-giant-gecko.aspx
 DEVICE=efm32gg990f1024
 
-# Select the correct ARM startup script
-ARM_PROCESSOR=M4
-
 include $(BSPACM_ROOT)/device/efm32/efm32gg/Makefile.line
 
 # Local Variables:
