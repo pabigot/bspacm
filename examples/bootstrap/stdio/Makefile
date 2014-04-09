@@ -24,10 +24,7 @@ AUX_CPPFLAGS=-DBSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE=$(TXBLEN)
 AUX_CPPFLAGS+=-DBSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE=$(RXBLEN)
 AUX_CPPFLAGS+=-DBSPACM_CONFIG_ENABLE_UART=1
 
+# Use BSPACM file descriptor support to provide stdio
 WITH_FDOPS=1
-
-#WITH_LNOSYS=0
-# nano does not support setvbuf correctly
-WITH_NANO=0
 
 include $(BSPACM_ROOT)/make/Makefile.common

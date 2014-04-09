@@ -21,16 +21,19 @@ void main ()
 {
   int ctr;
 
+  /* Work around incomplete SystemInit() implementation in EFM32 */
+  SystemCoreClockUpdate();
+
   vBSPACMledConfigure();
 
   BSPACM_CORE_ENABLE_INTERRUPT();
 
-  /* NB: setvbuf() has no effect when using newlib-nano */
   setvbuf(stdout, NULL, _IONBF, 0);
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
 
   ctr = 0;
+  BSPACM_CORE_ENABLE_CYCCNT();
   while (1) {
     const int MAX_PER_LINE = 40;
     volatile uint32_t delay = 1000001;
@@ -51,6 +54,7 @@ void main ()
       ctr = 0;
     } else {
       putchar('0' + (ctr % 10));
+      BSPACM_CORE_DELAY_CYCLES(SystemCoreClock / 100);
     }
   }
 }
