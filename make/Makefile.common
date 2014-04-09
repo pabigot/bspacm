@@ -192,6 +192,7 @@ endef # TOOLCHAIN_DEP_RULE_CXX
 
 # TARGET_CPPFLAGS: Target-specific preprocessor flags.
 TARGET_CPPFLAGS ?=
+TARGET_CPPFLAGS += -DBSPACM_CORE_TOOLCHAIN_$(TOOLCHAIN)
 
 # TARGET_MFLAGS: Target-specific machine flags.  These are -mthumb and
 # similar options that have to go in CFLAGS, LDFLAGS, ASFLAGS, and
@@ -338,13 +339,23 @@ BSPACM_LDFLAGS += -Wl,--undefined=_bspacm_sbrk_$(NEWLIB_SBRK),--defsym=_sbrk=_bs
 endif # NEWLIB_SBRK
 
 # WITH_NANO: The gcc-arm-embedded toolchain offers a space-optimized
-# variant of newlib which is much smaller.
+# variant of newlib which is much smaller.  Use it by default.
+#
+# Because BSPACM provides overriding definitions of some functions
+# required by libc, we need to know the name used to link libc so the
+# search order can be influenced.
+#
+# NOTE: You might be tempted to add a flag to CPPFLAGS so code can
+# detect whether it's being built for newlib-nano and can work around
+# known limitations.  Don't.  The selection of nano/regular newlib is
+# not resolved until unrelocatable link; there is no reason to believe
+# the object files being linked were built with the same flags.
 WITH_NANO ?= 1
 ifneq (0,$(WITH_NANO))
-LIBC_FLAG=-lc_s
-OPT_LDFLAGS += -specs=nano.specs
+LIBC_LIBRARY_OPTION=-lc_s
+TARGET_LDFLAGS += -specs=nano.specs
 else # WITH_NANO
-LIBC_FLAG=-lc
+LIBC_LIBRARY_OPTION=-lc
 endif # WITH_NANO
 
 # Unconditionally add the flags for link-time optimization by removing
@@ -391,9 +402,6 @@ CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)/in
 CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/include
 CPPFLAGS += -I$(BSPACM_ROOT)/device/$(DEVICE_SERIES)/include
 CPPFLAGS += -I$(BSPACM_ROOT)/include
-
-# Tell the application which toolchain is being used
-CPPFLAGS += -DBSPACM_CORE_TOOLCHAIN_$(TOOLCHAIN)
 
 CFLAGS = $(WARN_CFLAGS) $(STD_CFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
 CXXFLAGS = $(WARN_CFLAGS) $(STD_CXXFLAGS) $(RT_CXXFLAGS) $(OPT_CFLAGS) $(TARGET_CFLAGS) $(TARGET_MFLAGS)
@@ -481,7 +489,7 @@ ORDERED_BSPACM_LDLIBS=$(VENDOR_LDLIB) -lbspacm-fdops -lbspacm
 
 # Include the generated library options when linking, in the required
 # order, and in a group so dependency cycles are resolved.
-LDLIBS += -Wl,--start-group $(LIBC_FLAG) \
+LDLIBS += -Wl,--start-group $(LIBC_LIBRARY_OPTION) \
   $(foreach lib,$(ORDERED_BSPACM_LDLIBS),$(filter $(lib),$(BSPACM_LDLIBS))) \
   $(filter-out $(ORDERED_BSPACM_LDLIBS),$(BSPACM_LDLIBS)) \
  -Wl,--end-group
