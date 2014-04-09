@@ -1,0 +1,29 @@
+# BSPACM - Makefile.line for EFM32ZG "Zero Gecko" devices
+#
+# Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to
+# the public domain worldwide. This software is distributed without
+# any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+#
+
+DEVICE_LINE=efm32zg
+
+ifndef DEVICE
+$(error DEVICE has not been set: include Makefile.device first)
+endif
+
+# All EFM32 Zero Gecko chips are Cortex-M0+
+ARM_PROCESSOR=M0plus
+TARGET_MFLAGS = -mthumb -mcpu=cortex-m0plus
+
+include $(BSPACM_ROOT)/device/efm32/Makefile.series
+
+# Local Variables:
+# mode:makefile
+# End:
