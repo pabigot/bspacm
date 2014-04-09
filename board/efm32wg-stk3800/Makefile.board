@@ -1,0 +1,25 @@
+# BSPACM - Makefile.board for efm32wg-stk3800
+#
+# Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to
+# the public domain worldwide. This software is distributed without
+# any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+#
+
+# http://www.silabs.com/products/mcu/lowpower/pages/efm32wg-stk3800.aspx
+
+# This is an STK-style board, as opposed to a DK-style board.  This
+# affects which kit BSP file needs to be used.
+BOARD_STYLE=stk
+
+include $(BSPACM_ROOT)/device/efm32/efm32wg/efm32wg990f256/Makefile.device
+
+# Local Variables:
+# mode:makefile
+# End:
