@@ -291,7 +291,7 @@ leuart_hw_transmit (sBSPACMperiphUARTstate * usp,
 
 static void
 leuart_hw_txien (sBSPACMperiphUARTstate * usp,
-                int enablep)
+                 int enablep)
 {
   LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
   if (enablep) {

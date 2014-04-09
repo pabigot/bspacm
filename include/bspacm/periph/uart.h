@@ -258,7 +258,8 @@ typedef struct sBSPACMperiphUARToperations {
 static BSPACM_CORE_INLINE
 hBSPACMperiphUART
 hBSPACMperiphUARTconfigure (hBSPACMperiphUART usp,
-                            const sBSPACMperiphUARTconfiguration * cfgp) {
+                            const sBSPACMperiphUARTconfiguration * cfgp)
+{
   if (!!usp && (0 == usp->ops->configure(usp, cfgp))) {
     return usp;
   }
@@ -317,7 +318,8 @@ int iBSPACMperiphUARTwrite (hBSPACMperiphUART usp, const void * buf,  size_t cou
  * material is pending.  A negative value indicates an error,
  * e.g. that the UART is unconfigured. */
 static BSPACM_CORE_INLINE
-int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp) {
+int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp)
+{
   if (! usp) {
     return -1;
   }
