@@ -46,4 +46,10 @@
 
 #include <em_device.h>
 
+/** Function to turn on the EFM32 Serial Wire Output (SWO) feature,
+ * required when using the Trace Port Interface Unit to feed back PC
+ * sample and interrupt information to the energyAware Profiler
+ * application. */
+void vBSPACMdeviceEFM32setupSWO(void);
+
 #endif /* BSPACM_DEVICE_EFM32_H */

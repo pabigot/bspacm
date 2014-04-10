@@ -15,8 +15,14 @@ they were added, or as a comment added to the file.
 Material with other copyright and licensing is itemized below.  The
 listed files contain more information.
 
-File                 License        Copyright                  Comment
-------------         ------------   ----------------------     -----------------------
-toolchain/GCC/*      BSD-3-Clause   2011-2013 ARM LIMITED      Derived; From CMSIS 4.0
+File                 License         Copyright                  Comment
+------------         ------------    ----------------------     -----------------------
+toolchain/GCC/*      BSD-3-Clause    2011-2013 ARM LIMITED      Derived; From CMSIS 4.0
 device/tm4c/src/system_TM4C.c
-                     BSD-3-Clause   2011-2012 ARM LIMITED      Derived; From CMSIS 3.2
+                     BSD-3-Clause    2011-2012 ARM LIMITED      Derived; From CMSIS 3.2
+device/efm32/src/utility/swo_.c
+                     Energy Micro[*] 2012 Energy Micro AS       See source file
+
+[*] The Energy Micro license is the Zlib license
+(http://opensource.org/licenses/Zlib) with a fourth clause restricting
+use of the material to Energy Micro hardware.
