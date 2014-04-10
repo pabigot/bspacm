@@ -298,7 +298,7 @@ OPT_CFLAGS = -ggdb -Os
 
 # OPT_LDFLAGS: LDFLAGS related to optimization and debugging.  Look
 # for garbage collection override after optional flags added.
-OPT_LDFLAGS =
+OPT_LDFLAGS = -ggdb
 
 # BSPACM_LDFLAGS: LDFLAGS required to support BSPACM.  The expectation
 # is that any shared libraries that are not application-specific will
