@@ -58,13 +58,7 @@ void vBSPACMdeviceEFM32pinmuxConfigure (const sBSPACMdeviceEFM32pinmux * cfgp,
   if (doutp && mode) {
     *doutp = bit;
   }
-  if (8 > cfgp->pin) {
-    const unsigned int shift = 0x1F & (4 * cfgp->pin);
-    port->MODEL = (port->MODEL & ~(0x0F << shift)) | (mode << shift);
-  } else {
-    const unsigned int shift = 0x1F & (4 * (cfgp->pin - 8));
-    port->MODEH = (port->MODEH & ~(~0x0F << shift)) | (mode << shift);
-  }
+  vBSPACMdeviceEFM32setPinNybble(&port->MODEL, cfgp->pin, mode);
   if (doutp && ! mode) {
     *doutp = bit;
   }

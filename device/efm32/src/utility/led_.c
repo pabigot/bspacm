@@ -54,19 +54,10 @@ vBSPACMledConfigure ()
 
 #define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_) do {           \
     GPIO_P_TypeDef * const port = &(GPIO->P[port_]);               \
-    uint32_t const bit = (1U << (pin_));                           \
+    unsigned int const pin = (pin_);                               \
+    uint32_t const bit = (1U << pin);                              \
     port->DOUTCLR = bit;                                           \
-    if ((pin_) < 8) {                                              \
-      const unsigned int mode_shift = 0x1F & (4 * (pin_));         \
-      port->MODEL =                                                \
-        (port->MODEL & ~(_GPIO_P_MODEL_MODE0_MASK << mode_shift))  \
-        | (GPIO_P_MODEL_MODE0_PUSHPULL << mode_shift);             \
-    } else {                                                       \
-      const unsigned int mode_shift = 0x1F & (4 * ((pin_) - 8U));  \
-      port->MODEH =                                                \
-        (port->MODEH & ~(_GPIO_P_MODEH_MODE8_MASK << mode_shift))  \
-        | (GPIO_P_MODEH_MODE8_PUSHPULL << mode_shift);             \
-    }                                                              \
+    vBSPACMdeviceEFM32setPinNybble(&port->MODEL, pin, gpioModePushPull); \
   } while (0);
 #include <bspacm/internal/board/led.inc>
 #undef BSPACM_INC_EXPAND_LED_REFERENCE

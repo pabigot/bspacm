@@ -49,6 +49,49 @@
 #include <stdbool.h>
 #endif /* __cplusplus */
 
+/** Mark a function to be inlined.
+ *
+ * Most toolchains support this feature, but the spelling of the
+ * request varies.
+ *
+ * The toolchain is free to ignore the request, which is after all
+ * only the developer's expert opinion.  When optimizing for size
+ * toolchains are likely to ignore this if more than one call site is
+ * in the translation unit.
+ *
+ * @see #BSPACM_CORE_INLINE_FORCED
+ */
+#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
+#define BSPACM_CORE_INLINE __inline__
+#else /* TOOLCHAIN */
+#define BSPACM_CORE_INLINE inline
+#endif /* TOOLCHAIN */
+
+/** Insist that a function be inlined.
+ *
+ * Use this when #BSPACM_CORE_INLINE is being ignored.  Not all
+ * toolchains will support this; on those it should be treated as
+ * #BSPACM_CORE_INLINE.
+ */
+#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
+/* GCC wants both directives */
+#define BSPACM_CORE_INLINE_FORCED BSPACM_CORE_INLINE __attribute__((__always_inline__))
+#else /* TOOLCHAIN */
+#define BSPACM_CORE_INLINE_FORCED BSPACM_CORE_INLINE
+#endif /* TOOLCHAIN */
+
+/** Declare a packed structure in a toolchain-specific manner.
+ *
+ * @param nm_ name of the structure to be declared
+ *
+ * This expands to @c struct @p nm_ annotated with toolchain-specific
+ * directives to ensure the structure contents have no padding.  It is
+ * used for binary messages that mix types which might normally
+ * require padding to maintain MCU-standard alignment. */
+#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
+#define BSPACM_CORE_PACKED_STRUCT(nm_) struct __attribute__((__packed__)) nm_
+#endif /* TOOLCHAIN */
+
 /* Device-specific material.  This includes device vendor and CMSIS
  * headers, and provides any necessary bridging declarations.  The
  * correct content should be located by the prioritization of include
@@ -254,48 +297,5 @@
  * used. */
 #define BSPACM_CORE_BITBAND_PERIPH(object_, bit_) (*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&(object_) - BSPACM_CORE_PERIPH_BASE))))
 #endif /* PERIPH bitband supported */
-
-/** Mark a function to be inlined.
- *
- * Most toolchains support this feature, but the spelling of the
- * request varies.
- *
- * The toolchain is free to ignore the request, which is after all
- * only the developer's expert opinion.  When optimizing for size
- * toolchains are likely to ignore this if more than one call site is
- * in the translation unit.
- *
- * @see #BSPACM_CORE_INLINE_FORCED
- */
-#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
-#define BSPACM_CORE_INLINE __inline__
-#else /* TOOLCHAIN */
-#define BSPACM_CORE_INLINE inline
-#endif /* TOOLCHAIN */
-
-/** Insist that a function be inlined.
- *
- * Use this when #BSPACM_CORE_INLINE is being ignored.  Not all
- * toolchains will support this; on those it should be treated as
- * #BSPACM_CORE_INLINE.
- */
-#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
-/* GCC wants both directives */
-#define BSPACM_CORE_INLINE_FORCED BSPACM_CORE_INLINE __attribute__((__always_inline__))
-#else /* TOOLCHAIN */
-#define BSPACM_CORE_INLINE_FORCED BSPACM_CORE_INLINE
-#endif /* TOOLCHAIN */
-
-/** Declare a packed structure in a toolchain-specific manner.
- *
- * @param nm_ name of the structure to be declared
- *
- * This expands to @c struct @p nm_ annotated with toolchain-specific
- * directives to ensure the structure contents have no padding.  It is
- * used for binary messages that mix types which might normally
- * require padding to maintain MCU-standard alignment. */
-#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
-#define BSPACM_CORE_PACKED_STRUCT(nm_) struct __attribute__((__packed__)) nm_
-#endif /* TOOLCHAIN */
 
 #endif /* BSPACM_CORE_H */

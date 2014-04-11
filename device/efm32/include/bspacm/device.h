@@ -52,6 +52,28 @@
  * application. */
 void vBSPACMdeviceEFM32setupSWO(void);
 
+/** Function to set the value of a nybble in a two-word array.
+ *
+ * This is the API for things like GPIO pin alternative function
+ * selection and interrupt source port selection.
+ *
+ * @param regp pointer to a consecutive sequence of two words that
+ * hold packed nybble values.
+ *
+ * @param pin the pin number is the ordinal of the nybble to be set
+ *
+ * @param value the nybble value to be stored
+ */
+static BSPACM_CORE_INLINE
+void vBSPACMdeviceEFM32setPinNybble (volatile uint32_t * regp,
+                                     unsigned int pin,
+                                     int value)
+{
+  volatile uint32_t * const psel = regp + ((8 <= pin) ? 1 : 0);
+  const unsigned int shift = 4 * (0x07 & pin);
+  *psel = (*psel & ~(0x0F << shift)) | ((0x0F & value) << shift);
+}
+
 /* @cond DOXYGEN_EXCLUDE */
 /* SRAM and peripheral bitband addresses are in standard Cortex-M3/M4
  * locations for everything except the Cortex-M0+ Zero Gecko line. */
