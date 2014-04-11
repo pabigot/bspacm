@@ -124,3 +124,36 @@ iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t 
   BSPACM_CORE_RESTORE_INTERRUPT_STATE(istate);
   return bp - bps;
 }
+
+int iBSPACMperiphUARTflush (hBSPACMperiphUART usp,
+                            int fifo_mask)
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  unsigned int ena_mask = fifo_mask & (eBSPACMperiphUARTfifoState_SWTX | eBSPACMperiphUARTfifoState_RX);
+  unsigned int dis_mask = fifo_mask & eBSPACMperiphUARTfifoState_HWTX;
+  int rv;
+
+  /* Phase 1: block on unsatisfied SW transmit and SW/HW RX.  These
+   * conditions can only change during periods when interrupts are
+   * enabled. */
+  while (1) {
+    BSPACM_CORE_DISABLE_INTERRUPT();
+    rv = iBSPACMperiphUARTfifoState(usp);
+    if (0 > rv) {
+      break;
+    }
+    if (0 == (ena_mask & rv)) {
+      break;
+    }
+    BSPACM_CORE_SLEEP();
+    BSPACM_CORE_ENABLE_INTERRUPT();
+  }
+  /* Phase 2: block on unsatisfied HW transmit.  This condition will
+   * change without enabling interrupts, and if we tried to enable
+   * interrupts we might deadlock because it had already changed. */
+  while ((0 < rv) && (0 != (dis_mask & rv))) {
+    rv = iBSPACMperiphUARTfifoState(usp);
+  }
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  return rv;
+}

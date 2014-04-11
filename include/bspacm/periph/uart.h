@@ -137,6 +137,10 @@ typedef enum eBSPACMperiphUARTfifoState {
    * without loss of data. */
   eBSPACMperiphUARTfifoState_HWTX = 0x02,
 
+  /** Indicates there is material waiting in a hardware FIFO. */
+  eBSPACMperiphUARTfifoState_HW = ((unsigned int)eBSPACMperiphUARTfifoState_HWRX
+                                   | (unsigned int)eBSPACMperiphUARTfifoState_HWTX),
+
   /** Indicates there is material waiting to be read from the software
    * receive FIFO */
   eBSPACMperiphUARTfifoState_SWRX = 0x04,
@@ -144,6 +148,20 @@ typedef enum eBSPACMperiphUARTfifoState {
   /** Indicates there is material waiting to be written in the
    * software transmit FIFO */
   eBSPACMperiphUARTfifoState_SWTX = 0x08,
+
+  /** Indicates there is material waiting in a software FIFO. */
+  eBSPACMperiphUARTfifoState_SW = ((unsigned int)eBSPACMperiphUARTfifoState_SWRX
+                                   | (unsigned int)eBSPACMperiphUARTfifoState_SWTX),
+
+  /** Indicates there is material waiting to be written in either
+   * hardware or software transmit FIFO. */
+  eBSPACMperiphUARTfifoState_TX = ((unsigned int)eBSPACMperiphUARTfifoState_SWTX
+                                   | (unsigned int)eBSPACMperiphUARTfifoState_HWTX),
+
+  /** Indicates there is material waiting to be read in either
+   * hardware or software receive FIFO. */
+  eBSPACMperiphUARTfifoState_RX = ((unsigned int)eBSPACMperiphUARTfifoState_SWRX
+                                   | (unsigned int)eBSPACMperiphUARTfifoState_HWRX),
 } eBSPACMperiphUARTfifoState;
 
 /** The set of operations supported by UARTs.
@@ -325,6 +343,34 @@ int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp)
   }
   return usp->ops->fifo_state(usp);
 }
+
+/** Block until the result of iBSPACMperiphUARTfifoState() indicates
+ * an error or no pending @p fifo_mask data
+ *
+ * For example, the following ensures all pending console data has
+ * been transmitted prior to entering a sleep mode that disables
+ * peripheral clocks:
+ *
+ * @code
+ * (void)iBSPACMperiphUARTflush(hBSPACMdefaultUART, eBSPACMperiphUARTfifoState_TX);
+ * @endcode
+ *
+ * @note If data is pending, this function will sleep for interrupts
+ * and enable them to process the data.  If entered with interrupts
+ * disabled, interrupts will remain disabled between the last fifo
+ * check and returning, guaranteeing that fifo state will be as
+ * reflected in the return value.
+ *
+ * @param usp the UART abstraction
+ *
+ * @param fifo_mask bits from #eBSPACMperiphUARTfifoState that must be
+ * clear in the return value of iBSPACMperiphUARTfifoState() for a
+ * successful return
+ *
+ * @return the value of the last call to iBSPACMperiphUARTfifoState(),
+ * which may be a negative error indicator. */
+int iBSPACMperiphUARTflush (hBSPACMperiphUART usp,
+                            int fifo_mask);
 
 /** The default UART device for the application/board.
  *
