@@ -66,4 +66,13 @@ typedef GPIOA_Type GPIOCommon_Type;
 typedef GPIOA_AHB_Type GPIOCommon_Type;
 #endif /* DEVICE_LINE */
 
+/* @cond DOXYGEN_EXCLUDE */
+/* SRAM and peripheral bitband addresses are in standard Cortex-M3/M4
+ * locations. */
+#define BSPACM_CORE_SRAM_BASE ((uintptr_t)0x20000000)
+#define BSPACM_CORE_SRAM_BITBAND_BASE ((uintptr_t)0x22000000)
+#define BSPACM_CORE_PERIPH_BASE ((uintptr_t)0x40000000)
+#define BSPACM_CORE_PERIPH_BITBAND_BASE ((uintptr_t)0x42000000)
+/* @endcond */
+
 #endif /* BSPACM_DEVICE_TM4C_H */

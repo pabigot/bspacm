@@ -52,4 +52,15 @@
  * application. */
 void vBSPACMdeviceEFM32setupSWO(void);
 
+/* @cond DOXYGEN_EXCLUDE */
+/* SRAM and peripheral bitband addresses are in standard Cortex-M3/M4
+ * locations for everything except the Cortex-M0+ Zero Gecko line. */
+#if ! (_EFM32_ZERO_FAMILY - 0)
+#define BSPACM_CORE_SRAM_BASE ((uintptr_t)0x20000000)
+#define BSPACM_CORE_SRAM_BITBAND_BASE ((uintptr_t)0x22000000)
+#define BSPACM_CORE_PERIPH_BASE ((uintptr_t)0x40000000)
+#define BSPACM_CORE_PERIPH_BITBAND_BASE ((uintptr_t)0x42000000)
+#endif /* ! Zero Gecko */
+/* @endcond */
+
 #endif /* BSPACM_DEVICE_EFM32_H */

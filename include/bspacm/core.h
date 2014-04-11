@@ -46,6 +46,7 @@
 #else /* __cplusplus */
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 #endif /* __cplusplus */
 
 /* Device-specific material.  This includes device vendor and CMSIS
@@ -188,6 +189,71 @@
     }                                           \
   } while (0)
 #endif /* BSPACM_CORE_SUPPORTS_CYCCNT */
+
+/* Cortex-M3 devices support bit-band access to SRAM and peripherals,
+ * but Cortex-M0+ does not, so the following features are optional. */
+
+#if defined(BSPACM_DOXYGEN) || (defined(BSPACM_CORE_SRAM_BASE) && defined(BSPACM_CORE_SRAM_BITBAND_BASE))
+/* @cond DOXYGEN_EXCLUDE */
+#define BSPACM_CORE_BITBAND_SRAM_(object_, bit_) (BSPACM_CORE_SRAM_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&(object_) - BSPACM_CORE_SRAM_BASE)))
+/* @endcond */
+
+/** Bit-band reference into an 32-bit object in SRAM.
+ *
+ * This is particularly useful when manipulating a single flag in a
+ * volatile object aggregating event flags while interrupts are
+ * enabled.
+ *
+ * @note Only supported on processors that use bit-banding
+ * (e.g. Cortex-M3, Cortex-M4).  This macro will not be defined if the
+ * feature is not supported.
+ *
+ * @param object_ a reference to (not the address of) a 32-bit object
+ * located in SRAM
+ *
+ * @param bit_ the bit of interest within @p object_ (0 to 31,
+ * depending on size of object)
+ *
+ * @return an lvalue reference to a volatile @c bool object in which
+ * bit 0 aliases bit @p bit_ of @p object_ and no other bits are
+ * used. */
+#define BSPACM_CORE_BITBAND_SRAM32(object_, bit_) (*(volatile uint32_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))
+
+/** Bit-band reference into an 16-bit object in SRAM.
+ *
+ * @see #BSPACM_CORE_BITBAND_SRAM32 */
+#define BSPACM_CORE_BITBAND_SRAM16(object_, bit_) (*(volatile uint16_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))
+
+/** Bit-band reference into an 8-bit object in SRAM.
+ *
+ * @see #BSPACM_CORE_BITBAND_SRAM32 */
+#define BSPACM_CORE_BITBAND_SRAM8(object_, bit_) (*(volatile uint8_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))
+
+#endif /* SRAM bitband supported */
+
+#if defined(BSPACM_DOXYGEN) || (defined(BSPACM_CORE_PERIPH_BASE) && defined(BSPACM_CORE_PERIPH_BITBAND_BASE))
+/** Bit-band reference into a peripheral register.
+ *
+ * This is particularly useful to reduce code size when the bit and
+ * the peripheral register address are compile-time constants, as a
+ * read-modify-write instruction sequence will be replaced by a single
+ * store.
+ *
+ * @note Only supported on processors that use bit-banding
+ * (e.g. Cortex-M3, Cortex-M4).  This macro will not be defined if the
+ * feature is not supported.
+ *
+ * @warning Not all peripherals will support bit-banding.
+ *
+ * @param object_ a reference to the peripheral register (not its address).
+ *
+ * @param bit_ the bit of interest within @p object_ (0 to 31)
+ *
+ * @return an lvalue reference to a volatile @c uint32_t object in
+ * which bit 0 aliases bit @p bit_ of @p object_ and no other bits are
+ * used. */
+#define BSPACM_CORE_BITBAND_PERIPH(object_, bit_) (*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&(object_) - BSPACM_CORE_PERIPH_BASE))))
+#endif /* PERIPH bitband supported */
 
 /** Mark a function to be inlined.
  *
