@@ -232,7 +232,7 @@
  * Note that this functionality is optional, so may not be present on
  * your device.  This is a no-op in that case.
  *
- * @depends #BSPACM_CORE_SUPPORTS_CYCCNT */
+ * @dependency #BSPACM_CORE_SUPPORTS_CYCCNT */
 #if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_ENABLE_CYCCNT() do {              \
     if (! (DWT_CTRL_NOCYCCNT_Msk & DWT->CTRL)) {      \
@@ -264,7 +264,7 @@
  * (It returns an arbitrary constant if the cycle counter is supported
  * but you didn't invoke BSPACM_CORE_ENABLE_CYCCNT()).
  *
- * @depends BSPACM_CORE_SUPPORTS_CYCCNT
+ * @dependency BSPACM_CORE_SUPPORTS_CYCCNT
  * @see BSPACM_CORE_ENABLE_CYCCNT() */
 #if (BSPACM_CORE_SUPPORTS_CYCCNT - 0)
 #define BSPACM_CORE_CYCCNT() DWT->CYCCNT
