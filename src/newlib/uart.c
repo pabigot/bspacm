@@ -86,11 +86,20 @@ uart_write (struct sBSPACMnewlibFDOPSfile * fp,
             size_t nbyte)
 {
   hBSPACMperiphUART usp = (hBSPACMperiphUART)fp->dev;
-  ssize_t rv = iBSPACMperiphUARTwrite(usp, buf, nbyte);
-  if (0 == rv) {
-    errno = EAGAIN;
-    rv = -1;
-  }
+  ssize_t rv;
+
+  /* The BSPACM UART abstraction does not promise to write any data.
+   * newlib, on the other hand, is ok with partial writes but
+   * considers it an error if no data is written at all.
+   * EWOULDBLOCK/EAGAIN bakes no custard with newlib.  So if we can't
+   * write anything at all, but it's not an error, flush out whatever
+   * we've already written and try again. */
+  do {
+    rv = iBSPACMperiphUARTwrite(usp, buf, nbyte);
+    if (0 == rv) {
+      (void)iBSPACMperiphUARTflush(usp, eBSPACMperiphUARTfifoState_TX);
+    }
+  } while (0 == rv);
   return rv;
 }
 

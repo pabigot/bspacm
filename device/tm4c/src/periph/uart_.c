@@ -132,8 +132,13 @@ uart_configure (sBSPACMperiphUARTstate * usp,
   }
 
   /* Reset the FIFOs */
-  fifo_reset(usp->rx_fifo);
-  fifo_reset(usp->tx_fifo);
+  if (usp->rx_fifo_ni_) {
+    fifo_reset(usp->rx_fifo_ni_);
+  }
+  if (usp->tx_fifo_ni_) {
+    fifo_reset(usp->tx_fifo_ni_);
+  }
+  usp->tx_state_ = 0;
 
   /* Configure UART as requested and bring it online. */
   if (cfgp) {
@@ -170,13 +175,14 @@ static int
 uart_hw_transmit (sBSPACMperiphUARTstate * usp,
                   uint8_t v)
 {
+  int rv = -1;
   UART0_Type * const uart = (UART0_Type *)usp->uart;
-  if (UART_FR_TXFF & uart->FR) {
-    return -1;
+  if (! (UART_FR_TXFF & uart->FR)) {
+    uart->DR = v;
+    usp->tx_count += 1;
+    rv = v;
   }
-  uart->DR = v;
-  usp->tx_count += 1;
-  return v;
+  return rv;
 }
 
 static void
@@ -194,21 +200,26 @@ uart_hw_txien (sBSPACMperiphUARTstate * usp,
 static int
 uart_fifo_state (sBSPACMperiphUARTstate * usp)
 {
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   UART0_Type * const uart = (UART0_Type *)usp->uart;
   int rv = 0;
 
-  if (UART_FR_TXFE != ((UART_FR_TXFE | UART_FR_BUSY) & uart->FR)) {
-    rv |= eBSPACMperiphUARTfifoState_HWTX;
-  }
-  if (! (UART_FR_RXFE & uart->FR)) {
-    rv |= eBSPACMperiphUARTfifoState_HWRX;
-  }
-  if (! fifo_empty(usp->tx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWTX;
-  }
-  if (! fifo_empty(usp->rx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWRX;
-  }
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    if (UART_FR_TXFE != ((UART_FR_TXFE | UART_FR_BUSY) & uart->FR)) {
+      rv |= eBSPACMperiphUARTfifoState_HWTX;
+    }
+    if (! (UART_FR_RXFE & uart->FR)) {
+      rv |= eBSPACMperiphUARTfifoState_HWRX;
+    }
+    if (usp->tx_fifo_ni_ && (! fifo_empty(usp->tx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWTX;
+    }
+    if (usp->rx_fifo_ni_ && (! fifo_empty(usp->rx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWRX;
+    }
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
   return rv;
 }
 
@@ -240,18 +251,21 @@ vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp)
         usp->rx_overrun_errors += 1;
       }
     } else {
-      if (0 > fifo_push_head(usp->rx_fifo, dr)) {
+      if ((! usp->rx_fifo_ni_)
+          || (0 > fifo_push_head(usp->rx_fifo_ni_, dr))) {
         usp->rx_dropped_errors += 1;
       }
       usp->rx_count += 1;
     }
   }
-  while (! (fifo_empty(usp->tx_fifo) || (UART_FR_TXFF & uart->FR))) {
-    uart->DR = fifo_pop_tail(usp->tx_fifo, 0);
-    usp->tx_count += 1;
-  }
-  if (fifo_empty(usp->tx_fifo)) {
-    uart->IM &= ~UART_IM_TXIM;
+  if (usp->tx_fifo_ni_) {
+    while (! (fifo_empty(usp->tx_fifo_ni_) || (UART_FR_TXFF & uart->FR))) {
+      uart->DR = fifo_pop_tail(usp->tx_fifo_ni_, 0);
+      usp->tx_count += 1;
+    }
+    if (fifo_empty(usp->tx_fifo_ni_)) {
+      uart->IM &= ~UART_IM_TXIM;
+    }
   }
   BSPACM_CORE_REENABLE_INTERRUPT(istate);
 }

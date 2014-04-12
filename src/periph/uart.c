@@ -43,13 +43,15 @@ iBSPACMperiphUARTread (sBSPACMperiphUARTstate * usp, void * buf, size_t count)
 {
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   uint8_t * const bps = (uint8_t *)buf;
-  int rv;
+  int rv = -1;
 
-  BSPACM_CORE_DISABLE_INTERRUPT();
-  do {
-    rv = fifo_pop_into_buffer(usp->rx_fifo, bps, bps+count);
-  } while (0);
-  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  if (usp->rx_fifo_ni_) {
+    BSPACM_CORE_DISABLE_INTERRUPT();
+    do {
+      rv = fifo_pop_into_buffer(usp->rx_fifo_ni_, bps, bps+count);
+    } while (0);
+    BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  }
   return rv;
 }
 
@@ -60,68 +62,72 @@ iBSPACMperiphUARTwrite (sBSPACMperiphUARTstate * usp, const void * buf,  size_t 
   const uint8_t * const bps = (const uint8_t *)buf;
   const uint8_t * bp = bps;
   const uint8_t * const bpe = bp + count;
-  int state = -1;
-  unsigned int flags = usp->flags;
+  bool did_transmit = true;
+  uint8_t state;
 
-  while ((0 <= state)           /* partial sequence in progress */
-         || ((bp < bpe)         /* more to write */
-             && (bp == bps)     /* haven't written anything */
-             && ! (BSPACM_PERIPH_UART_FLAG_NONBLOCK & flags) /* have to write something */
-            )) {
+  state = usp->tx_state_;
+  while (did_transmit
+         && ((0 != state)       /* partial sequence in progress */
+             || (bp < bpe))) {  /* more to write */
+    uint8_t bp_adjustment = 1;
+    uint8_t next_state;
+    uint8_t to_transmit;
+
+    /* If we're not in a conversion state, see if there's
+     * conversion to be done on the next character. */
+    if (0 == state) {
+      /* Maybe convert output LF to CR+LF. */
+      if ((BSPACM_PERIPH_UART_FLAG_ONLCR & usp->flags) && ('\n' == *bp)) {
+        state = '\r';
+      }
+    }
+    if ('\r' == state) {
+      to_transmit = state;
+      bp_adjustment = 0;
+      next_state = '\n';
+    } else if ('\n' == state) {
+      to_transmit = state;
+      bp_adjustment = 1;
+      next_state = 0;
+    } else {
+      to_transmit = *bp;
+      bp_adjustment = 1;
+      next_state = 0;
+    }
+
+    /* tx_fifo_ni_ is shared between this module and IRQHandler.  Enforce
+     * mutex while putting the output onto the SW fifo it there's
+     * already data there, or onto the hardware fifo with a fallback
+     * to the SW fifo. */
     BSPACM_CORE_DISABLE_INTERRUPT();
     do {
-      uint16_t head = usp->tx_fifo->head;
-      uint16_t const tail = usp->tx_fifo->tail;
-
-      /* Loop doing output until done or the FIFO fills (break inside
-       * loop) */
-      while ((0 <= state) || (bp < bpe)) {
-        uint16_t next_head = FIFO_ADJUST_OFFSET(usp->tx_fifo, head + 1U);
-        int to_transmit = -1;
-
-        /* If there's no space in the SW FIFO we have to stop. */
-        if (next_head == tail) {
-          break;
-        }
-
-        /* If we're not in a conversion state, see if there's
-         * conversion to be done on the next character. */
-        if (0 > state) {
-          /* Maybe convert output LF to CR+LF */
-          if ((BSPACM_PERIPH_UART_FLAG_ONLCR & flags) && ('\n' == *bp)) {
-            state = '\r';
-            ++bp;
+      int fifo_state = usp->ops->fifo_state(usp);
+      if ((eBSPACMperiphUARTfifoState_SWTX & fifo_state)
+          || (0 > usp->ops->hw_transmit(usp, to_transmit))) {
+        if (usp->tx_fifo_ni_) {
+          bool empty_on_entry = fifo_empty(usp->tx_fifo_ni_);
+          if (fifo_full(usp->tx_fifo_ni_)) {
+            did_transmit = false;
+          } else {
+            did_transmit = (0 <= fifo_push_head(usp->tx_fifo_ni_, to_transmit));
+            if (did_transmit && empty_on_entry) {
+              /* TX interrupts enabled as long as there's material in
+               * the SW fifo. */
+              usp->ops->hw_txien(usp, 1);
+            }
           }
-        }
-        if ('\r' == state) {
-          to_transmit = state;
-          state = '\n';
-        } else if ('\n' == state) {
-          to_transmit = state;
-          state = -1;
         } else {
-          to_transmit = *bp++;
-        }
-        /* Add to end of SW FIFO if there's data already in the SW
-         * FIFO or if the HW FIFO doesn't have room. */
-        if ((head != tail)
-            || (0 > usp->ops->hw_transmit(usp, to_transmit))) {
-          usp->tx_fifo->cell[head] = to_transmit;
-          if (head == tail) {
-            usp->ops->hw_txien(usp, 1);
-          }
-          head = next_head;
+          did_transmit = false;
         }
       }
-      /* Write back the updated head. */
-      usp->tx_fifo->head = head;
     } while (0);
-    /* Design decision: we will enable interrupts here, rather than
-     * manage state in an attempt to avoid doing so when it is not
-     * strictly necessary. */
-    BSPACM_CORE_ENABLE_INTERRUPT();
+    if (did_transmit) {
+      bp += bp_adjustment;
+      state = next_state;
+    }
+    usp->tx_state_ = state;
+    BSPACM_CORE_REENABLE_INTERRUPT(istate);
   }
-  BSPACM_CORE_RESTORE_INTERRUPT_STATE(istate);
   return bp - bps;
 }
 

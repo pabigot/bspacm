@@ -86,8 +86,13 @@ usart_configure (sBSPACMperiphUARTstate * usp,
     NVIC_ClearPendingIRQ(devcfgp->tx_irqn);
   }
   USART_Reset(usart);
-  fifo_reset(usp->rx_fifo);
-  fifo_reset(usp->tx_fifo);
+  if (usp->rx_fifo_ni_) {
+    fifo_reset(usp->rx_fifo_ni_);
+  }
+  if (usp->tx_fifo_ni_) {
+    fifo_reset(usp->tx_fifo_ni_);
+  }
+  usp->tx_state_ = 0;
 
   if (cfgp) {
     unsigned int baud_rate = cfgp->speed_baud;
@@ -137,13 +142,14 @@ usart_hw_transmit (sBSPACMperiphUARTstate * usp,
                    uint8_t v)
 {
   USART_TypeDef * const usart = (USART_TypeDef *)usp->uart;
+  int rv = -1;
 
-  if (! (USART_STATUS_TXBL & usart->STATUS)) {
-    return -1;
+  if (USART_STATUS_TXBL & usart->STATUS) {
+    usart->TXDATA = v;
+    rv = v;
+    usp->tx_count += 1;
   }
-  usart->TXDATA = v;
-  usp->tx_count += 1;
-  return v;
+  return rv;
 }
 
 static void
@@ -161,20 +167,25 @@ usart_hw_txien (sBSPACMperiphUARTstate * usp,
 static int
 usart_fifo_state (sBSPACMperiphUARTstate * usp)
 {
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   USART_TypeDef * const usart = (USART_TypeDef *)usp->uart;
   int rv = 0;
-  if (! (usart->STATUS & USART_STATUS_TXC)) {
-    rv |= eBSPACMperiphUARTfifoState_HWTX;
-  }
-  if (usart->STATUS & USART_STATUS_RXDATAV) {
-    rv |= eBSPACMperiphUARTfifoState_HWRX;
-  }
-  if (! fifo_empty(usp->tx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWTX;
-  }
-  if (! fifo_empty(usp->rx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWRX;
-  }
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    if (! (usart->STATUS & USART_STATUS_TXC)) {
+      rv |= eBSPACMperiphUARTfifoState_HWTX;
+    }
+    if (usart->STATUS & USART_STATUS_RXDATAV) {
+      rv |= eBSPACMperiphUARTfifoState_HWRX;
+    }
+    if (usp->tx_fifo_ni_ && (! fifo_empty(usp->tx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWTX;
+    }
+    if (usp->rx_fifo_ni_ && (! fifo_empty(usp->rx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWRX;
+    }
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
   return rv;
 }
 
@@ -230,8 +241,13 @@ leuart_configure (sBSPACMperiphUARTstate * usp,
   LEUART_Reset(leuart);
   leuart->FREEZE = LEUART_FREEZE_REGFREEZE;
   leuart->CMD = LEUART_CMD_RXDIS | LEUART_CMD_TXDIS;
-  fifo_reset(usp->rx_fifo);
-  fifo_reset(usp->tx_fifo);
+  if (usp->rx_fifo_ni_) {
+    fifo_reset(usp->rx_fifo_ni_);
+  }
+  if (usp->tx_fifo_ni_) {
+    fifo_reset(usp->tx_fifo_ni_);
+  }
+  usp->tx_state_ = 0;
 
   if (cfgp) {
     unsigned int speed_baud = cfgp->speed_baud;
@@ -304,20 +320,26 @@ leuart_hw_txien (sBSPACMperiphUARTstate * usp,
 static int
 leuart_fifo_state (sBSPACMperiphUARTstate * usp)
 {
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   LEUART_TypeDef * const leuart = (LEUART_TypeDef *)usp->uart;
   int rv = 0;
-  if (! (leuart->STATUS & LEUART_STATUS_TXC)) {
-    rv |= eBSPACMperiphUARTfifoState_HWTX;
-  }
-  if (leuart->STATUS & LEUART_STATUS_RXDATAV) {
-    rv |= eBSPACMperiphUARTfifoState_HWRX;
-  }
-  if (! fifo_empty(usp->tx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWTX;
-  }
-  if (! fifo_empty(usp->rx_fifo)) {
-    rv |= eBSPACMperiphUARTfifoState_SWRX;
-  }
+
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    if (! (leuart->STATUS & LEUART_STATUS_TXC)) {
+      rv |= eBSPACMperiphUARTfifoState_HWTX;
+    }
+    if (leuart->STATUS & LEUART_STATUS_RXDATAV) {
+      rv |= eBSPACMperiphUARTfifoState_HWRX;
+    }
+    if (usp->tx_fifo_ni_ && (! fifo_empty(usp->tx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWTX;
+    }
+    if (usp->rx_fifo_ni_ && (! fifo_empty(usp->rx_fifo_ni_))) {
+      rv |= eBSPACMperiphUARTfifoState_SWRX;
+    }
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
   return rv;
 }
 
@@ -339,7 +361,8 @@ vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const usp)
     while (USART_STATUS_RXDATAV & usart->STATUS) {
       uint16_t rxdatax = usart->RXDATAX;
       if (0 == ((USART_RXDATAX_PERR | USART_RXDATAX_FERR) & rxdatax)) {
-        if (0 > fifo_push_head(usp->rx_fifo, usart->RXDATA)) {
+        if ((! usp->rx_fifo_ni_)
+            || (0 > fifo_push_head(usp->rx_fifo_ni_, usart->RXDATA))) {
           usp->rx_dropped_errors += 1;
         }
         usp->rx_count += 1;
@@ -357,19 +380,20 @@ vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const usp)
 }
 
 void
-vBSPACMdeviceEFM32periphUSARTtxirqhandler(sBSPACMperiphUARTstate * const usp)
+vBSPACMdeviceEFM32periphUSARTtxirqhandler (sBSPACMperiphUARTstate * const usp)
 {
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   USART_TypeDef * const usart = (USART_TypeDef *)usp->uart;
 
-  if (USART_STATUS_TXBL & usart->STATUS) {
+  if (usp->tx_fifo_ni_
+      && (USART_STATUS_TXBL & usart->STATUS)) {
     BSPACM_CORE_DISABLE_INTERRUPT();
     while ((USART_STATUS_TXBL & usart->STATUS)
-           && (! fifo_empty(usp->tx_fifo))) {
-      usart->TXDATA = fifo_pop_tail(usp->tx_fifo, 0);
+           && (! fifo_empty(usp->tx_fifo_ni_))) {
+      usart->TXDATA = fifo_pop_tail(usp->tx_fifo_ni_, 0);
       usp->tx_count += 1;
     }
-    if (fifo_empty(usp->tx_fifo)) {
+    if (fifo_empty(usp->tx_fifo_ni_)) {
       usart->IEN &= ~USART_IF_TXBL;
     }
   }
@@ -387,7 +411,8 @@ vBSPACMdeviceEFM32periphLEUARTirqhandler (sBSPACMperiphUARTstate * const usp)
     while (LEUART_STATUS_RXDATAV & leuart->STATUS) {
       uint16_t rxdatax = leuart->RXDATAX;
       if (0 == ((LEUART_RXDATAX_PERR | LEUART_RXDATAX_FERR) & rxdatax)) {
-        if (0 > fifo_push_head(usp->rx_fifo, leuart->RXDATA)) {
+        if ((! usp->rx_fifo_ni_)
+            || (0 > fifo_push_head(usp->rx_fifo_ni_, leuart->RXDATA))) {
           usp->rx_dropped_errors += 1;
         }
         usp->rx_count += 1;
@@ -401,13 +426,14 @@ vBSPACMdeviceEFM32periphLEUARTirqhandler (sBSPACMperiphUARTstate * const usp)
       }
     };
   }
-  if (LEUART_STATUS_TXBL & leuart->STATUS) {
+  if (usp->tx_fifo_ni_
+      && (LEUART_STATUS_TXBL & leuart->STATUS)) {
     while ((LEUART_STATUS_TXBL & leuart->STATUS)
-           && (! fifo_empty(usp->tx_fifo))) {
-      leuart->TXDATA = fifo_pop_tail(usp->tx_fifo, 0);
+           && (! fifo_empty(usp->tx_fifo_ni_))) {
+      leuart->TXDATA = fifo_pop_tail(usp->tx_fifo_ni_, 0);
       usp->tx_count += 1;
     }
-    if (fifo_empty(usp->tx_fifo)) {
+    if (fifo_empty(usp->tx_fifo_ni_)) {
       leuart->IEN &= ~LEUART_IF_TXBL;
     }
   }

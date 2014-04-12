@@ -62,6 +62,8 @@
 
 /** The size of the transmit buffer for the default UART device.
  *
+ * This may be set to zero to prevent interrupt-driven transmission.
+ *
  * @defaulted
  * @dependency #BSPACM_CONFIG_ENABLE_UART
  */
@@ -70,6 +72,9 @@
 #endif /* BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE */
 
 /** The size of the receive buffer for the default UART device.
+ *
+ * This may be set to zero if it is ok that iBSPACMperiphUARTread()
+ * always fail.
  *
  * @defaulted
  * @dependency #BSPACM_CONFIG_ENABLE_UART

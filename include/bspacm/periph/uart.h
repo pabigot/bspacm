@@ -70,12 +70,25 @@ typedef struct sBSPACMperiphUARTstate {
   const struct sBSPACMperiphUARToperations * const ops;
 
   /** Pointer to a device-specific software FIFO to hold data to be
-   * transmitted. */
-  struct sFIFO * const tx_fifo;
+   * transmitted.
+   *
+   * @note The structure referenced by this field is mutated by both
+   * ISRs and driver code.  Interrupts must be disabled when accessing
+   * this field unless the UART is turned off.  State read from the
+   * structure should be synchronized with state read from
+   * #tx_state_. */
+  struct sFIFO * const tx_fifo_ni_;
 
   /** Pointer to a device-specific software FIFO to hold data that has
-   * been received but not accepted by the application. */
-  struct sFIFO * const rx_fifo;
+   * been received but not accepted by the application.
+   *
+   * @note The structure referenced by this field is mutated by both
+   * ISRs and driver code.  Interrupts must be disabled when accessing
+   * this field unless the UART is turned off.
+   *
+   * @note While you can transmit data without a #tx_fifo_ni_, you
+   * cannot receive data without an #rx_fifo_ni_. */
+  struct sFIFO * const rx_fifo_ni_;
 
   /** Flags controlling the behavior of the UART at the BSPACM
    * layer. */
@@ -107,6 +120,17 @@ typedef struct sBSPACMperiphUARTstate {
 
   /** The number of overrun errors detected by hardware */
   uint8_t rx_overrun_errors;
+
+  /** A stage in an internal state machine used to support
+   * #BSPACM_PERIPH_UART_FLAG_ONLCR or other driver-layer transmitted
+   * data translation.
+   *
+   * @note This field is mutated only by driver code, so it may be
+   * read without disabling interrupts.  However, its information
+   * combines with state read from #tx_fifo_ni_, so interrupts must
+   * disabled when mutating this value, or accessing both fields to
+   * determine fifo state. */
+  uint8_t tx_state_;
 } sBSPACMperiphUARTstate;
 
 /** Typedef for API that references UARTs as handles where the fact
@@ -132,9 +156,12 @@ typedef enum eBSPACMperiphUARTfifoState {
 
   /** Indicates there is material waiting to be written in the
    * hardware transmit buffer.  This includes material that is still
-   * in a shift register; the bit clears only when the transmission is
-   * fully complete to the point where the UART can be shut down
-   * without loss of data. */
+   * in a shift register.  The bit clears only when the transmission
+   * is fully complete to the point where the UART can be shut down
+   * without loss of data.
+   *
+   * Resolving this requires only waiting for the hardware to complete
+   * transmission. */
   eBSPACMperiphUARTfifoState_HWTX = 0x02,
 
   /** Indicates there is material waiting in a hardware FIFO. */
@@ -146,20 +173,33 @@ typedef enum eBSPACMperiphUARTfifoState {
   eBSPACMperiphUARTfifoState_SWRX = 0x04,
 
   /** Indicates there is material waiting to be written in the
-   * software transmit FIFO */
+   * software transmit FIFO.
+   *
+   * Resolving this requires that interrupts be enabled so the queue
+   * can drain. */
   eBSPACMperiphUARTfifoState_SWTX = 0x08,
 
-  /** Indicates there is material waiting in a software FIFO. */
-  eBSPACMperiphUARTfifoState_SW = ((unsigned int)eBSPACMperiphUARTfifoState_SWRX
-                                   | (unsigned int)eBSPACMperiphUARTfifoState_SWTX),
+  /* There is no concept of driver-layer receive state. */
 
-  /** Indicates there is material waiting to be written in either
-   * hardware or software transmit FIFO. */
-  eBSPACMperiphUARTfifoState_TX = ((unsigned int)eBSPACMperiphUARTfifoState_SWTX
+  /** Indicates that there is material waiting to be written that is
+   * cached in the driver state.
+   *
+   * Resolving this requires re-invoking iBSPACMperiphUARTwrite() to
+   * flush the state machine.
+   *
+   * @note This bit is set only by iBSPACMperiphUARTfifoState(), not
+   * by the @link sBSPACMperiphUARToperations::fifo_state underlying
+   * device function@endlink. */
+  eBSPACMperiphUARTfifoState_DRTX = 0x10,
+
+  /** Indicates there is material waiting to be written in hardware,
+   * software, or driver transmit queues. */
+  eBSPACMperiphUARTfifoState_TX = ((unsigned int)eBSPACMperiphUARTfifoState_DRTX
+                                   | (unsigned int)eBSPACMperiphUARTfifoState_SWTX
                                    | (unsigned int)eBSPACMperiphUARTfifoState_HWTX),
 
-  /** Indicates there is material waiting to be read in either
-   * hardware or software receive FIFO. */
+  /** Indicates there is material waiting to be read in hardware or
+   * software receive queues. */
   eBSPACMperiphUARTfifoState_RX = ((unsigned int)eBSPACMperiphUARTfifoState_SWRX
                                    | (unsigned int)eBSPACMperiphUARTfifoState_HWRX),
 } eBSPACMperiphUARTfifoState;
@@ -241,28 +281,6 @@ typedef struct sBSPACMperiphUARToperations {
  * sequence <tt>CR LF</tt> (<tt>0x0d 0x0a</tt>). */
 #define BSPACM_PERIPH_UART_FLAG_ONLCR 0x01
 
-/** Control whether the iBSPACMperiphUARTwrite() is permitted to
- * return immediately if it cannot output any data.
- *
- * This flag has an effect only when the underlying UART has no more
- * space in its hardware or software FIFOs.
- *
- * If clear (default), iBSPACMperiphUARTwrite() invoked with a
- * positive @p count will enable interrupts and block until at least
- * one byte is written; if no space is available after that, it will
- * return with a partial write.
- *
- * If set, iBSPACMperiphUARTwrite() may return having written no data
- * if there is no space.
- *
- * In any case, if #BSPACM_PERIPH_UART_FLAG_ONLCR or other flags
- * require iBSPACMperiphUARTwrite() to translate a single byte into a
- * multi-byte sequence, it will block with interrupts enabled until an
- * error or the complete synthesized sequence has been queued for
- * transmission.
- */
-#define BSPACM_PERIPH_UART_FLAG_NONBLOCK 0x02
-
 /** Configure (or deconfigure) a UART.
  *
  * @param usp the UART peripheral state
@@ -302,16 +320,10 @@ int iBSPACMperiphUARTread (hBSPACMperiphUART usp, void * buf, size_t count);
 
 /** Write data to a UART.
  *
- * @warning This function will enable interrupts at certain points to
- * allow queued data to be transmitted.  Be aware that other
- * interrupts may be serviced during these times, and that an
- * arbitrary amount of data queued through this function may be
- * transmitted prior to the function's return.
- *
- * @warning If interrupts were disabled when the function was entered,
- * they will be disabled before it returns, and it is the caller's
- * responsibility to ensure they are re-enabled if necessary to
- * complete transmission of queued data.
+ * The contract for this function is the following: Zero or more bytes
+ * from buf will be transmitted or queued for automatic transmission
+ * by interrupt.  The function will not block and will not enable
+ * interrupts, even if that would be necessary to transmit data.
  *
  * @param usp the UART peripheral state
  *
@@ -338,10 +350,20 @@ int iBSPACMperiphUARTwrite (hBSPACMperiphUART usp, const void * buf,  size_t cou
 static BSPACM_CORE_INLINE
 int iBSPACMperiphUARTfifoState (hBSPACMperiphUART usp)
 {
-  if (! usp) {
-    return -1;
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  int rv = -1;
+
+  if (usp) {
+    BSPACM_CORE_DISABLE_INTERRUPT();
+    do {
+      rv = usp->ops->fifo_state(usp);
+      if (usp->tx_state_) {
+        rv |= eBSPACMperiphUARTfifoState_DRTX;
+      }
+    } while (0);
+    BSPACM_CORE_REENABLE_INTERRUPT(istate);
   }
-  return usp->ops->fifo_state(usp);
+  return rv;
 }
 
 /** Block until the result of iBSPACMperiphUARTfifoState() indicates
@@ -374,10 +396,9 @@ int iBSPACMperiphUARTflush (hBSPACMperiphUART usp,
 
 /** The default UART device for the application/board.
  *
- * @weakdef A weak definition that references no valid UART is
- * provided in the library.  Generally a board-specific default should
- * be defined in @c periph_config.c, when #BSPACM_CONFIG_ENABLE_UART
- * is true. */
+ * @weakdef A weak definition with a null pointer value is provided in
+ * the library.  Generally a board-specific default should be defined
+ * in @c periph_config.c, when #BSPACM_CONFIG_ENABLE_UART is true. */
 extern const hBSPACMperiphUART hBSPACMdefaultUART;
 
 /** Include the device-specific file that declares the objects and
