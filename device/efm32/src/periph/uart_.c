@@ -237,6 +237,9 @@ leuart_configure (sBSPACMperiphUARTstate * usp,
     }
     CMU_ClockEnable(cmuClock_CORELE, true);
     CMU_ClockEnable(devcfgp->clock, true);
+  } else {
+    NVIC_DisableIRQ(devcfgp->irqn);
+    NVIC_ClearPendingIRQ(devcfgp->irqn);
   }
   LEUART_Reset(leuart);
   leuart->FREEZE = LEUART_FREEZE_REGFREEZE;
