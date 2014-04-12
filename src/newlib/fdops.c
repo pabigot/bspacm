@@ -295,28 +295,3 @@ _write (int fd,
   } while (0);
   return rv;
 }
-
-int
-fcntl (int fd,
-       int cmd,
-       ...)
-{
-  hBSPACMnewlibFDOPSfile fh;
-  ssize_t rv = -1;
-  va_list ap;
-
-  va_start(ap, cmd);
-  fh = validated_handle(fd);
-  do {
-    if (! fh) {
-      break;
-    }
-    if (! fh->ops->op_fcntl) {
-      errno = EBADF;
-      break;
-    }
-    rv = fh->ops->op_fcntl(fh, cmd, ap);
-  } while (0);
-  va_end(ap);
-  return rv;
-}

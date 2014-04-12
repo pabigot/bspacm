@@ -71,7 +71,8 @@ typedef struct sBSPACMnewlibFDOPSfile * hBSPACMnewlibFDOPSfile;
  * "/dev/uart2" might be used to identify the third UART device
  * available on the platform.
  *
- * @param flags the standard flags from <fcntl.h> that describe how the device should be opened.
+ * @param flags the standard flags from <fcntl.h> that describe how
+ * the device should be opened.
  *
  * @return a pointer to a file object that can be used to interact
  * with the device, or a null pointer if the driver is unable to open
@@ -149,11 +150,6 @@ typedef struct sBSPACMnewlibFDOPSfileOps {
                         const void * buf,
                         size_t count);
 
-  /** Implementation for fcntl(). If unimplemented, read() fails with
-   * @c EBADF. */
-  int (* op_fcntl) (struct sBSPACMnewlibFDOPSfile * fp,
-                    int cmd,
-                    va_list ap);
 #if 0
   /** Implementation for ioctl(). */
   int (* op_ioctl) (struct sBSPACMnewlibFDOPSfile * fp,
