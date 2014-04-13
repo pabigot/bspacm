@@ -109,7 +109,10 @@ $(BOARD_LIBVENDOR_A): $(EFM32_ROOT)/emlib/src/*.c
 # These sources are not customizable
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/gpio_.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/uart_.c
+ifneq (efm32zg,$(DEVICE_LINE))
+# SWO is not supported on Cortex-M0 for Zero Gecko
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility/swo_.c
+endif # not EFM32ZG
 
 # Local Variables:
 # mode:makefile

@@ -50,7 +50,10 @@
 /** Function to turn on the EFM32 Serial Wire Output (SWO) feature,
  * required when using the Trace Port Interface Unit to feed back PC
  * sample and interrupt information to the energyAware Profiler
- * application. */
+ * application.
+ *
+ * @note SWO is only available on Cortex-M3 and Cortex-M4 device
+ * lines, not on the Zero Gecko. */
 void vBSPACMdeviceEFM32setupSWO(void);
 
 /** Function to set the value of a nybble in a two-word array.
