@@ -45,6 +45,7 @@
 #endif /* BSPACM_DEVICE_SERIES_EFM32 */
 
 #include <em_device.h>
+#include <em_emu.h>
 
 /** Function to turn on the EFM32 Serial Wire Output (SWO) feature,
  * required when using the Trace Port Interface Unit to feed back PC
@@ -73,6 +74,20 @@ void vBSPACMdeviceEFM32setPinNybble (volatile uint32_t * regp,
   const unsigned int shift = 4 * (0x07 & pin);
   *psel = (*psel & ~(0x0F << shift)) | ((0x0F & value) << shift);
 }
+
+/** Bypass default implementation in favor of EFM32 standard. */
+#define BSPACM_CORE_SLEEP() do { \
+    EMU_EnterEM1();              \
+  } while(0)
+
+/** Bypass default implementation in favor of EFM32 standard, invoked
+ * in a way that causes it to restore clock configurations, and
+ * augmented by clearing the @c SLEEPDEEP bit which EMU_EnterEM2()
+ * leaves set. */
+#define BSPACM_CORE_DEEP_SLEEP() do {   \
+    EMU_EnterEM2(true);                 \
+    SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk; \
+  } while(0)
 
 /* @cond DOXYGEN_EXCLUDE */
 /* SRAM and peripheral bitband addresses are in standard Cortex-M3/M4

@@ -155,6 +155,69 @@
     }                                             \
   } while (0)
 
+#if defined(BSPACM_DOXYGEN) || (! defined(BSPACM_CORE_SLEEP))
+/** Enter the Cortex-M sleep mode.
+ *
+ * The specific effect of this is vendor-specific, but in concept it
+ * turns off the processor clock and leaves all other clocks running.
+ * The implementation may map to a vendor-specific function or macro,
+ * but is expected to be equivalent to invoking the ARM instruction @c
+ * WFI (or @c WFE) with the @c SLEEPDEEP bit of System Control
+ * Register clear.
+ *
+ * @warning The implementation of this operation is device-specific.
+ *
+ * @note The user should be aware of the effect of this operation on
+ * the hardware an application targets.  Interrupts that cause wakeup
+ * will, if not masked through @c PRIMASK, be executed prior to
+ * control returning to the point following the @c __WFI() operation,
+ * meaning that any clocks disabled by the operation will not be
+ * restored until interrupt processing completes and control returns
+ * to the remainder of this macro.
+ *
+ * @see http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html */
+#define BSPACM_CORE_SLEEP() do { \
+    __WFI();                     \
+  } while(0)
+#endif /* BSPACM_CORE_SLEEP */
+
+#if defined(BSPACM_DOXYGEN) || (! defined(BSPACM_CORE_DEEP_SLEEP))
+/** Enter the Cortex-M deep sleep mode.
+ *
+ * The specific effect of this is vendor-specific, but in concept it
+ * turns off the processor clock and any number of other clocks.  The
+ * implementation may map to a vendor-specific function or macro, but
+ * is expected to be roughly equivalent to invoking the ARM
+ * instruction @c WFI (or @c WFE) with the @c SLEEPDEEP bit of the
+ * System Control Register set.
+ *
+ * @warning The implementation of this operation is device-specific.
+ * In particular, it may include restoration of some or all peripheral
+ * clocks.
+ *
+ * @note The user should be aware of the effect of this operation on
+ * the hardware an application targets.  Interrupts that cause wakeup
+ * will, if not masked through @c PRIMASK, be executed prior to
+ * control returning to the point following the @c __WFI() operation,
+ * meaning that any clocks disabled by the operation will not be
+ * restored until interrupt processing completes and control returns
+ * to the remainder of this macro.
+ *
+ * @warning Although some vendor implementations may leave the @c
+ * SLEEPDEEP bit set, it SHOULD be restored to its original state in
+ * the BSPACM implementation of this macro so that subsequent use of
+ * @c __WFI() and @c __WFE() executes regular or deep sleep in
+ * accordance with the original setting.
+ *
+ * @see http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html */
+#define BSPACM_CORE_DEEP_SLEEP() do {                           \
+    uint32_t in_sleepdeep = (SCB->SCR & SCB_SCR_SLEEPDEEP_Msk); \
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;                          \
+    __WFI();                                                    \
+    SCB->SRC &= ~in_sleepdeep;                                  \
+  } while(0)
+#endif /* BSPACM_CORE_DEEP_SLEEP */
+
 /** Defined to true value if cycle-counting is supported on the
  * architecture.  This is false on a Cortex-M0+ device. */
 #if defined(DWT_CTRL_NOCYCCNT_Msk)
