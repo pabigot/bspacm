@@ -216,15 +216,13 @@ fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
 #else
 #endif
   do {
-    hBSPACMperiphUART usp;
-
-    usp = hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, &cfg);
-    if (! usp) {
-      errno = ENXIO;
-      break;
-    }
     fp = console_state.handle;
     if (! fp) {
+      hBSPACMperiphUART usp = hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, &cfg);
+      if (! usp) {
+        errno = ENXIO;
+        break;
+      }
       if (0 != console_state.references) {
         errno = EBUSY;
         break;
@@ -236,6 +234,8 @@ fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
         fp->ops = &console_ops;
         console_state.references = 0;
         console_state.handle = fp;
+      } else {
+        (void)hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, 0);
       }
     }
   } while (0);
