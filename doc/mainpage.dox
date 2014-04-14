@@ -47,7 +47,7 @@ BSPACM features:
 applications;</li>
 
 <li>Support for several experimenter boards across two vendor lines (two
-Tiva&trade; C Series launchpads; two Silicon Labs EFM32&trade; Gecko
+Tiva&trade; C Series launchpads; four Silicon Labs EFM32&trade; Gecko
 STKs);</li>
 
 <li>Leverages:<ul>
@@ -59,9 +59,9 @@ STKs);</li>
     full control of specific peripherals;</li>
 
   <li>A higher-level API to abstract the vendor-specific peripherals
-    into common capabilities (such as LED control, UARTs, etc.)</li>
-</ul></li>
-</ul>
+    into common capabilities (such as @link bspacm/utility/led.h LED
+    control@endlink, @link bspacm/periph/uart.h UARTs@endlink,
+    etc.)</li> </ul></li> </ul>
 
 BSPACM requires:
 <ul>
@@ -72,26 +72,28 @@ Embedded Processors</a> 4_8-2013q4 or later release;</li>
 
 <li>Vendor-specific CMSIS files for the target device.  These are
 readily provided by most vendors; CMSIS for some Texas Instruments
-devices may be found.</li>
+devices may be found if you search hard enough.</li>
 </ul>
 
 The overall concept is similar to <a
-href="http://pabigot.github.io/bsp430/">BSP430</a>, which provides a
-similar solution for the TI MSP430&trade; microcontroller.  The Cortex-M
-is much more architecturally consistent and allows use of board-specific
-libraries without relying on a complex application-specific compile-time
-configuration infrastructure.
+href="http://pabigot.github.io/bsp430/">BSP430</a>, which supports
+device-independent software development for the TI MSP430&trade;
+microcontroller.  The Cortex-M is much more architecturally consistent
+and allows use of board-specific libraries without relying on a complex
+application-specific compile-time configuration infrastructure that was
+required by BSP430.
 
 BSPACM is released as open source under the <a
 href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
 license.  Files that have no significant IP and might reasonably be the
 basis of derived works by users of BSPACM are released under <a
 href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Public
-Domain</a>.  A few files are derived from BSD-3-Clause works copyrighted
+Domain</a>.  A few files are derived from open source works copyrighted
 by others; see the COPYING file for details.
 
-For further details, please see the Background, Philosophy, @link coding
-Coding Style@endlink, and Maintenance pages.
+For further details, please see the @link framework Framework
+Architecture@endlink, @link coding Coding Style@endlink, and Maintenance
+pages.
 
 The project page is at http://github.com/pabigot/bspacm.  Releases can be
 obtained by cloning the git repository:

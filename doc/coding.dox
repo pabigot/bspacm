@@ -85,9 +85,9 @@ in loop, @c if and @c else bodies to be enclosed in braces, e.g.:
 \section coding_naming Identifiers and Naming Conventions
 
 Care is taken in BSPACM to conform to the rules for C regarding global
-identifiers; in particular, underscores may not appear at the start of an
-identifier (including macro parameters), and certain suffixes like @c _t are
-reserved.
+identifiers.  In particular, underscores may not appear at the start of
+an identifier (including macro parameters), and certain suffixes like @c
+_t are reserved.
 
 @li All global symbols and macros encode that they are part of BSPACM by
 beginning with @c BSPACM with or without prefix characters that indicate
@@ -98,14 +98,15 @@ about the BSPACM module to which it belongs.
 
 @li Function names are intercapped.  An initial letter indicates the
 return type: @c i is used for @c int, @c ul for <c>unsigned long</c>, @c
-v for @c void, and @c h for a @HAL handle.  The letter @c x is used as a
-prefix for more complex types, such as <c>const char *</c>, other
-pointers, and structures.
+v for @c void, and @c h for a pointer-to-structure (for example, used as
+a device handle).  The letter @c x is used as a prefix for more complex
+types, such as <c>const char *</c>, other pointers, and structures.
 
 @li Type names (tags and typedefs) are intercapped.  An initial letter
 distinguishes the "type" of type: @c s is a @c struct, @c u is a @c
 union, @c e is an @c enum.  @c h indicates a handle for (pointer to) a
-structure type.  @c t is used for any typedef for a scalar type.
+structure type.  @c f is used for a typedef describing a function
+prototype.  @c t is used for any typedef for a scalar type.
 
 @li Where user code may define or reference instances of a BSPACM @c struct,
 @c union, and @c enum type directly (i.e. not through a handle), those types
@@ -121,9 +122,9 @@ user code directly implementation.
 @li Global variables (e.g., state for device peripherals) follow the
 general convention of function names.
 
-@li Function parameters, structure/union member tags, local variables, and
-and file static variables should be lower case, underscore separated.  These
-identifiers do not encode type information.
+@li Function parameters, structure/union member tags, local variables,
+and file static variables should be lower case, underscore separated.
+These identifiers do not encode type information.
 
 @li Where a function or value has an associated physical unit that is
 required for correct interpretation of the value, the unit should be
@@ -144,16 +145,17 @@ macros).
 
 Anybody using a Cortex-M device should know that they are operating on a
 32-bit device, and BSPACM is by design restricted to Cortex-M devices.
-Thus, except where a data type is used as part of an interface to an
+
+@li Except where a data type is used as part of an interface to an
 external system or to reflect a specific intent, @c int and <tt>unsigned
 int</tt> are used in preference to size-explicit types for index
-variables, return values, etc.
+variables, return values, etc.  This follows POSIX API standards.
 
 @li <c>uint32_t</c> is the core type for reference to system and
 peripheral memory mapped registers, even though <a
 href="https://launchpad.net/gcc-arm-embedded">some toolchains</a> (ahem)
 typedef this to <tt>unsigned long</tt> when it could just as well be
-<tt>unsigned int</tt> This follows ARM standards.
+<tt>unsigned int</tt>.  This follows ARM standards.
 
 @li Smaller sized types (@c uint16_t, @c int8_t, etc) are used in
 preference to @c short and @c char for integral values where space is at
@@ -161,11 +163,15 @@ a premium and the values will never exceed the type used.  Generally
 this applies only to stored data, but may also occur in temporary values
 used in expression evaluation, to make any truncation explicit.
 
-@li ASCII text characters and strings use @c char as the core type.
+@li C language @c short and @c long integer types are not used directly.
 
-@li Data transmitted to and from an external system using the @link
-bspacm/serial.h serial abstraction@endlink uses @c uint8_t as codified in
-<c><stdint.h></c>.
+@li ASCII text characters and strings use @c char as the core type.  @c
+char is not used for non-text data.
+
+@li For consistency with POSIX APIs, pointers to data buffers are
+usually pointers to @c void, though in some cases they may be pointers
+to @c uint8_t to eliminate the need for casts when operating on octet
+data.
 
 @li Any parameter that is a pointer to data the function is expected not to
 modify should include the appropriate @c const qualifier.

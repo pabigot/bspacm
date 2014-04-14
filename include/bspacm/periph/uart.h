@@ -151,7 +151,11 @@ typedef struct sBSPACMperiphUARTconfiguration {
  * indicate where there is unflushed material. */
 typedef enum eBSPACMperiphUARTfifoState {
   /** Indicates there is material waiting to be read from the hardware
-   * receive buffer */
+   * receive buffer.
+   *
+   * Resolving this requires that interrupts be enabled to allow the
+   * data to transfer into the software FIFO or some other
+   * location. */
   eBSPACMperiphUARTfifoState_HWRX = 0x01,
 
   /** Indicates there is material waiting to be written in the
@@ -169,7 +173,10 @@ typedef enum eBSPACMperiphUARTfifoState {
                                    | (unsigned int)eBSPACMperiphUARTfifoState_HWTX),
 
   /** Indicates there is material waiting to be read from the software
-   * receive FIFO */
+   * receive FIFO.
+   *
+   * Resolving this requires that the user application read the
+   * data. */
   eBSPACMperiphUARTfifoState_SWRX = 0x04,
 
   /** Indicates there is material waiting to be written in the

@@ -1,0 +1,317 @@
+/* Copyright 2014, Peter A. Bigot
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * * Neither the name of the software nor the names of its contributors may be
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*! @page newlib Interfacing with newlib (libc)
+@tableofcontents
+
+<a href="https://sourceware.org/newlib/">Newlib</a> is an open-source
+implementation of the standard C library, and is used as the libc
+implementation in BSPACM's primary toolchain, <a
+href="https://launchpad.net/gcc-arm-embedded">GNU Tools for ARM Embedded
+Processors</a>.  It was designed for use in embedded systems, using a
+small set of externally-supplied functions to interface with the system.
+
+The classic reference (in my experience) for porting newlib to a new
+platform is: http://neptune.billgatliff.com/newlib.html
+
+@section newlib_nano Space Optimization with newlib-nano
+
+Although newlib was designed for embedded systems, it has historically
+been unusable on microcontrollers due to its relatively large memory
+requirements, e.g. 1 kiB SRAM to support @c malloc, 25 kiB FLASH to
+support @c printf, etc.
+
+With the addition of <a
+href="http://community.arm.com/groups/embedded/blog/2013/01/21/shrink-your-mcu-code-size-with-gcc-arm-embedded-47">a
+variant called <em>newlib-nano</em></a>, this is no longer the case.
+newlib-nano was implemented specifically for ARM within the <a
+href="https://launchpad.net/gcc-arm-embedded">GNU Tools for ARM Embedded
+Processors</a>, and some of its enhancements have been merged upstream.
+
+By adding <tt>-specs=nano.specs</tt> to the gcc link command, a
+reduced-size libc is linked in.  The effect of this is significant.  The
+size of the classic "hello" program compiled for the EFM32GG-STK3700 kit
+with traditional newlib under 4_8-2013q4 is:
+@verbatim
+llc[56]$ rm app.axf ; make WITH_NANO=0 app.axf
+arm-none-eabi-gcc -o app.axf -L/prj/arm/bspacm//board/efm32gg-stk3700 -ggdb -Wl,-gc-sections  -Wl,-T,/prj/arm/bspacm//toolchain/GCC/gcc_arm.ld -L/prj/arm/bspacm//device/efm32/efm32gg/efm32gg990f1024 -mthumb -mcpu=cortex-m3   system_efm32gg.o main.o startup_ARMCM3.o periph_config.o -Wl,--start-group -lc -lemlib -lbspacm-fdops -lbspacm  -Wl,--end-group
+arm-none-eabi-size app.axf
+   text    data     bss     dec     hex filename
+  27832    2340     116   30288    7650 app.axf
+@endverbatim
+The same program linked with newlib-nano is one third the FLASH, and one
+tenth the SRAM:
+@verbatim
+llc[57]$ rm app.axf ; make WITH_NANO=1 app.axf
+arm-none-eabi-gcc -o app.axf -L/prj/arm/bspacm//board/efm32gg-stk3700 -ggdb -Wl,-gc-sections  -Wl,-T,/prj/arm/bspacm//toolchain/GCC/gcc_arm.ld -L/prj/arm/bspacm//device/efm32/efm32gg/efm32gg990f1024 -specs=nano.specs -mthumb -mcpu=cortex-m3   system_efm32gg.o main.o startup_ARMCM3.o periph_config.o -Wl,--start-group -lc_s -lemlib -lbspacm-fdops -lbspacm  -Wl,--end-group
+arm-none-eabi-size app.axf
+   text    data     bss     dec     hex filename
+   8720     232      72    9024    2340 app.axf
+@endverbatim
+
+BSPACM defaults to use <tt>WITH_NANO=1</tt> but this can be overridden
+on the command line if necessary.
+
+If text formatting functions alone are required alternative libraries
+such as <a href="http://pabigot.github.io/embtextf/">embtextf</a> may be
+used.  Initial experimentation suggests that embtextf saves only about 1
+kiB flash and 50 bytes SRAM relative to newlib-nano.  At this time,
+there is no built-in support to incorporate embtextf support in BSPACM.
+
+The following behavioral differences/limitations are known to exist with
+newlib-nano:
+
+@li No support for @c uint64_t format specifiers (e.g. PRIx64 from
+<inttypes.h>
+
+@li stdio buffering disabled by default for descriptors other than
+stdin/stdout/stderr.
+
+@section newlib_sys System Interface
+
+newlib maps standard C functions to a specific implementation
+environment through a chain of functions, for example:
+
+* @li @c write() invokes @c _write_r() with the current reentrancy
+  context (e.g. thread/task-unique @c errno);
+
+* @li @c _write_r() invokes @c _write() and copies errno appropriately;
+
+* @li @c _write() must be provided by something
+
+If nothing provides an implementation of @c _write() but the application
+requires one, the application will fail to link.
+
+The standard solution for newlib is to add <tt>-specs=nosys.specs</tt>
+to the gcc linker command line.  This links in a separate library with
+implementations for all required system functions.  Most of these simple
+return an error; some (like @c _sbrk()) provide a usable definition.
+
+To simplify customization, BSPACM provides weak definitions of all the
+system functions in its core library @c libbspacm.a, eliminating the need
+to add <tt>-specs=nosys.specs</tt>.  The following function and data
+object definitions may be overridden by the application:
+
+@anchor newlib_sys_weak_misc
+@code
+char ** environ;
+int _chown (const char * path, uid_t owner, gid_t group);
+int_execve (const char * filename, char * const argv[], char * const envp[]);
+pid_t _fork (void);
+pid_t _getpid (void);
+int _gettimeofday (struct timeval * tv, struct timezone * tz);
+int _kill (pid_t pid, int sig);
+int _link (const char * oldpath, const char * newpath);
+ssize_t _readlink (const char * path, char * buf, size_t bufsiz);
+int _stat (const char * path, struct stat * buf);
+int _symlink (const char * oldpath, const char * newpath);
+clock_t _times (struct tms *buf);
+int _unlink (const char * pathname);
+pid_t _wait (int * status);
+void _exit (int status);
+@endcode
+
+@ref newlib_sys_fdops provides an framework for the following functions,
+which may instead be supplied by the application:
+@anchor newlib_sys_weak_fdops
+@code
+int _close (int fd);
+int _fstat (int fd, struct stat * buf);
+int _isatty (int fd);
+off_t _lseek (int fd, off_t offset, int whence);
+int _open (const char * pathname, int flags);
+ssize_t _read (int fd, void * buf, size_t count);
+ssize_t _write (int fd, const void * buf, size_t count);
+@endcode
+
+@ref newlib_sys_sbrk describes how to override this function:
+@anchor newlib_sys_weak_sbrk
+@code
+void * _sbrk (ptrdiff_t increment);
+@endcode
+
+@subsection newlib_sys_sbrk Heap Management
+
+The standard ARM SRAM layout comprises initialized data objects followed
+by heap space and stack space.  The stack grows downward as material is
+pushed and popped; the heap grows upward only when dynamic memory is
+allocated through the _sbrk() system call.  BSPACM allows significant
+customization of the policies that control heap allocation.
+
+The standard ARM startup file supports two preprocessor macros that
+specify memory to be reserved for the initial stack and heap.  These can
+be controlled within BSPACM:
+
+@li The @c STARTUP_STACK_SIZE @c make variable defines the amount of
+space reserved for the stack.  The default value is 1 kiB; whether this
+actually limits stack size depends on the _sbrk() policy.
+
+@li The @c STARTUP_HEAP_SIZE @c make variable defines the amount of
+space reserved for the heap.  The default value is 0 kiB; whether this
+actually limits heap size depends on the _sbrk() policy.
+
+These macro values propagate to symbols that specify SRAM boundaries for
+heap and stack, following all application-declared data.
+
+BSPACM provides a @c make variable @c NEWLIB_SBRK which selects among
+the following policies for dynamic memory management.  Explicit
+selection of an allocation policy by assigning one of the following
+values to @c NEWLIB_SBRK will link the corresponding policy into the
+application even if dynamic memory allocation is not done.  Each policy
+invokes _bspacm_sbrk_error() if allocation fails, allowing diagnosis and
+recovery to be customized.
+
+Leaving @c NEWLIB_SBRK unset causes a weak reference to the @c
+unlimitedstack implementation, providing good default behavior without
+increasing application size if no dynamic memory allocation is
+performed.  A user application may supply its own non-weak definition of
+_sbrk() if none of the following policies is acceptable.
+
+@par @c unlimitedstack
+
+An _sbrk() implementation that allows heap (growing up) and stack
+(growing down) to share a region of memory, with a minimum size reserved
+for the stack but allowing for the stack to grow below that point.  An
+error is indicated if the new break point would encroach into the
+reserved stack space or the currently used stack space.  This is the
+default policy for BSPACM, and is closely related to @c dynstack which
+is the policy implemented by newlib's <tt>-specs=nosys.specs</tt>
+option.
+
+@par @c heap
+
+An _sbrk() implementation that allocates within the reserved heap.  An
+error is indicated if the reserved heap size would be exceeded.  There
+is no check against the current stack pointer.
+
+@par @c fatal
+
+An _sbrk() implementation that rejects any attempt to allocate memory
+dynamically.  The behavior is equivalent to the @c heap policy with a
+zero-sized heap.
+
+@par @c fixedstack
+
+An _sbrk() implementation that allows heap (growing up) to grow to the
+bottom of reserved stack region.  An error is indicated if the new
+program break would encroach into the reserved stack space.  There is no
+check against the current stack pointer.  This policy is preferred to @c
+unlimitedstack when code may be executing in tasks where the stack frame
+is in previously allocated memory, making comparison with the stack
+pointer invalid.
+
+@par @c dynstack
+
+An _sbrk() implementation that allows heap (growing up) and stack
+(growing down) to share a region of memory.  An error is indicated if
+the new break point would encroach into the current stack space.  (This
+eliminates the minimum reserved stack that is checked by @c
+unlimitedstack.)
+
+@subsection newlib_sys_fdops File Descriptor Operations
+
+In <bspacm/newlib/fdops.h> BSPACM provides an infrastructure that
+implements @link newlib_sys_weak_fdops various functions@endlink as well
+as the function below, so that standard operations on file descriptors
+are supported:
+
+@code
+/* BSPACM extension, no weak definition provided */
+int ioctl (int fd, int request, ...);
+@endcode
+
+The @c libbspacm-fdops.a library implements the bulk of this, with the
+assistance of application-provided drivers.  This feature is disabled by
+default, and is enabled by setting @c WITH_FDOPS=1 in @c make.
+
+#xBSPACMnewlibFDOPSdriver is a list of drivers that are supported by the
+application.  Entries in this list are pointers to functions with the
+signature #fBSPACMnewlibFDOPSdriver, taking a path string and some
+flags, and returning a handle to a file object.  The list terminates
+with a null pointer.  The newlib _open() system call invokes each driver
+function in turn until it finds one that recognizes the path and returns
+a file object.
+
+Use of @c WITH_FDOPS=1 will provide a weak definition of
+this array that contains a single driver, which maps the path @c
+"/dev/console" to the default UART on the board.  Applications override
+this by providing a strong definition in the application code.
+
+The C API for file descriptors represents each file by an integer,
+numbered consecutively from zero.  As drivers return file handles, they
+are stored in the array #xBSPACMnewlibFDOPSfile_, with their index used
+as the file descriptor.  The number of entries allowed in this array is
+provided by #nBSPACMnewlibFDOPSfile.
+
+Use of @c WITH_FDOPS=1 will provide a weak definition of the array and
+its length, containing three entries which is sufficient for the @link
+newlib_sys_fdops_stdio standard C I/O descriptors@endlink.  Use of
+additional file descriptors requires that the application provide an
+alternative definition of the array and its length.
+
+Application code itself should never need to access the
+#xBSPACMnewlibFDOPSfile_ array.  open() will fail if too many devices
+are opened.
+
+Each file handle references an instance of #sBSPACMnewlibFDOPSfile,
+which provides a pointer to device-specific data as well as a pointer to
+a #sBSPACMnewlibFDOPSfileOps table that provides implementation for each
+file descriptor operation supported by the device.  System calls that
+would attempt to invoke an unsupported operation return an error
+indicator and set @c errno to @c ENOSYS.
+
+For an example of implementing devices, see <a
+href="http://github.com/pabigot/bspacm/blob/master/src/newlib/uart.c">src/newlib/uart.c</a>,
+which provides hBSPACMnewlibFDOPSdriverUARTbind() which binds a generic
+UART handle to a file handle.  This function in turn is used by
+fBSPACMnewlibFDOPSdriverCONSOLE(), a full driver implementation that
+provides access to the board-specific default UART as a console device.
+
+@subsubsection newlib_sys_fdops_stdio Standard I/O Descriptors
+
+The C library assumes that descriptors for stdin (0), stdout (1), and
+stderr(2) are provided by the system.  BSPACM supports this by ensuring
+that vBSPACMnewlibFDOPSinitializeStdio_() is invoked prior to executing
+any library function that manipulates file descriptors.
+
+Use of @c WITH_FDOPS=1 provides a weak definition of
+vBSPACMnewlibFDOPSinitializeStdio_() which opens @c "/dev/console" three
+times with appropriate flags to initialize the first three entries of
+the descriptor table.
+
+@note For console support to be complete, the application must also use:
+@code
+AUX_CPPFLAGS+=-DBSPACM_CONFIG_ENABLE_UART=1
+@endcode
+in its @c Makefile so that #hBSPACMdefaultUART is provided.
+
+@copyright_doc
+*/

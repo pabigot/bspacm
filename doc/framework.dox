@@ -1,0 +1,488 @@
+/* Copyright 2014, Peter A. Bigot
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * * Neither the name of the software nor the names of its contributors may be
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*! @page framework Framework Architecture
+@tableofcontents
+
+The fundamental architecture of BSPACM is based on the following assumptions:
+
+@li Vendor-provided <a
+href="http://www.arm.com/products/processors/cortex-m/cortex-microcontroller-software-interface-standard.php">CMSIS</a>
+headers.  CMSIS defines standard names for exception handlers, @c struct
+data layouts for core and peripheral registers, standard "intrinsics"
+such as @c __disable_irq() and @c __WFI(), global variables like @c
+SystemCoreClock and functions like @c SystemCoreClockUpdate().  Most
+vendors readily supply the necessary headers, along with the
+documentation required to use them.
+
+@li Toolchain support for <a
+href="http://en.wikipedia.org/wiki/Weak_symbol">weak symbols</a>: This
+feature is used to provide default implementations for @link newlib_sys
+newlib's system interface@endlink as well as for all handlers supported
+by a processor's vector table.  Vendor libraries and application object
+files are ordered so that the desired definition will supersede the weak
+definition when necessary.
+
+@li Toolchain support for inline functions: For speed many functions are defined as
+static functions in headers, with a toolchain-specific
+#BSPACM_CORE_INLINE or #BSPACM_CORE_INLINE_FORCED annotation to ensure
+that the implementation is inlined.
+
+@li Toolchain support for linker optimizations, including placing each
+function and data object in its own section (gcc @c -ffunction-sections
+and @c -fdata-sections), and eliminating unreferenced sections from the
+executable (gcc @c -Wl,-gc-sections).
+
+@li The <a href="http://www.gnu.org/software/make/">GNU <tt>make</tt></a> build tool.
+
+@section framework_cmsis CMSIS Infrastructure
+
+<a
+href="http://www.arm.com/products/processors/cortex-m/cortex-microcontroller-software-interface-standard.php">CMSIS</a>
+provides core header files for each Cortex-M architecture, as well as a
+standard for vendor-specific peripheral interfaces.  It also defines the
+names for exception handlers and core support functions, and provides
+example implementations of startup and system initialization code for
+each architecture.
+
+Where vendor-supplied CMSIS support is adequate the vendor files are
+used.  In other situations CMSIS standard implementations direct from
+ARM are used.
+
+@subsection framework_cmsis_startup Startup Infrastructure
+
+BSPACM provides its own linker scripts and startup assembly files that
+derive from the ARM examples.  These scripts are shared by all
+applications; customization is performed through BSPACM support for weak
+symbols and preprocessor flags.  BSPACM changes to support this
+generality includes:
+
+@li In the linker script device-specific memory regions are included
+from an external file, the location of which is provided by the @c
+DEVICE_LDSCRIPT_PATH in @c make.
+
+@li In the startup source the vector table is described by including a
+device-specific template file which specifies the order and names of
+entries in the table.
+
+@li In the startup source the vector table is initialized with weak
+definitions for all peripheral exception handlers.  These may be
+replaced by the application by simply providing a non-weak definition
+using the CMSIS standard name for the exception handler (e.g., @c
+SysTick_Handler and @c UART0_IRQHandler, not @c SysTickIntHandler or @c
+UARTIntHandler).
+
+@li By default, the vector table gets a unique weak definition for each
+entry, allowing unexpected IRQs to be identified.  A small amount of
+space can be regained by overriding the value of @c
+__STARTUP_USE_UNIQUE_DEFAULT_HANDLER when the startup files are
+assembled.
+
+@subsection framework_cmsis_system System Infrastructure
+
+CMSIS specifies a number of standard variables and functions that are to
+be provided by the vendor.  Among these are:
+
+@li @c SystemCoreClock is a @c uint32_t global which represents the
+processor speed in Hertz.
+
+@li @c SystemInit() is a function that is called within the startup code
+to initialize the clocks (and @c SystemCoreClock) prior to invoking
+constructors and calling @c main().
+
+@li @c SystemCoreClockUpdate() is a function that reads the clock
+peripheral configuration and updates the value of @c SystemCoreClock.
+
+BSPACM is written with the expectation that these and similar standard
+functions and data objects exist and may be used.
+
+At this time Texas Instruments does not support CMSIS, so a minimum
+generic @c system_TM4C.c is provided in the TM4C device series area.
+
+Although Silicon Labs (Energy Micro) does provide a CMSIS startup file,
+its @c SystemInit() fails to initialize @c SystemCoreClock.  At this
+time, BSPACM has not chosen to fix this error locally.
+
+@section framework_device Target System Model
+
+BSPACM targets systems designed around ARM Cortex-M series microprocessors.
+The intent is that all architecture variations within Cortex-M will be
+supported: at the time of writing that includes Cortex-M0+, Cortex-M3,
+and Cortex-M4 devices.
+
+To share implementation and concepts among the widest possible range of
+target platforms, the following taxonomy is used:
+
+@li A @b board consists of a specific Cortex-M device along with
+supporting hardware such as LEDs, sensors, debug interfaces, etc.
+Examples of boards are the <a
+href="http://www.ti.com/tool/ek-tm4c123gx">Texas Instruments Tiva
+Launchpad</a> and <a
+href="http://www.silabs.com/products/mcu/lowpower/pages/efm32gg-stk3700.aspx">Silicon
+Labs EFM32 Giant Gecko Starter Kit</a>.  Part of the description of a
+board includes its @em device.
+
+@li A @b device is a specific Cortex-M microcontroller, with its
+peripherals, FLASH and SRAM sizes, etc.  Examples of devices are the <a
+href="http://www.ti.com/product/tm4c123gh6pm">TM4C123GH6PM</a> and the
+<b>EFM32GG990F1024</b>.  Each device is an instance within a vendor
+<em>device line</em>.
+
+@li A <b>device line</b> is the next generalization of Cortex-M
+microcontrollers from a specific vendor.  These comprise the set of
+devices that share common properties, such as Cortex-M architecture and
+the set of supported peripherals (some of which may not be present on
+some devices).  Examples of device lines are the <a
+href="http://www.ti.com/lsds/ti/microcontroller/tiva_arm_cortex/c_series/tm4c123x_series/overview.page">TM4C123</a>
+and <a
+href="http://www.silabs.com/products/mcu/lowpower/pages/efm32gg-giant-gecko.aspx">EFM32GG
+"Giant Gecko"</a>.  A device line is a refinement of a <em>device
+series</em>.
+
+@li A <b>device series</b> is the highest level of abstraction supported
+by BSPACM for aggregation of related microcontrollers.  These comprise
+the set of device lines that share common properties, such as vendor and
+overall purpose.  Examples of device series are the <a
+href="http://www.ti.com/lsds/ti/microcontroller/tiva_arm_cortex/c_series/overview.page">TM4C
+Tiva C Series</a> and <a
+href="http://www.silabs.com/products/mcu/lowpower/Pages/default.aspx#32-bit">EFM32
+Energy Micro</a> product lines.
+
+A BSPACM application is built for a specific board, by providing the @c
+BOARD @c make variable when compiling it.  All further information not
+explicitly provided by the application is derived from the board
+identification.
+
+@section framework_layout Directory Structure
+
+The structure of the BSPACM workspace reflects the taxonomy in @ref
+framework_device.  You can browse the current directory structure
+through the <a href="https://github.com/pabigot/bspacm">BSPACM github
+project page</a>.
+
+@li The @link framework_layout_bd_board @c board @endlink directory
+contains subdirectories for each supported board.  The manufacturer's
+preferred name for the board, in lower case, should be used as the
+subdirectory name.
+
+@li The @link framework_layout_bd_device @c device @endlink directory
+contains a series of subdirectories: each series contains subdirectories
+for each of its lines, which in turn contain subdirectories for each of
+its devices.  Again the manufacturer's preferred name, in lower case, is
+used for each directory.
+
+@li the @link framework_layout_include @c include @endlink directory
+contains a hierarchy of C header files that will be located using
+angle-bracket include directives in C sources.  The top level contains
+only a subdirectory @c bspacm, ensuring that each included file is
+associated with the BSPACM namespace and does not conflict with vendor
+or third-party libraries.
+
+@li the @link framework_layout_src @c src @endlink directory contains a
+hierarchy of C implementation files.  Source directories are further
+refined to reflect the include files for which they provide
+implementation.
+
+@li the @c toolchain directory contains material specific to the
+compiler/linker toolchain, using the CMSIS standard toolchain
+identifiers @c GCC (<a href="https://launchpad.net/gcc-arm-embedded">GNU
+Tools for ARM Embedded Processors</a>) and the unsupported toolchains @c
+ARM, @c G++, and @c IAR.  Each toolchain directory will contain material
+such as linker scripts and CMSIS-standard assembly language startup
+sources for each Cortex-M architecture.
+
+The @c include and @c src directories are reproduced as necessary within
+the board and device hierarchies so that specific implementations are
+associated with the most general level to which they apply.
+
+Other directories such as @c examples, @c doc, and @c maintainer are
+either self-explanatory or not relevant to most users.
+
+@subsection framework_layout_include Include File Hierarchies
+
+All header files in BSPACM are placed so that they are included with the
+angle-bracket version of C's @c \#include preprocessor directive with the
+leading @c bspacm enforcing placement in a namespace.
+
+@li <bspacm/core.h> is the primary entry point to BSPACM, bringing in
+the device-specific files and key macros and inline functions.
+
+@li <bspacm/config.h> provides declarations for peripherals and other
+functionality available on the board for which the application is
+built.  It in turn includes the header <bspacm/appconf.h> which may be
+overridden on a per-application basis, but which is provided by the
+board-specific hierarchy when this is unnecessary.
+
+@li The <tt>bspacm/utility</tt> hierarchy provides common interface to
+non-peripheral capabilities, such as <bspacm/utility/led.h>.
+
+@li The <tt>bspacm/periph</tt> hierarchy provides common interface to
+peripherals such as @link bspacm/periph/uart.h UARTs@endlink, SPI, I2C,
+timers, real-time clocks, etc.
+
+@li The <tt>bspacm/newlib</tt> hierarchy provides access to BSPACM's
+@ref newlib support infrastructure.
+
+Other directories and files may be added over time.
+
+@subsubsection framework_layout_include_internal Templates and Internal Include Files
+
+The <tt>bspacm/internal</tt> hierarchy provides header files that should
+not be made visible in public API for various reasons.  Internal header
+files named <tt><em>something</em>.inc</tt> are template files that are
+included into headers or implementation files, possibly multiple times,
+to specialize code or data structures for specific purposes, such as
+defining a standard IRQHandler function or filling out a device
+description table.
+
+@subsubsection framework_layout_include_search Include Search Order
+
+Multiple <tt>include/bspacm</tt> hierarchies may combine to produce the
+environment used for a particular application.  The application may add
+its own hierarchy first, but the core @c make infrastructure will also
+search the board, device, device line, and device series (in that order)
+before falling back to the generic hierarchy.  Device-specific template
+(@c .inc) and header files are found within the extended set of
+hierarchies.
+
+@subsection framework_layout_src Source File Hierarchies
+
+Implementation files are placed into subdirectories of @c src
+corresponding to the header file that they implement.
+
+As with include files, there are specific source directories available
+at the board, device, device line, and device series layers as well as
+the application.  Unlike include files, there is no ordered searching
+within these directories: the full path to each implementation file that
+contributes to an application are added to the list of source files by
+one of the Makefile components.  See @ref framework_make.
+
+@subsection framework_layout_bd Board and Device Hierarchies
+@subsubsection framework_layout_bd_board Board Hierarchy
+
+The @c board hiearchy contains subdirectories for each supported board,
+identified by the manufacturer's preferred name, in lower case.  This
+identifier is also used as the value of the @c BOARD variable in the
+@link framework_make Makefile architecture@endlink.
+
+Within each board directory should be the following files:
+
+@par <tt>Makefile.board</tt>
+
+Set the board identifier in the @c BOARD make variable.  Then include
+the appropriate <tt>Makefile.device</tt> from the device hierarchy, with an
+absolute path generally beginning with <tt>\$(BSPACM_ROOT)</tt>.
+
+Any other board- or device-specific make variables may also be set.
+Generally these should begin with the prefix `BOARD_`.  For example,
+`BOARD_STYLE` is used in EFM32 boards to distinguish DK (development
+kit) from STK (starter kit).
+
+@par @c README
+
+Contain salient information about the board: a link to manufacturer's
+home page, basic characteristics like flash/RAM sizes, pin assignments
+for LEDs, buttons, and console UART, and whatever else might be useful.
+Don't repeat information that can easily be found elsewhere; don't make
+the reader go hunting for the most basic information.
+
+This file may have a suffix such as @c .md (<a
+href="https://daringfireball.net/projects/markdown/">Markdown</a>), @c
+.rst (<a
+href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>),
+or @c .txt (plain text) identifying the text markup style used within
+the file.
+
+@par <tt>include/bspacm/appconf.h</tt>
+
+A header file included by <bspacm/config.h> that provides declarations
+related for common peripherals such as the default UART device.  It may
+be copied to the application source directory and modified to meet
+specific application needs.
+
+The contents of this file should be synchronized with the corresponding
+@c src/periph_config.c file.
+
+@par <tt>src/periph_config.c</tt>
+
+An implementation file that provides definitions for common peripherals
+such as the default UART device.  The @c PERIPH_CONFIG_SRC variable used
+by @ref framework_make defaults to the version supplied here, but it may
+be overridden to provide an application-specific implementation.
+
+@par <tt>include/bspacm/internal/board/led.inc</tt>
+
+A template file included by device-specific header and implementation
+files to describe the LEDs that are available on the board.
+
+@subsubsection framework_layout_bd_device Device Hierarchy
+
+The device hierarchy contains (recursively) information on each device
+series, line, and specific device supported in the baseline BSPACM
+infrastructure.  At the top level is the device series, identified by
+the manufacturer's preferred name.
+
+Each layer in the hierarchy has @link framework_layout_include @c
+include @endlink and @link framework_layout_src @c src @endlink
+subdirectories that provide interface and implementation specific to
+that layer.  In addition, the following files are found at various
+levels in this hierarchy:
+
+@par <tt>Makefile.device</tt>
+
+This file is necessarily found at the device layer of the hierarchy
+(e.g., <tt>device/efm32/efm32gg/efm32gg990f256/Makefile.device</tt>).
+
+Set the device identifier in the @c DEVICE make variable.  Provide
+definitions for @c TARGET_MFLAGS, @c TARGET_CPPFLAGS, @c ARM_PROCESSOR,
+and other variables that cannot be defined at the line or series levels.
+
+End by including the appropriate <tt>Makefile.line</tt> from the device
+hierarchy, with an absolute path generally beginning with
+<tt>\$(BSPACM_ROOT)</tt>.
+
+@par <tt>Makefile.line</tt>
+
+This file is necessarily found at the line layer of the hierarchy
+(e.g., <tt>device/efm32/efm32gg/Makefile.line</tt>).
+
+Set the device line identifier in the @c DEVICE_LINE make
+variable. Provide definitions for @c TARGET_MFLAGS, @c TARGET_CPPFLAGS,
+@c ARM_PROCESSOR, and other variables that cannot be defined at the
+series level.
+
+Then include the appropriate <tt>Makefile.series</tt> from the device
+hierarchy, with an absolute path generally beginning with
+<tt>\$(BSPACM_ROOT)</tt>.
+
+@par <tt>Makefile.series</tt>
+
+This file is necessarily found at the series layer of the hierarchy
+(e.g., <tt>device/efm32/Makefile.series</tt>).
+
+Set the device line identifier in the @c DEVICE_LINE make variable.
+Provide defaults for @c TARGET_MFLAGS, @c TARGET_CPPFLAGS, @c
+ARM_PROCESSOR, and other variables that have not already been defined.
+
+Define @c BOARD_LIBVENDOR_A to the archive file for vendor libraries
+such as <a href="http://www.ti.com/tool/sw-tm4c">TivaWare</a> or <a
+href="http://cdn.energymicro.com/dl/documentation/doxygen/EM_CMSIS_3.20.2_DOC/index.html">emlib</a>.
+Provide the necessary @c make rules to build that archive.
+
+Append to @c BOARD_LIBBSPACM_SRC any device-specific implementation
+files.
+
+Define a command @c DO_FLASH_IMAGE which takes a single argument that is
+the name of an ARM binary and programs it into the board.
+
+@par <tt>memory.ld</tt>
+
+A file for the GCC toolchain describing the memory regions, i.e. size of
+flash and ram available on the device.  The file will be included into
+the generic linker script for the processor.
+
+Generally this is found at the device (deepest) level.  If it is not
+placed there, the @c DEVICE_LDSCRIPT_PATH @c make variable must be defined
+to instruct the linker where it can be found.
+
+@par <tt>include/bspacm/internal/device/vector_table.inc</tt>
+
+A file describing the entries in the interrupt vector table for the
+device, in a form suitable for inclusion into linker scripts and/or
+startup sources.  The file wraps the standard names, in order, with a
+macro that is expanded in context to create a CMSIS standard
+<tt>*_IRQHandler</tt> definition or reference.
+
+Generally this is found at the line level.
+
+@par <tt>include/bspacm/internal/periph</tt>
+
+A directory containing template files included by device-specific header
+and implementation files to declare or define specific peripherals.  The
+files should have a base name corresponding to the peripheral;
+e.g. <tt>usart.inc</tt> or <tt>leuart.inc</tt>.
+
+@section framework_make Makefile Architecture
+
+BSPACM uses GNU make features to simplify the build process at the cost
+of increased maintainer complexity.
+
+Each application has its own @c Makefile which initializes the @c SRC
+variable to the list of application-specific sources, then includes
+<tt>\$(BSPACM_ROOT)/make/Makefile.common</tt>.  That file then includes
+board and device specific files, constructs compiler and linker
+arguments, and provides the rules necessary to build the libraries,
+object files, and application itself.
+
+BSPACM's @c make infrastructure preprocesses source files to determine
+dependencies, and automatically rebuilds all files that are affected by
+source code changes.
+
+Object files specific to an application, including the startup and
+system modules from CMSIS, are compiled and stored in the current
+directory alongside the Makefile.  Object files and libraries that
+should be independent of the application are stored in the BSPACM board
+directory.
+
+Standard targets include:
+
+@li @c app.axf builds the application into ELF format
+@li @c install downloads the application to the board, after building it
+@li @c clean removes all application-specific build files.  This should
+be done when rebuilding an application for a new board, as the object
+files may have invalid references.
+@li @c realclean removes all board-specific build files.  This may be
+necessary when changing code-generation and link-related toolchain
+flags.
+
+@subsection framework_make_variables Variables Used in Building Applications
+
+All @c make variables should be documented within @c
+make/Makefile.common and the reader is directed there for full details.
+Only the most commonly specified variables are described here.  See the
+various example applications to learn more.
+
+@par @c SRC
+
+This variable contains the list of source code files, exclusive of
+vendor and BSPACM libraries, that contribute to an application.  C (@c
+.c), C++ (@c .cc), and assembly-with-c-preprocessor (@c .S) sources are
+recognized, and @c make build rules dynamically created to build the
+object files and place them in the current directory.
+
+@par @c BOARD
+
+This variable must be set to identify the target for the application.
+The value is the board identifier as specified by the corresponding
+subdirectory of <tt>\$(BSPACM_ROOT)/boards</tt>
+
+@copyright_doc
+*/

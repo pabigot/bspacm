@@ -85,7 +85,7 @@ hBSPACMnewlibFDOPSfile hBSPACMnewlibFDOPSdriverUARTbind (hBSPACMperiphUART usp);
  * @c errno set to @c EBUSY.
  *
  * @param pathname the path that was passed to open(). This function
- * returns a null pointer if @pathname is not equal to
+ * returns a null pointer if @p pathname is not equal to
  * <tt>"/dev/console"</tt>.
  *
  * @param flags ignored
