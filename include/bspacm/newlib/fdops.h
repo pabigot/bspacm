@@ -150,12 +150,10 @@ typedef struct sBSPACMnewlibFDOPSfileOps {
                         const void * buf,
                         size_t count);
 
-#if 0
   /** Implementation for ioctl(). */
   int (* op_ioctl) (struct sBSPACMnewlibFDOPSfile * fp,
-                    int cmd,
+                    int request,
                     va_list ap);
-#endif /* 0 */
 } sBSPACMnewlibFDOPSfileOps;
 
 /** Record for the state associated with a file descriptor. */
@@ -242,20 +240,5 @@ extern hBSPACMnewlibFDOPSfile const hBSPACMnewlibFDOPSfileRESERVED;
  * #xBSPACMnewlibFDOPSfile_ will then be available for use as normal
  * descriptors or as the standard ones. */
 void vBSPACMnewlibFDOPSinitializeStdio_ (void);
-
-#if 0 /* Disabled until we're sure this is useful */
-/** Manipulate the underlying parameters of the device.
- *
- * The semantics of this are specific to @p request and to the device
- * that @p fd references.
- *
- * @param fd descriptor for an open device
- * @param request operation-specific request identifier
- * @param ... any parameters associated with @p request
- *
- * @return Usually zero on success, with errors indicated by returning
- * -1 and setting @p errno. */
-int ioctl (int fd, int request, ...);
-#endif /* 0 */
 
 #endif /* BSPACM_NEWLIB_FDOPS_H */

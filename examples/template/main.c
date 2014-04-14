@@ -13,7 +13,9 @@
  */
 
 #include <bspacm/utility/led.h>
+#include <bspacm/newlib/ioctl.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 void main ()
 {
@@ -23,4 +25,7 @@ void main ()
 
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
+  fflush(stdout);
+  ioctl(1, BSPACM_IOCTL_FLUSH, O_WRONLY);
+  BSPACM_CORE_DEEP_SLEEP();
 }

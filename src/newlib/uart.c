@@ -122,10 +122,40 @@ uart_close (struct sBSPACMnewlibFDOPSfile * fp)
   return rv;
 }
 
+static int
+uart_ioctl (struct sBSPACMnewlibFDOPSfile * fp,
+            int request,
+            va_list ap)
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  hBSPACMperiphUART usp = (hBSPACMperiphUART)fp->dev;
+  int rv = -1;
+
+  do {
+    int flags = 1 + va_arg(ap, int);
+    int fifo_mask = 0;
+    if (! usp) {
+      errno = EINVAL;
+      break;
+    }
+    if (_FREAD & flags) {
+      fifo_mask |= eBSPACMperiphUARTfifoState_RX;
+    }
+    if (_FWRITE & flags) {
+      fifo_mask |= eBSPACMperiphUARTfifoState_TX;
+    }
+    BSPACM_CORE_DISABLE_INTERRUPT();
+    rv = iBSPACMperiphUARTflush(usp, fifo_mask);
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  return rv;
+}
+
 static const sBSPACMnewlibFDOPSfileOps xBSPACMnewlibFDOPSopsUART = {
   .op_close = uart_close,
   .op_read = uart_read,
   .op_write = uart_write,
+  .op_ioctl = uart_ioctl,
 };
 
 hBSPACMnewlibFDOPSfile
@@ -182,6 +212,7 @@ static const sBSPACMnewlibFDOPSfileOps console_ops = {
   .op_isatty = console_isatty,
   .op_read = uart_read,
   .op_write = uart_write,
+  .op_ioctl = uart_ioctl,
 };
 
 sBSPACMnewlibFDOPSfile *

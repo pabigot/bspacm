@@ -295,3 +295,28 @@ _write (int fd,
   } while (0);
   return rv;
 }
+
+int
+ioctl (int fd,
+       int request,
+       ...)
+{
+  hBSPACMnewlibFDOPSfile fh;
+  ssize_t rv = -1;
+  va_list ap;
+
+  va_start(ap, request);
+  fh = validated_handle(fd);
+  do {
+    if (! fh) {
+      break;
+    }
+    if (! fh->ops->op_ioctl) {
+      errno = EBADF;
+      break;
+    }
+    rv = fh->ops->op_ioctl(fh, request, ap);
+  } while (0);
+  va_end(ap);
+  return rv;
+}
