@@ -45,7 +45,7 @@
 /* The actual implementation is board/device/series/line-specific.
  * This include file should declare the type xBSPACMled, the array
  * xBSPACMleds, and the inline function vBSPACMledSet_(). */
-#include <bspacm/internal/utility/led.h>
+#include <bspacm/utility/led_.h>
 
 /** The number of LEDs supported on the board */
 extern const uint8_t nBSPACMleds;

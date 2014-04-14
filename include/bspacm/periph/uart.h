@@ -403,6 +403,6 @@ extern const hBSPACMperiphUART hBSPACMdefaultUART;
 
 /** Include the device-specific file that declares the objects and
  * functions that provide UART capability on the board. */
-#include <bspacm/internal/periph/uart.h>
+#include <bspacm/periph/uart_.h>
 
 #endif /* BSPACM_PERIPH_UART_H */

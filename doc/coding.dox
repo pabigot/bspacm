@@ -238,17 +238,25 @@ are inherently within a scoped block anyway, as with:
 
 \subsubsection coding_misc_incl_protection Protection Against Nested Inclusion
 
-Be aware that in BSPACM the specific instance of a generic include file
-such as <bspacm/internal/utility/led.h> is located by compiler flags
-that provide a prioritized list of locations to look for that file.
+Be aware that in BSPACM a generic header such as <bspacm/utility/led.h>
+will in turn include a device-specific <bspacm/utility/led_.h> to
+complete the necessary data structures and inline function definitions.
+This file is located by compiler flags that provide a prioritized list
+of locations to look for that file.
 
 Include file protection symbols encode the path by which the include
-file is normally accessed, preceded by components from its
-containing path if appropriate, with non-alphanumeric characters
-replaced by underscores, and the resulting token expressed in upper
-case.  For example, when compiling for an EFM32 device the header
-<bspacm/internal/utility/led.h> will be located at
-<tt>\$(BSPACM_ROOT)/device/efm32/include/bspacm/internal/utility/led.h</tt>,
+file is normally accessed, preceded by components from its containing
+path if appropriate, with non-alphanumeric characters replaced by
+underscores, and the resulting token expressed in upper case.  For
+example, the generic header <bspacm/utility/led.h> is located at
+<tt>\$(BSPACM_ROOT)/include/bspacm/utility/led.h</tt> and is protected
+with: @code #ifndef BSPACM_UTILITY_LED_H #define BSPACM_UTILITY_LED_H /*
+... */ /* Provide device-specific information */ #include
+<bspacm/utility/led_.h> #endif /* BSPACM_UTILITY_LED_H */ @endcode
+
+When compiling for an EFM32 device the reference to
+<bspacm/utility/led_.h> will find the header located at
+<tt>\$(BSPACM_ROOT)/device/efm32/include/bspacm/utility/led_.h</tt>,
 and its include protection symbol is:
 
 @code
@@ -258,8 +266,11 @@ and its include protection symbol is:
 #endif /* BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H */
 @endcode
 
-As a specific exception to avoid tedium, the include protector for
-<bspacm/config.h> does not contain an indication of where it came from.
+@note Because this header is for internal use, its base name ends with
+an underscore.  To avoid violation of the C rule that consecutive
+underscores in identifiers are reserved for the implementation, the
+protection symbol instead inserts the sequence @c _INTERNAL between the
+device-specific path and the relative name.
 
 \subsubsection coding_misc_incl_use Standard Order for Include Files
 
