@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -79,6 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
+      <li><a href="#index__"><span>_</span></a></li>
       <li><a href="#index_b"><span>b</span></a></li>
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_f"><span>f</span></a></li>
@@ -109,6 +110,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock">Here is a list of all documented functions, variables, defines, enums, and typedefs with links to the documentation:</div>
 
+<h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
+<li>_bspacm_sbrk_error()
+: <a class="el" href="system_8h.html#ac71a1a0ec82028971b63fb10f29f8c77">system.h</a>
+</li>
+<li>_sbrk()
+: <a class="el" href="system_8h.html#a7e846ae6eacaa1873989f1d799fa104c">system.h</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
 <li>BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE
 : <a class="el" href="config_8h.html#a5053df85e01cf096ba74978b8faeeca0">config.h</a>
@@ -119,8 +130,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>BSPACM_CONFIG_ENABLE_UART
 : <a class="el" href="config_8h.html#a60dab6301520e7fecb45128e7c90e2a1">config.h</a>
 </li>
+<li>BSPACM_CORE_BITBAND_PERIPH
+: <a class="el" href="core_8h.html#a55f509ffb0add02384773f2d9cf28713">core.h</a>
+</li>
+<li>BSPACM_CORE_BITBAND_SRAM16
+: <a class="el" href="core_8h.html#a99bb5b4354ca12329ada738589114255">core.h</a>
+</li>
+<li>BSPACM_CORE_BITBAND_SRAM32
+: <a class="el" href="core_8h.html#a00fcb6f950ca59704f562503ced79c98">core.h</a>
+</li>
+<li>BSPACM_CORE_BITBAND_SRAM8
+: <a class="el" href="core_8h.html#a70d8ed452338bdfcafe72fd7381bfada">core.h</a>
+</li>
 <li>BSPACM_CORE_CYCCNT
 : <a class="el" href="core_8h.html#af63f9aa24006f142cb9c6e7793daf63a">core.h</a>
+</li>
+<li>BSPACM_CORE_DEEP_SLEEP
+: <a class="el" href="core_8h.html#a4d56bececfd4defe714af6899e1906cb">core.h</a>
+, <a class="el" href="efm32_2include_2bspacm_2device_8h.html#a4d56bececfd4defe714af6899e1906cb">device.h</a>
 </li>
 <li>BSPACM_CORE_DELAY_CYCLES
 : <a class="el" href="core_8h.html#a71408fa62082f2087fdacb2399b81774">core.h</a>
@@ -155,17 +182,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>BSPACM_CORE_SAVED_INTERRUPT_STATE
 : <a class="el" href="core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468">core.h</a>
 </li>
+<li>BSPACM_CORE_SLEEP
+: <a class="el" href="efm32_2include_2bspacm_2device_8h.html#a772e089aed4ed7d653db94d9415614f3">device.h</a>
+, <a class="el" href="core_8h.html#a772e089aed4ed7d653db94d9415614f3">core.h</a>
+</li>
+<li>BSPACM_CORE_SUPPORTS_CYCCNT
+: <a class="el" href="core_8h.html#acb8c56bb7c6efaa0e960a7efc3d864f8">core.h</a>
+</li>
 <li>BSPACM_INC_CATENATE
 : <a class="el" href="cppinc_8h.html#a442c00ce031522254aadb3a9d875b76b">cppinc.h</a>
 </li>
 <li>BSPACM_INC_CATENATE3
 : <a class="el" href="cppinc_8h.html#aeab357c18087853889bb6dc225242bed">cppinc.h</a>
 </li>
-<li>BSPACM_PERIPH_UART_FLAG_NONBLOCK
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#ade26ff1e6b3d4877714fdbb53a8342bc">uart.h</a>
+<li>BSPACM_IOCTL_FLUSH
+: <a class="el" href="ioctl_8h.html#a509b6684fecfc97e6ab879c895e51242">ioctl.h</a>
 </li>
 <li>BSPACM_PERIPH_UART_FLAG_ONLCR
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a98d8e76b6c1922416c17b4cecaa9c790">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a98d8e76b6c1922416c17b4cecaa9c790">uart.h</a>
 </li>
 <li>BSPACM_VERSION
 : <a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">core.h</a>
@@ -175,19 +209,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
 <li>eBSPACMperiphUARTfifoState
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77">uart.h</a>
+</li>
+<li>eBSPACMperiphUARTfifoState_DRTX
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a623402b5f5b5fb1fee77ef85aef3d8b2">uart.h</a>
+</li>
+<li>eBSPACMperiphUARTfifoState_HW
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a5adf73b08477c1d3ff91d8cae93bbad3">uart.h</a>
 </li>
 <li>eBSPACMperiphUARTfifoState_HWRX
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a4788631ef591c52c623e520a9237fe6f">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a4788631ef591c52c623e520a9237fe6f">uart.h</a>
 </li>
 <li>eBSPACMperiphUARTfifoState_HWTX
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77af4e8812cfc79bc59984d308dea3eb169">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77af4e8812cfc79bc59984d308dea3eb169">uart.h</a>
+</li>
+<li>eBSPACMperiphUARTfifoState_RX
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77ab403a76e7d28d1d45e126dbd905d992c">uart.h</a>
 </li>
 <li>eBSPACMperiphUARTfifoState_SWRX
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a791ce1809a999e4ef6651104fddcb762">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a791ce1809a999e4ef6651104fddcb762">uart.h</a>
 </li>
 <li>eBSPACMperiphUARTfifoState_SWTX
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a5a4089f93521b250d76700dfa89d70e1">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a5a4089f93521b250d76700dfa89d70e1">uart.h</a>
+</li>
+<li>eBSPACMperiphUARTfifoState_TX
+: <a class="el" href="periph_2uart_8h.html#a030528d3ed3194a3c99e2325ca651e77a590c6030872b85bb8352e17f012b221b">uart.h</a>
 </li>
 </ul>
 
@@ -197,7 +243,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="fdops_8h.html#a14a7da1bbe72083bb52a9df5e422f178">fdops.h</a>
 </li>
 <li>fBSPACMnewlibFDOPSdriverCONSOLE()
-: <a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">uart.h</a>
+: <a class="el" href="newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">uart.h</a>
 </li>
 <li>FIFO_ADJUST_OFFSET
 : <a class="el" href="fifo_8h.html#ad5aa192d3b7a536b64073a64a588408d">fifo.h</a>
@@ -234,10 +280,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
 <li>hBSPACMdefaultUART
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a8dbcfec140e12df894b23d179f7839a9">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a8dbcfec140e12df894b23d179f7839a9">uart.h</a>
 </li>
 <li>hBSPACMnewlibFDOPSdriverUARTbind()
-: <a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">uart.h</a>
+: <a class="el" href="newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">uart.h</a>
 </li>
 <li>hBSPACMnewlibFDOPSfile
 : <a class="el" href="fdops_8h.html#a3f47a4bad11923847eaf18193bb4a5e5">fdops.h</a>
@@ -246,23 +292,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f">fdops.h</a>
 </li>
 <li>hBSPACMperiphUART
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5">uart.h</a>
 </li>
 <li>hBSPACMperiphUARTconfigure()
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a798656e81bf4371a351e5e8469f66a1d">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a798656e81bf4371a351e5e8469f66a1d">uart.h</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
 <li>iBSPACMperiphUARTfifoState()
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844">uart.h</a>
+</li>
+<li>iBSPACMperiphUARTflush()
+: <a class="el" href="periph_2uart_8h.html#ac01205f4058e5686dabdf82d86d11ee2">uart.h</a>
 </li>
 <li>iBSPACMperiphUARTread()
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6">uart.h</a>
 </li>
 <li>iBSPACMperiphUARTwrite()
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a9d94576797c53ff1bb97e4703cca7367">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a9d94576797c53ff1bb97e4703cca7367">uart.h</a>
+</li>
+<li>ioctl()
+: <a class="el" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl.h</a>
 </li>
 </ul>
 
@@ -293,7 +345,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa7fabb370acf5b9afa746ba05807f2d7">gpio.h</a>
 </li>
 <li>nBSPACMleds
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">led.h</a>
+: <a class="el" href="led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">led.h</a>
 </li>
 <li>nBSPACMnewlibFDOPSfile
 : <a class="el" href="fdops_8h.html#a4e0662a1864298049e4bd14892a480e9">fdops.h</a>
@@ -303,10 +355,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
 <li>sBSPACMdeviceEFM32periphLEUARTdevcfg
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#ae05fff56c02ea013531f7facad07c5ee">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#ae05fff56c02ea013531f7facad07c5ee">uart_.h</a>
 </li>
 <li>sBSPACMdeviceEFM32periphUSARTdevcfg
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#ad6ba1691ef8e8027fbefc7ca1712e106">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#ad6ba1691ef8e8027fbefc7ca1712e106">uart_.h</a>
 </li>
 <li>sBSPACMdeviceEFM32pinmux
 : <a class="el" href="efm32_2include_2bspacm_2periph_2gpio_8h.html#a83556cc1de5b50a499009cf566719956">gpio.h</a>
@@ -327,13 +379,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="fdops_8h.html#a88ef05fd2c65e75470113b82de9e0102">fdops.h</a>
 </li>
 <li>sBSPACMperiphUARTconfiguration
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a1937257ce26538652e2c6cc706269785">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a1937257ce26538652e2c6cc706269785">uart.h</a>
 </li>
 <li>sBSPACMperiphUARToperations
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#a066cefc71781d5a422ba6e4fbe6e5946">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#a066cefc71781d5a422ba6e4fbe6e5946">uart.h</a>
 </li>
 <li>sBSPACMperiphUARTstate
-: <a class="el" href="include_2bspacm_2periph_2uart_8h.html#aeb0f5e339e85729acf1762880c54f5af">uart.h</a>
+: <a class="el" href="periph_2uart_8h.html#aeb0f5e339e85729acf1762880c54f5af">uart.h</a>
 </li>
 <li>sFIFO
 : <a class="el" href="fifo_8h.html#afcbad100897b483f96348f96f3112a5d">fifo.h</a>
@@ -343,31 +395,37 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>vBSPACMdeviceEFM32periphLEUARTirqhandler()
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a5f70ecb6e01792fc6c502d2d8bdecc30">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a5f70ecb6e01792fc6c502d2d8bdecc30">uart_.h</a>
 </li>
 <li>vBSPACMdeviceEFM32periphUSARTrxirqhandler()
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a6f90ce5fc447a4d9135207f973d2a3a0">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a6f90ce5fc447a4d9135207f973d2a3a0">uart_.h</a>
 </li>
 <li>vBSPACMdeviceEFM32periphUSARTtxirqhandler()
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#aa0079eff87cc1030966fba930755793b">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#aa0079eff87cc1030966fba930755793b">uart_.h</a>
 </li>
 <li>vBSPACMdeviceEFM32pinmuxConfigure()
 : <a class="el" href="efm32_2include_2bspacm_2periph_2gpio_8h.html#a393208f87116440026b03e3ba2b3d5ad">gpio.h</a>
 </li>
+<li>vBSPACMdeviceEFM32setPinNybble()
+: <a class="el" href="efm32_2include_2bspacm_2device_8h.html#adf5959e84a3122438bf656468ae1814f">device.h</a>
+</li>
+<li>vBSPACMdeviceEFM32setupSWO()
+: <a class="el" href="efm32_2include_2bspacm_2device_8h.html#a4418eb9a810a4ba160af1a025b664317">device.h</a>
+</li>
 <li>vBSPACMdeviceTM4CperiphUARTirqhandler()
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#ab79a407a15e5e0ee46f00c00ce07ed8d">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#ab79a407a15e5e0ee46f00c00ce07ed8d">uart_.h</a>
 </li>
 <li>vBSPACMdeviceTM4CpinmuxConfigure()
 : <a class="el" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a3d0690e837b5528b9b20d45f8ee503a6">gpio.h</a>
 </li>
 <li>vBSPACMledConfigure()
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">led.h</a>
+: <a class="el" href="led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">led.h</a>
 </li>
 <li>vBSPACMledSet()
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#ac35beff536b4683f9646af0dc956bf16">led.h</a>
+: <a class="el" href="led_8h.html#ac35beff536b4683f9646af0dc956bf16">led.h</a>
 </li>
 <li>vBSPACMledSet_()
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">led.h</a>
+: <a class="el" href="led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">led.h</a>
 </li>
 <li>vBSPACMnewlibFDOPSinitializeStdio_()
 : <a class="el" href="fdops_8h.html#aaa572145b9f2506b9cf69e478905f0fd">fdops.h</a>
@@ -399,70 +457,70 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <h3><a class="anchor" id="index_x"></a>- x -</h3><ul>
 <li>xBSPACMdeviceEFM32periphLEUART0
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#adf9d79b95e5ad4c12135b45b7110520f">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#adf9d79b95e5ad4c12135b45b7110520f">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphLEUART1
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a5751d4ca76e660765535b3a5b3a39a40">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a5751d4ca76e660765535b3a5b3a39a40">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphLEUARToperations
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a69e7017cb7f59fe456831ac2deb64d1d">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a69e7017cb7f59fe456831ac2deb64d1d">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUART0
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a3d6923c786865f9c346be387f63cc088">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a3d6923c786865f9c346be387f63cc088">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUART1
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a23ab15988118b2e58b3e93dacd584709">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a23ab15988118b2e58b3e93dacd584709">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUSART0
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a6ef25c9829015f53caf7c84c1019bf03">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a6ef25c9829015f53caf7c84c1019bf03">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUSART1
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a1f0decb09f443a8d36a6d03b3b856cde">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a1f0decb09f443a8d36a6d03b3b856cde">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUSART2
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#ae579c30f920a0a67ca24ea7aa8f4bd1b">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#ae579c30f920a0a67ca24ea7aa8f4bd1b">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32periphUSARToperations
-: <a class="el" href="device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#a1b59173580b20ebd026c50ae9b37deb1">uart.h</a>
+: <a class="el" href="efm32_2include_2bspacm_2periph_2uart___8h.html#a1b59173580b20ebd026c50ae9b37deb1">uart_.h</a>
 </li>
 <li>xBSPACMdeviceEFM32pinmuxUART
 : <a class="el" href="efm32_2include_2bspacm_2periph_2gpio_8h.html#a3ae06cda28a9bd683d290d7737a43802">gpio.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART0
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#ad45561660ced924b3c023d35245f0ac1">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#ad45561660ced924b3c023d35245f0ac1">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART1
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#a1cd8fbe165e87314c5887715dff8509d">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#a1cd8fbe165e87314c5887715dff8509d">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART2
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#a927435b0d5614d4b752f058ef5bf838b">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#a927435b0d5614d4b752f058ef5bf838b">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART3
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#ac1cfd97d29e67b34f8b0b93d3d70ff6f">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#ac1cfd97d29e67b34f8b0b93d3d70ff6f">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART4
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#a33631733cafe53aa38a441c697cf4718">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#a33631733cafe53aa38a441c697cf4718">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART5
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#a362ae7718d21544df43c1c16f5648bdf">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#a362ae7718d21544df43c1c16f5648bdf">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART6
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#aaa4fba776c8d92bacaf53608b8c65220">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#aaa4fba776c8d92bacaf53608b8c65220">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUART7
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#af21961d63bc3c9cefd22737c2153dcab">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#af21961d63bc3c9cefd22737c2153dcab">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CperiphUARToperations
-: <a class="el" href="device_2tm4c_2include_2bspacm_2internal_2periph_2uart_8h.html#a1fcaca14589f0104bc034950acbe241b">uart.h</a>
+: <a class="el" href="tm4c_2include_2bspacm_2periph_2uart___8h.html#a1fcaca14589f0104bc034950acbe241b">uart_.h</a>
 </li>
 <li>xBSPACMdeviceTM4CpinmuxUART
 : <a class="el" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa1055a5a45e0d516a6ba34bf227dde06">gpio.h</a>
 </li>
 <li>xBSPACMled
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">led.h</a>
+: <a class="el" href="led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">led.h</a>
 </li>
 <li>xBSPACMleds
-: <a class="el" href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">led.h</a>
+: <a class="el" href="led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">led.h</a>
 </li>
 <li>xBSPACMnewlibFDOPSdriver
 : <a class="el" href="fdops_8h.html#a933f0ef974895bea2ace09798afda59c">fdops.h</a>
@@ -474,7 +532,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -1,7 +1,12 @@
 var searchData=
 [
-  ['ibspacmperiphuartfifostate',['iBSPACMperiphUARTfifoState',['../include_2bspacm_2periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844',1,'uart.h']]],
-  ['ibspacmperiphuartread',['iBSPACMperiphUARTread',['../include_2bspacm_2periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6',1,'uart.h']]],
-  ['ibspacmperiphuartwrite',['iBSPACMperiphUARTwrite',['../include_2bspacm_2periph_2uart_8h.html#a9d94576797c53ff1bb97e4703cca7367',1,'uart.h']]],
-  ['irqn',['irqn',['../structsBSPACMdeviceTM4CpinmuxUART.html#a7722f55d4d0995c357a0f536bd3b8bfc',1,'sBSPACMdeviceTM4CpinmuxUART::irqn()'],['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a85d2e3ab94dd507e6324e7994b647438',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg::irqn()']]]
+  ['hbspacmdefaultuart',['hBSPACMdefaultUART',['../periph_2uart_8h.html#a8dbcfec140e12df894b23d179f7839a9',1,'uart.h']]],
+  ['hbspacmnewlibfdopsdriveruartbind',['hBSPACMnewlibFDOPSdriverUARTbind',['../newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237',1,'uart.h']]],
+  ['hbspacmnewlibfdopsfile',['hBSPACMnewlibFDOPSfile',['../fdops_8h.html#a3f47a4bad11923847eaf18193bb4a5e5',1,'fdops.h']]],
+  ['hbspacmnewlibfdopsfilereserved',['hBSPACMnewlibFDOPSfileRESERVED',['../fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f',1,'fdops.h']]],
+  ['hbspacmperiphuart',['hBSPACMperiphUART',['../periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5',1,'uart.h']]],
+  ['hbspacmperiphuartconfigure',['hBSPACMperiphUARTconfigure',['../periph_2uart_8h.html#a798656e81bf4371a351e5e8469f66a1d',1,'uart.h']]],
+  ['head',['head',['../structsFIFO.html#a2d28ad8a22368fa28a8de9f49b9d91a5',1,'sFIFO']]],
+  ['hw_5ftransmit',['hw_transmit',['../structsBSPACMperiphUARToperations.html#afd780390a405c66ddda6d3344d677999',1,'sBSPACMperiphUARToperations']]],
+  ['hw_5ftxien',['hw_txien',['../structsBSPACMperiphUARToperations.html#a2ae5d97e03d0f32c2f9b8771d374bc9c',1,'sBSPACMperiphUARToperations']]]
 ];

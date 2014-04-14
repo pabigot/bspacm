@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>BSPACM: include/bspacm/utility/led.h Source File</title>
+<title>BSPACM: include/bspacm/newlib/uart.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -82,15 +82,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_84644856a1893ae35ec50fa71777950a.html">bspacm</a></li><li class="navelem"><a class="el" href="dir_2c71141559d1c2767c2a59a8347e9146.html">utility</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_84644856a1893ae35ec50fa71777950a.html">bspacm</a></li><li class="navelem"><a class="el" href="dir_89d2d557f68edf78b71b713571314e49.html">newlib</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">led.h</div>  </div>
+<div class="title">uart.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="include_2bspacm_2utility_2led_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
+<a href="newlib_2uart_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * All rights reserved.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
@@ -121,54 +121,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef BSPACM_UTILITY_LED_H</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define BSPACM_UTILITY_LED_H</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef BSPACM_NEWLIB_UART_H</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define BSPACM_NEWLIB_UART_H</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/* The actual implementation is board/device/series/line-specific.</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"> * This include file should declare the type xBSPACMled, the array</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"> * xBSPACMleds, and the inline function vBSPACMledSet_(). */</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;bspacm/internal/utility/led.h&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code" href="include_2bspacm_2utility_2led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<a class="code" href="include_2bspacm_2utility_2led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">vBSPACMledConfigure</a> ();</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="include_2bspacm_2utility_2led_8h.html#ac35beff536b4683f9646af0dc956bf16">   71</a></span>&#160;<a class="code" href="include_2bspacm_2utility_2led_8h.html#ac35beff536b4683f9646af0dc956bf16">vBSPACMledSet</a> (<span class="keywordtype">int</span> idx, <span class="keywordtype">int</span> mode)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;{</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keywordflow">if</span> ((0 &lt;= idx) &amp;&amp; (idx &lt; <a class="code" href="include_2bspacm_2utility_2led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a>)) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a>(idx, mode);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#if (BSPACM_DOXYGEN - 0)</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">   82</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">void</span> <a class="code" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a> <a class="code" href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a>[];</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">   93</a></span>&#160;<a class="code" href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a> (<span class="keywordtype">int</span> idx, <span class="keywordtype">int</span> mode) { }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DOXYGEN */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_UTILITY_LED_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_ac35beff536b4683f9646af0dc956bf16"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#ac35beff536b4683f9646af0dc956bf16">vBSPACMledSet</a></div><div class="ttdeci">static BSPACM_CORE_INLINE_FORCED void vBSPACMledSet(int idx, int mode)</div><div class="ttdef"><b>Definition:</b> led.h:71</div></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_adfb33aeaf2b4ace3a2942bde967964ca"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#adfb33aeaf2b4ace3a2942bde967964ca">xBSPACMled</a></div><div class="ttdeci">void xBSPACMled</div><div class="ttdef"><b>Definition:</b> led.h:82</div></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="fdops_8h.html">bspacm/newlib/fdops.h</a>&gt;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="periph_2uart_8h.html">bspacm/periph/uart.h</a>&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<a class="code" href="structsBSPACMnewlibFDOPSfile.html">hBSPACMnewlibFDOPSfile</a> <a class="code" href="newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind</a> (<a class="code" href="structsBSPACMperiphUARTstate.html">hBSPACMperiphUART</a> usp);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<a class="code" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<a class="code" href="newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a> (<span class="keyword">const</span> <span class="keywordtype">char</span> * pathname,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                                 <span class="keywordtype">int</span> flags);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_NEWLIB_UART_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="newlib_2uart_8h_html_a7bbae5fb156a23dc09cc9639426b94a0"><div class="ttname"><a href="newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a></div><div class="ttdeci">sBSPACMnewlibFDOPSfile * fBSPACMnewlibFDOPSdriverCONSOLE(const char *pathname, int flags)</div></div>
+<div class="ttc" id="structsBSPACMperiphUARTstate_html"><div class="ttname"><a href="structsBSPACMperiphUARTstate.html">sBSPACMperiphUARTstate</a></div><div class="ttdef"><b>Definition:</b> uart.h:53</div></div>
 <div class="ttc" id="core_8h_html"><div class="ttname"><a href="core_8h.html">core.h</a></div><div class="ttdoc">Common header included by all BSPACM leaf headers. </div></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_af62251a222dbb5292dc1458ebeb6ebd6"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#af62251a222dbb5292dc1458ebeb6ebd6">vBSPACMledSet_</a></div><div class="ttdeci">static BSPACM_CORE_INLINE_FORCED void vBSPACMledSet_(int idx, int mode)</div><div class="ttdef"><b>Definition:</b> led.h:93</div></div>
-<div class="ttc" id="core_8h_html_a33aec9db511c37252fe188e680170085"><div class="ttname"><a href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a></div><div class="ttdeci">#define BSPACM_CORE_INLINE_FORCED</div><div class="ttdef"><b>Definition:</b> core.h:177</div></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_a32ac95cc26f1910f00ccbd09189e95c0"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#a32ac95cc26f1910f00ccbd09189e95c0">vBSPACMledConfigure</a></div><div class="ttdeci">void vBSPACMledConfigure()</div></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_a4ccecb84d22d8237adba3929ba9f8174"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#a4ccecb84d22d8237adba3929ba9f8174">nBSPACMleds</a></div><div class="ttdeci">const uint8_t nBSPACMleds</div></div>
-<div class="ttc" id="include_2bspacm_2utility_2led_8h_html_a2a08bd5f55d7fda246409186d4918b9f"><div class="ttname"><a href="include_2bspacm_2utility_2led_8h.html#a2a08bd5f55d7fda246409186d4918b9f">xBSPACMleds</a></div><div class="ttdeci">const xBSPACMled xBSPACMleds[]</div></div>
+<div class="ttc" id="fdops_8h_html"><div class="ttname"><a href="fdops_8h.html">fdops.h</a></div><div class="ttdoc">File-descriptor types and declarations to support newlib. </div></div>
+<div class="ttc" id="structsBSPACMnewlibFDOPSfile_html"><div class="ttname"><a href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a></div><div class="ttdef"><b>Definition:</b> fdops.h:160</div></div>
+<div class="ttc" id="newlib_2uart_8h_html_a98540e1e1c7651625a355e40d4117237"><div class="ttname"><a href="newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind</a></div><div class="ttdeci">hBSPACMnewlibFDOPSfile hBSPACMnewlibFDOPSdriverUARTbind(hBSPACMperiphUART usp)</div></div>
+<div class="ttc" id="periph_2uart_8h_html"><div class="ttname"><a href="periph_2uart_8h.html">uart.h</a></div><div class="ttdoc">Generic UART interface for BSPACM. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

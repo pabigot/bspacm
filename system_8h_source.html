@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>BSPACM: include/bspacm/newlib/uart.h Source File</title>
+<title>BSPACM: include/bspacm/newlib/system.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -87,10 +87,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">uart.h</div>  </div>
+<div class="title">system.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="include_2bspacm_2newlib_2uart_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
+<a href="system_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright 2014, Peter A. Bigot</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * All rights reserved.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
@@ -121,31 +121,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef BSPACM_NEWLIB_UART_H</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define BSPACM_NEWLIB_UART_H</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="fdops_8h.html">bspacm/newlib/fdops.h</a>&gt;</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="include_2bspacm_2periph_2uart_8h.html">bspacm/periph/uart.h</a>&gt;</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<a class="code" href="structsBSPACMnewlibFDOPSfile.html">hBSPACMnewlibFDOPSfile</a> <a class="code" href="include_2bspacm_2newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind</a> (<a class="code" href="structsBSPACMperiphUARTstate.html">hBSPACMperiphUART</a> usp);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<a class="code" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<a class="code" href="include_2bspacm_2newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a> (<span class="keyword">const</span> <span class="keywordtype">char</span> * pathname,</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                                 <span class="keywordtype">int</span> flags);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_NEWLIB_UART_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="structsBSPACMperiphUARTstate_html"><div class="ttname"><a href="structsBSPACMperiphUARTstate.html">sBSPACMperiphUARTstate</a></div><div class="ttdef"><b>Definition:</b> uart.h:53</div></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#ifndef BSPACM_NEWLIB_SYSTEM_H</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define BSPACM_NEWLIB_SYSTEM_H</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> * <a class="code" href="system_8h.html#a7e846ae6eacaa1873989f1d799fa104c">_sbrk</a> (intptr_t increment);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">void</span> * <a class="code" href="system_8h.html#ac71a1a0ec82028971b63fb10f29f8c77">_bspacm_sbrk_error</a> (<span class="keywordtype">void</span> * brk,</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                           ptrdiff_t current,</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                           ptrdiff_t increment);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_NEWLIB_SYSTEM_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="core_8h_html"><div class="ttname"><a href="core_8h.html">core.h</a></div><div class="ttdoc">Common header included by all BSPACM leaf headers. </div></div>
-<div class="ttc" id="include_2bspacm_2periph_2uart_8h_html"><div class="ttname"><a href="include_2bspacm_2periph_2uart_8h.html">uart.h</a></div><div class="ttdoc">Generic UART interface for BSPACM. </div></div>
-<div class="ttc" id="fdops_8h_html"><div class="ttname"><a href="fdops_8h.html">fdops.h</a></div><div class="ttdoc">File-descriptor types and declarations to support newlib. </div></div>
-<div class="ttc" id="include_2bspacm_2newlib_2uart_8h_html_a7bbae5fb156a23dc09cc9639426b94a0"><div class="ttname"><a href="include_2bspacm_2newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a></div><div class="ttdeci">sBSPACMnewlibFDOPSfile * fBSPACMnewlibFDOPSdriverCONSOLE(const char *pathname, int flags)</div></div>
-<div class="ttc" id="structsBSPACMnewlibFDOPSfile_html"><div class="ttname"><a href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a></div><div class="ttdef"><b>Definition:</b> fdops.h:166</div></div>
-<div class="ttc" id="include_2bspacm_2newlib_2uart_8h_html_a98540e1e1c7651625a355e40d4117237"><div class="ttname"><a href="include_2bspacm_2newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind</a></div><div class="ttdeci">hBSPACMnewlibFDOPSfile hBSPACMnewlibFDOPSdriverUARTbind(hBSPACMperiphUART usp)</div></div>
+<div class="ttc" id="system_8h_html_a7e846ae6eacaa1873989f1d799fa104c"><div class="ttname"><a href="system_8h.html#a7e846ae6eacaa1873989f1d799fa104c">_sbrk</a></div><div class="ttdeci">void * _sbrk(intptr_t increment)</div></div>
+<div class="ttc" id="system_8h_html_ac71a1a0ec82028971b63fb10f29f8c77"><div class="ttname"><a href="system_8h.html#ac71a1a0ec82028971b63fb10f29f8c77">_bspacm_sbrk_error</a></div><div class="ttdeci">void * _bspacm_sbrk_error(void *brk, ptrdiff_t current, ptrdiff_t increment)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

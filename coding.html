@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -127,7 +127,7 @@ Indentation and Syntactic Style</h1>
 <div class="line">}</div>
 </div><!-- fragment --><h1><a class="anchor" id="coding_naming"></a>
 Identifiers and Naming Conventions</h1>
-<p>Care is taken in BSPACM to conform to the rules for C regarding global identifiers; in particular, underscores may not appear at the start of an identifier (including macro parameters), and certain suffixes like <code>_t</code> are reserved.</p>
+<p>Care is taken in BSPACM to conform to the rules for C regarding global identifiers. In particular, underscores may not appear at the start of an identifier (including macro parameters), and certain suffixes like <code>_t</code> are reserved.</p>
 <ul>
 <li>All global symbols and macros encode that they are part of BSPACM by beginning with <code>BSPACM</code> with or without prefix characters that indicate type information. The next section of the identifier encodes information about the BSPACM module to which it belongs.</li>
 </ul>
@@ -135,10 +135,10 @@ Identifiers and Naming Conventions</h1>
 <li>Macros are upper-case, underscore separated.</li>
 </ul>
 <ul>
-<li>Function names are intercapped. An initial letter indicates the return type: <code>i</code> is used for <code>int</code>, <code>ul</code> for <code>unsigned long</code>, <code>v</code> for <code>void</code>, and <code>h</code> for a  handle. The letter <code>x</code> is used as a prefix for more complex types, such as <code>const char *</code>, other pointers, and structures.</li>
+<li>Function names are intercapped. An initial letter indicates the return type: <code>i</code> is used for <code>int</code>, <code>ul</code> for <code>unsigned long</code>, <code>v</code> for <code>void</code>, and <code>h</code> for a pointer-to-structure (for example, used as a device handle). The letter <code>x</code> is used as a prefix for more complex types, such as <code>const char *</code>, other pointers, and structures.</li>
 </ul>
 <ul>
-<li>Type names (tags and typedefs) are intercapped. An initial letter distinguishes the "type" of type: <code>s</code> is a <code>struct</code>, <code>u</code> is a <code>union</code>, <code>e</code> is an <code>enum</code>. <code>h</code> indicates a handle for (pointer to) a structure type. <code>t</code> is used for any typedef for a scalar type.</li>
+<li>Type names (tags and typedefs) are intercapped. An initial letter distinguishes the "type" of type: <code>s</code> is a <code>struct</code>, <code>u</code> is a <code>union</code>, <code>e</code> is an <code>enum</code>. <code>h</code> indicates a handle for (pointer to) a structure type. <code>f</code> is used for a typedef describing a function prototype. <code>t</code> is used for any typedef for a scalar type.</li>
 </ul>
 <ul>
 <li>Where user code may define or reference instances of a BSPACM <code>struct</code>, <code>union</code>, and <code>enum</code> type directly (i.e. not through a handle), those types should have typedef aliases that use the tag as the type name.</li>
@@ -153,25 +153,31 @@ Identifiers and Naming Conventions</h1>
 <li>Global variables (e.g., state for device peripherals) follow the general convention of function names.</li>
 </ul>
 <ul>
-<li>Function parameters, structure/union member tags, local variables, and and file static variables should be lower case, underscore separated. These identifiers do not encode type information.</li>
+<li>Function parameters, structure/union member tags, local variables, and file static variables should be lower case, underscore separated. These identifiers do not encode type information.</li>
 </ul>
 <ul>
 <li>Where a function or value has an associated physical unit that is required for correct interpretation of the value, the unit should be expressed as an underscore-separated suffix consistent with the <a href="http://unitsofmeasure.org/">Unified Code for Units of Measure</a>. As an example, all BSPACM frequency values are annotated with the suffix <code>_Hz</code>.</li>
 </ul>
 <h1><a class="anchor" id="coding_types"></a>
 Type Selection</h1>
-<p>Anybody using a Cortex-M device should know that they are operating on a 32-bit device, and BSPACM is by design restricted to Cortex-M devices. Thus, except where a data type is used as part of an interface to an external system or to reflect a specific intent, <code>int</code> and <code>unsigned int</code> are used in preference to size-explicit types for index variables, return values, etc.</p>
+<p>Anybody using a Cortex-M device should know that they are operating on a 32-bit device, and BSPACM is by design restricted to Cortex-M devices.</p>
 <ul>
-<li><code>uint32_t</code> is the core type for reference to system and peripheral memory mapped registers, even though <a href="https://launchpad.net/gcc-arm-embedded">some toolchains</a> (ahem) typedef this to <code>unsigned long</code> when it could just as well be <code>unsigned int</code> This follows ARM standards.</li>
+<li>Except where a data type is used as part of an interface to an external system or to reflect a specific intent, <code>int</code> and <code>unsigned int</code> are used in preference to size-explicit types for index variables, return values, etc. This follows POSIX API standards.</li>
+</ul>
+<ul>
+<li><code>uint32_t</code> is the core type for reference to system and peripheral memory mapped registers, even though <a href="https://launchpad.net/gcc-arm-embedded">some toolchains</a> (ahem) typedef this to <code>unsigned long</code> when it could just as well be <code>unsigned int</code>. This follows ARM standards.</li>
 </ul>
 <ul>
 <li>Smaller sized types (<code>uint16_t</code>, <code>int8_t</code>, etc) are used in preference to <code>short</code> and <code>char</code> for integral values where space is at a premium and the values will never exceed the type used. Generally this applies only to stored data, but may also occur in temporary values used in expression evaluation, to make any truncation explicit.</li>
 </ul>
 <ul>
-<li>ASCII text characters and strings use <code>char</code> as the core type.</li>
+<li>C language <code>short</code> and <code>long</code> integer types are not used directly.</li>
 </ul>
 <ul>
-<li>Data transmitted to and from an external system using the <a class="el" href="">serial abstraction</a> uses <code>uint8_t</code> as codified in <code>&lt;stdint.h&gt;</code>.</li>
+<li>ASCII text characters and strings use <code>char</code> as the core type. <code>char</code> is not used for non-text data.</li>
+</ul>
+<ul>
+<li>For consistency with POSIX APIs, pointers to data buffers are usually pointers to <code>void</code>, though in some cases they may be pointers to <code>uint8_t</code> to eliminate the need for casts when operating on octet data.</li>
 </ul>
 <ul>
 <li>Any parameter that is a pointer to data the function is expected not to modify should include the appropriate <code>const</code> qualifier.</li>
@@ -196,13 +202,17 @@ Function Return Values</h2>
 Include Files</h2>
 <h3><a class="anchor" id="coding_misc_incl_protection"></a>
 Protection Against Nested Inclusion</h3>
-<p>Be aware that in BSPACM the specific instance of a generic include file such as &lt;bspacm/internal/utility/led.h&gt; is located by compiler flags that provide a prioritized list of locations to look for that file.</p>
-<p>Include file protection symbols encode the path by which the include file is normally accessed, preceded by components from its containing path if appropriate, with non-alphanumeric characters replaced by underscores, and the resulting token expressed in upper case. For example, when compiling for an EFM32 device the header &lt;bspacm/internal/utility/led.h&gt; will be located at <code>$(BSPACM_ROOT)/device/efm32/include/bspacm/internal/utility/led.h</code>, and its include protection symbol is:</p>
+<p>Be aware that in BSPACM a generic header such as &lt;<a class="el" href="led_8h.html" title="Generic interface to LEDs. ">bspacm/utility/led.h</a>&gt; will in turn include a device-specific &lt;bspacm/utility/led_.h&gt; to complete the necessary data structures and inline function definitions. This file is located by compiler flags that provide a prioritized list of locations to look for that file.</p>
+<p>Include file protection symbols encode the path by which the include file is normally accessed, preceded by components from its containing path if appropriate, with non-alphanumeric characters replaced by underscores, and the resulting token expressed in upper case. For example, the generic header &lt;<a class="el" href="led_8h.html" title="Generic interface to LEDs. ">bspacm/utility/led.h</a>&gt; is located at <code>$(BSPACM_ROOT)/include/bspacm/utility/led.h</code> and is protected with:</p>
+<div class="fragment"><div class="line"><span class="preprocessor"> #ifndef BSPACM_UTILITY_LED_H #define BSPACM_UTILITY_LED_H </span><span class="comment">/*</span></div>
+<div class="line"><span class="comment">... */</span><span class="preprocessor"> </span><span class="comment">/* Provide device-specific information */</span><span class="preprocessor"> #include</span></div>
+<div class="line"><span class="preprocessor">&lt;bspacm/utility/led_.h&gt; #endif </span><span class="comment">/* BSPACM_UTILITY_LED_H */</span><span class="preprocessor"> </span></div>
+</div><!-- fragment --><p>When compiling for an EFM32 device the reference to &lt;bspacm/utility/led_.h&gt; will find the header located at <code>$(BSPACM_ROOT)/device/efm32/include/bspacm/utility/led_.h</code>, and its include protection symbol is:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#ifndef BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H</span></div>
 <div class="line"><span class="preprocessor">#define BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H</span></div>
 <div class="line"><span class="comment">/* ... */</span></div>
 <div class="line"><span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DEVICE_EFM32_INTERNAL_UTILITY_LED_H */</span><span class="preprocessor"></span></div>
-</div><!-- fragment --><p>As a specific exception to avoid tedium, the include protector for &lt;<a class="el" href="config_8h.html" title="Application/board-specific header. ">bspacm/config.h</a>&gt; does not contain an indication of where it came from.</p>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>Because this header is for internal use, its base name ends with an underscore. To avoid violation of the C rule that consecutive underscores in identifiers are reserved for the implementation, the protection symbol instead inserts the sequence <code>_INTERNAL</code> between the device-specific path and the relative name.</dd></dl>
 <h3><a class="anchor" id="coding_misc_incl_use"></a>
 Standard Order for Include Files</h3>
 <p>See also bspacm_config for naming conventions and standards related overriding default configurations.</p>
@@ -246,7 +256,7 @@ Documentation Expectations</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

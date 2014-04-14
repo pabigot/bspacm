@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -106,8 +106,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a36147a23f27f792762e2cab01aed7351"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acedb69c025cb900258aba41782688321"><td class="memItemLeft" align="right" valign="top">ssize_t(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMnewlibFDOPSfileOps.html#acedb69c025cb900258aba41782688321">op_write</a> )(struct <a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *fp, const void *buf, size_t count)</td></tr>
 <tr class="separator:acedb69c025cb900258aba41782688321"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4a73e444102cfe2f24bb449bfa5b554"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMnewlibFDOPSfileOps.html#ae4a73e444102cfe2f24bb449bfa5b554">op_fcntl</a> )(struct <a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *fp, int cmd, va_list ap)</td></tr>
-<tr class="separator:ae4a73e444102cfe2f24bb449bfa5b554"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd6629b466d424dd1abda296baec4ef1"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMnewlibFDOPSfileOps.html#afd6629b466d424dd1abda296baec4ef1">op_ioctl</a> )(struct <a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *fp, int request, va_list ap)</td></tr>
+<tr class="separator:afd6629b466d424dd1abda296baec4ef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Record for the implementations of file descriptor operations that are supported for a particular class of device.</p>
@@ -130,19 +130,6 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae4a73e444102cfe2f24bb449bfa5b554"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int(*  sBSPACMnewlibFDOPSfileOps::op_fcntl)(struct <a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *fp, int cmd, va_list ap)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Implementation for fcntl(). If unimplemented, read() fails with <code>EBADF</code>. </p>
-
-</div>
-</div>
 <a class="anchor" id="a13bd4dc25d85ac908b74e1ddafec4932"></a>
 <div class="memitem">
 <div class="memproto">
@@ -153,6 +140,19 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Implementation for fstat(). If unimplemented, fstat() fails with <code>ENOSYS</code>. </p>
+
+</div>
+</div>
+<a class="anchor" id="afd6629b466d424dd1abda296baec4ef1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int(*  sBSPACMnewlibFDOPSfileOps::op_ioctl)(struct <a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *fp, int request, va_list ap)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Implementation for <a class="el" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl()</a>. </p>
 
 </div>
 </div>
@@ -215,7 +215,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

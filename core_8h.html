@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -97,6 +97,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br/>
 <code>#include &lt;stddef.h&gt;</code><br/>
+<code>#include &lt;stdbool.h&gt;</code><br/>
 <code>#include &lt;bspacm/device.h&gt;</code><br/>
 <code>#include &lt;<a class="el" href="config_8h_source.html">bspacm/config.h</a>&gt;</code><br/>
 </div>
@@ -104,7 +105,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a334d2789d3560b3630f2c1c633c3998a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">BSPACM_VERSION</a>&#160;&#160;&#160;20140408</td></tr>
+<tr class="memitem:a1d7c3e78ed005aa264211e43bf2a64c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a>&#160;&#160;&#160;__inline__</td></tr>
+<tr class="separator:a1d7c3e78ed005aa264211e43bf2a64c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33aec9db511c37252fe188e680170085"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a>&#160;&#160;&#160;<a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a> __attribute__((__always_inline__))</td></tr>
+<tr class="separator:a33aec9db511c37252fe188e680170085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a067cdbba9dbc1fb5b12afea1b3faa27f">BSPACM_CORE_PACKED_STRUCT</a>(nm_)&#160;&#160;&#160;struct __attribute__((__packed__)) nm_</td></tr>
+<tr class="separator:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a334d2789d3560b3630f2c1c633c3998a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">BSPACM_VERSION</a>&#160;&#160;&#160;20140414</td></tr>
 <tr class="separator:a334d2789d3560b3630f2c1c633c3998a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a>()&#160;&#160;&#160;__disable_irq()</td></tr>
 <tr class="separator:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,26 +123,165 @@ Macros</h2></td></tr>
 <tr class="separator:a7774eaf391d7ad86abce29d8f0542aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7281bb17c886941c500c4d545511f03"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#ac7281bb17c886941c500c4d545511f03">BSPACM_CORE_REENABLE_INTERRUPT</a>(var_)</td></tr>
 <tr class="separator:ac7281bb17c886941c500c4d545511f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9b725e1931a9b1a416bdd495390ced7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#ad9b725e1931a9b1a416bdd495390ced7">BSPACM_CORE_ENABLE_CYCCNT</a>()</td></tr>
+<tr class="memitem:a772e089aed4ed7d653db94d9415614f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a772e089aed4ed7d653db94d9415614f3">BSPACM_CORE_SLEEP</a>()</td></tr>
+<tr class="separator:a772e089aed4ed7d653db94d9415614f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d56bececfd4defe714af6899e1906cb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a4d56bececfd4defe714af6899e1906cb">BSPACM_CORE_DEEP_SLEEP</a>()</td></tr>
+<tr class="separator:a4d56bececfd4defe714af6899e1906cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb8c56bb7c6efaa0e960a7efc3d864f8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#acb8c56bb7c6efaa0e960a7efc3d864f8">BSPACM_CORE_SUPPORTS_CYCCNT</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:acb8c56bb7c6efaa0e960a7efc3d864f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9b725e1931a9b1a416bdd495390ced7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#ad9b725e1931a9b1a416bdd495390ced7">BSPACM_CORE_ENABLE_CYCCNT</a>()&#160;&#160;&#160;do { } while (0)</td></tr>
 <tr class="separator:ad9b725e1931a9b1a416bdd495390ced7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cae26f54d0e526fa09ee2df92c6299c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a6cae26f54d0e526fa09ee2df92c6299c">BSPACM_CORE_DISABLE_CYCCNT</a>()</td></tr>
+<tr class="memitem:a6cae26f54d0e526fa09ee2df92c6299c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a6cae26f54d0e526fa09ee2df92c6299c">BSPACM_CORE_DISABLE_CYCCNT</a>()&#160;&#160;&#160;do { } while (0)</td></tr>
 <tr class="separator:a6cae26f54d0e526fa09ee2df92c6299c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af63f9aa24006f142cb9c6e7793daf63a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#af63f9aa24006f142cb9c6e7793daf63a">BSPACM_CORE_CYCCNT</a>()&#160;&#160;&#160;DWT-&gt;CYCCNT</td></tr>
+<tr class="memitem:af63f9aa24006f142cb9c6e7793daf63a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#af63f9aa24006f142cb9c6e7793daf63a">BSPACM_CORE_CYCCNT</a>()&#160;&#160;&#160;0</td></tr>
 <tr class="separator:af63f9aa24006f142cb9c6e7793daf63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71408fa62082f2087fdacb2399b81774"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a71408fa62082f2087fdacb2399b81774">BSPACM_CORE_DELAY_CYCLES</a>(cycles_)</td></tr>
 <tr class="separator:a71408fa62082f2087fdacb2399b81774"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d7c3e78ed005aa264211e43bf2a64c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a>&#160;&#160;&#160;__inline__</td></tr>
-<tr class="separator:a1d7c3e78ed005aa264211e43bf2a64c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33aec9db511c37252fe188e680170085"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a33aec9db511c37252fe188e680170085">BSPACM_CORE_INLINE_FORCED</a>&#160;&#160;&#160;<a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a> __attribute__((__always_inline__))</td></tr>
-<tr class="separator:a33aec9db511c37252fe188e680170085"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a067cdbba9dbc1fb5b12afea1b3faa27f">BSPACM_CORE_PACKED_STRUCT</a>(nm_)&#160;&#160;&#160;struct __attribute__((__packed__)) nm_</td></tr>
-<tr class="separator:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00fcb6f950ca59704f562503ced79c98"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a00fcb6f950ca59704f562503ced79c98">BSPACM_CORE_BITBAND_SRAM32</a>(object_, bit_)&#160;&#160;&#160;(*(volatile uint32_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td></tr>
+<tr class="separator:a00fcb6f950ca59704f562503ced79c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99bb5b4354ca12329ada738589114255"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a99bb5b4354ca12329ada738589114255">BSPACM_CORE_BITBAND_SRAM16</a>(object_, bit_)&#160;&#160;&#160;(*(volatile uint16_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td></tr>
+<tr class="separator:a99bb5b4354ca12329ada738589114255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d8ed452338bdfcafe72fd7381bfada"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a70d8ed452338bdfcafe72fd7381bfada">BSPACM_CORE_BITBAND_SRAM8</a>(object_, bit_)&#160;&#160;&#160;(*(volatile uint8_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td></tr>
+<tr class="separator:a70d8ed452338bdfcafe72fd7381bfada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55f509ffb0add02384773f2d9cf28713"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a55f509ffb0add02384773f2d9cf28713">BSPACM_CORE_BITBAND_PERIPH</a>(object_, bit_)&#160;&#160;&#160;(*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&amp;(object_) - BSPACM_CORE_PERIPH_BASE))))</td></tr>
+<tr class="separator:a55f509ffb0add02384773f2d9cf28713"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Common header included by all BSPACM leaf headers. </p>
 <dl class="section user"><dt>Homepage</dt><dd><a href="http://github.com/pabigot/bspacm">http://github.com/pabigot/bspacm</a> </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>Copyright 2014, Peter A. Bigot. Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> </dd></dl>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a55f509ffb0add02384773f2d9cf28713"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_BITBAND_PERIPH</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">object_, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">bit_&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&amp;(object_) - BSPACM_CORE_PERIPH_BASE))))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Bit-band reference into a peripheral register.</p>
+<p>This is particularly useful to reduce code size when the bit and the peripheral register address are compile-time constants, as a read-modify-write instruction sequence will be replaced by a single store.</p>
+<dl class="section note"><dt>Note</dt><dd>Only supported on processors that use bit-banding (e.g. Cortex-M3, Cortex-M4). This macro will not be defined if the feature is not supported.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Not all peripherals will support bit-banding.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object_</td><td>a reference to the peripheral register (not its address).</td></tr>
+    <tr><td class="paramname">bit_</td><td>the bit of interest within <code>object_</code> (0 to 31)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>an lvalue reference to a volatile <code>uint32_t</code> object in which bit 0 aliases bit <code>bit_</code> of <code>object_</code> and no other bits are used. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a99bb5b4354ca12329ada738589114255"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_BITBAND_SRAM16</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">object_, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">bit_&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(*(volatile uint16_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Bit-band reference into an 16-bit object in SRAM.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="core_8h.html#a00fcb6f950ca59704f562503ced79c98">BSPACM_CORE_BITBAND_SRAM32</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a00fcb6f950ca59704f562503ced79c98"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_BITBAND_SRAM32</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">object_, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">bit_&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(*(volatile uint32_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Bit-band reference into an 32-bit object in SRAM.</p>
+<p>This is particularly useful when manipulating a single flag in a volatile object aggregating event flags while interrupts are enabled.</p>
+<dl class="section note"><dt>Note</dt><dd>Only supported on processors that use bit-banding (e.g. Cortex-M3, Cortex-M4). This macro will not be defined if the feature is not supported.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object_</td><td>a reference to (not the address of) a 32-bit object located in SRAM</td></tr>
+    <tr><td class="paramname">bit_</td><td>the bit of interest within <code>object_</code> (0 to 31, depending on size of object)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>an lvalue reference to a volatile <code>bool</code> object in which bit 0 aliases bit <code>bit_</code> of <code>object_</code> and no other bits are used. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a70d8ed452338bdfcafe72fd7381bfada"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_BITBAND_SRAM8</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">object_, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">bit_&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(*(volatile uint8_t *)BSPACM_CORE_BITBAND_SRAM_(object_, bit_))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Bit-band reference into an 8-bit object in SRAM.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="core_8h.html#a00fcb6f950ca59704f562503ced79c98">BSPACM_CORE_BITBAND_SRAM32</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="af63f9aa24006f142cb9c6e7793daf63a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -144,12 +290,41 @@ Macros</h2></td></tr>
           <td class="memname">#define BSPACM_CORE_CYCCNT</td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td>&#160;&#160;&#160;DWT-&gt;CYCCNT</td>
+          <td>&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the current value of the cycle counter. </p>
+<p>Returns the current value of the cycle counter.</p>
+<p>This returns a constant 0 if the cycle counter is not supported. (It returns an arbitrary constant if the cycle counter is supported but you didn't invoke <a class="el" href="core_8h.html#ad9b725e1931a9b1a416bdd495390ced7">BSPACM_CORE_ENABLE_CYCCNT()</a>).</p>
+<dl class="section user"><dt>Dependency:</dt><dd>BSPACM_CORE_SUPPORTS_CYCCNT </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="core_8h.html#ad9b725e1931a9b1a416bdd495390ced7">BSPACM_CORE_ENABLE_CYCCNT()</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a4d56bececfd4defe714af6899e1906cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_DEEP_SLEEP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                           \</div>
+<div class="line">    uint32_t in_sleepdeep = (SCB-&gt;SCR &amp; SCB_SCR_SLEEPDEEP_Msk); \</div>
+<div class="line">    SCB-&gt;SCR |= SCB_SCR_SLEEPDEEP_Msk;                          \</div>
+<div class="line">    __WFI();                                                    \</div>
+<div class="line">    SCB-&gt;SRC &amp;= ~in_sleepdeep;                                  \</div>
+<div class="line">  } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment --><p>Enter the Cortex-M deep sleep mode.</p>
+<p>The specific effect of this is vendor-specific, but in concept it turns off the processor clock and any number of other clocks. The implementation may map to a vendor-specific function or macro, but is expected to be roughly equivalent to invoking the ARM instruction <code>WFI</code> (or <code>WFE</code>) with the <code>SLEEPDEEP</code> bit of the System Control Register set.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The implementation of this operation is device-specific. In particular, it may include restoration of some or all peripheral clocks.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The user should be aware of the effect of this operation on the hardware an application targets. Interrupts that cause wakeup will, if not masked through <code>PRIMASK</code>, be executed prior to control returning to the point following the <code>__WFI()</code> operation, meaning that any clocks disabled by the operation will not be restored until interrupt processing completes and control returns to the remainder of this macro.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Although some vendor implementations may leave the <code>SLEEPDEEP</code> bit set, it SHOULD be restored to its original state in the BSPACM implementation of this macro so that subsequent use of <code>__WFI()</code> and <code>__WFE()</code> executes regular or deep sleep in accordance with the original setting.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html</a> </dd></dl>
 
 </div>
 </div>
@@ -167,14 +342,15 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {  \</div>
-<div class="line">    uint32_t <span class="keyword">const</span> delta = (cycles_);           \</div>
-<div class="line">    uint32_t <span class="keyword">const</span> cc0 = DWT-&gt;CYCCNT;           \</div>
-<div class="line">    while ((DWT-&gt;CYCCNT - cc0) &lt; delta) {       \</div>
-<div class="line">      <span class="comment">/* spin */</span>                                \</div>
+<div class="line">    uint32_t <span class="keyword">const</span> cycles_per_iter = 3;         \</div>
+<div class="line">    uint32_t remaining = (cycles_);             \</div>
+<div class="line">    while (remaining &gt; cycles_per_iter) {       \</div>
+<div class="line">      remaining -= cycles_per_iter;             \</div>
 <div class="line">    }                                           \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment --><p>Delay for a specified number of cycles.</p>
-<p>This does not attempt to account for the overhead of the loop. </p>
+<p>This does not attempt to account for the overhead of the loop.</p>
+<dl class="section warning"><dt>Warning</dt><dd>On architectures that do not support a cycle counter, this is a rough estimate based on cycles-per-iteration of a loop. </dd></dl>
 
 </div>
 </div>
@@ -186,17 +362,11 @@ Macros</h2></td></tr>
           <td class="memname">#define BSPACM_CORE_DISABLE_CYCCNT</td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td>&#160;&#160;&#160;do { } while (0)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {              \</div>
-<div class="line">    if (! (DWT_CTRL_NOCYCCNT_Msk &amp; DWT-&gt;CTRL)) {       \</div>
-<div class="line">      DWT-&gt;CTRL &amp;= ~DWT_CTRL_CYCCNTENA_Msk;            \</div>
-<div class="line">      CoreDebug-&gt;DEMCR &amp;= ~CoreDebug_DEMCR_TRCENA_Msk; \</div>
-<div class="line">    }                                                  \</div>
-<div class="line">  } <span class="keywordflow">while</span> (0)</div>
-</div><!-- fragment --><p>Functional macro to disable the cycle-counting capability of the core Data Watchpoint and Trace unit. </p>
+<p>Functional macro to disable the cycle-counting capability of the core Data Watchpoint and Trace unit. </p>
 
 </div>
 </div>
@@ -224,19 +394,13 @@ Macros</h2></td></tr>
           <td class="memname">#define BSPACM_CORE_ENABLE_CYCCNT</td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td>&#160;&#160;&#160;do { } while (0)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {              \</div>
-<div class="line">    if (! (DWT_CTRL_NOCYCCNT_Msk &amp; DWT-&gt;CTRL)) {      \</div>
-<div class="line">      CoreDebug-&gt;DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; \</div>
-<div class="line">      DWT-&gt;CYCCNT = 0;                                \</div>
-<div class="line">      DWT-&gt;CTRL |= DWT_CTRL_CYCCNTENA_Msk;            \</div>
-<div class="line">    }                                                 \</div>
-<div class="line">  } <span class="keywordflow">while</span> (0)</div>
-</div><!-- fragment --><p>Functional macro to enable the cycle-counting capability of the core Data Watchpoint and Trace unit.</p>
-<p>Note that this functionality is optional, so may not be present on your device. </p>
+<p>Functional macro to enable the cycle-counting capability of the core Data Watchpoint and Trace unit.</p>
+<p>Note that this functionality is optional, so may not be present on your device. This is a no-op in that case.</p>
+<dl class="section user"><dt>Dependency:</dt><dd><a class="el" href="core_8h.html#acb8c56bb7c6efaa0e960a7efc3d864f8">BSPACM_CORE_SUPPORTS_CYCCNT</a> </dd></dl>
 
 </div>
 </div>
@@ -328,7 +492,7 @@ Macros</h2></td></tr>
 <div class="line"><a class="code" href="core_8h.html#ab52275d819776e77d27303749a51965a">      BSPACM_CORE_ENABLE_INTERRUPT</a>();             \</div>
 <div class="line">    }                                             \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:79</div></div>
+<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:123</div></div>
 </div><!-- fragment --><p>If interrupts were enabled when <code>var_</code> was declared (generally by <a class="el" href="core_8h.html#a9a756afbc2b8e4b3e0ebf69e42bd3468">BSPACM_CORE_SAVED_INTERRUPT_STATE()</a>), then enable them; otherwise leave them in their current state. </p>
 
 </div>
@@ -353,8 +517,8 @@ Macros</h2></td></tr>
 <div class="line"><a class="code" href="core_8h.html#ab52275d819776e77d27303749a51965a">      BSPACM_CORE_ENABLE_INTERRUPT</a>();                  \</div>
 <div class="line">    }                                                  \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="core_8h_html_aa62b35cf6685650b3c9a7b38699c6c0f"><div class="ttname"><a href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_DISABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:75</div></div>
-<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:79</div></div>
+<div class="ttc" id="core_8h_html_aa62b35cf6685650b3c9a7b38699c6c0f"><div class="ttname"><a href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_DISABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:119</div></div>
+<div class="ttc" id="core_8h_html_ab52275d819776e77d27303749a51965a"><div class="ttname"><a href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT</a></div><div class="ttdeci">#define BSPACM_CORE_ENABLE_INTERRUPT()</div><div class="ttdef"><b>Definition:</b> core.h:123</div></div>
 </div><!-- fragment --><p>Restore the interrupt enable state to what it was when <code>var_</code> was assigned. This will invoke either <a class="el" href="core_8h.html#ab52275d819776e77d27303749a51965a">BSPACM_CORE_ENABLE_INTERRUPT()</a> or <a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT()</a>. You may want <a class="el" href="core_8h.html#ac7281bb17c886941c500c4d545511f03">BSPACM_CORE_REENABLE_INTERRUPT()</a> instead. </p>
 
 </div>
@@ -383,12 +547,48 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a772e089aed4ed7d653db94d9415614f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_SLEEP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div>
+<div class="line">    __WFI();                     \</div>
+<div class="line">  } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment --><p>Enter the Cortex-M sleep mode.</p>
+<p>The specific effect of this is vendor-specific, but in concept it turns off the processor clock and leaves all other clocks running. The implementation may map to a vendor-specific function or macro, but is expected to be equivalent to invoking the ARM instruction <code>WFI</code> (or <code>WFE</code>) with the <code>SLEEPDEEP</code> bit of System Control Register clear.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The implementation of this operation is device-specific.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The user should be aware of the effect of this operation on the hardware an application targets. Interrupts that cause wakeup will, if not masked through <code>PRIMASK</code>, be executed prior to control returning to the point following the <code>__WFI()</code> operation, meaning that any clocks disabled by the operation will not be restored until interrupt processing completes and control returns to the remainder of this macro.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0497a/CHDJJHJI.html</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="acb8c56bb7c6efaa0e960a7efc3d864f8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_SUPPORTS_CYCCNT&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined to true value if cycle-counting is supported on the architecture. This is false on a Cortex-M0+ device. </p>
+
+</div>
+</div>
 <a class="anchor" id="a334d2789d3560b3630f2c1c633c3998a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define BSPACM_VERSION&#160;&#160;&#160;20140408</td>
+          <td class="memname">#define BSPACM_VERSION&#160;&#160;&#160;20140414</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -400,7 +600,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

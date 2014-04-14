@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['pctl',['pctl',['../structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e',1,'sBSPACMdeviceTM4Cpinmux']]],
-  ['periphs_2eh',['periphs.h',['../periphs_8h.html',1,'']]],
-  ['pin',['pin',['../structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46',1,'sBSPACMdeviceTM4Cpinmux::pin()'],['../structsBSPACMdeviceEFM32pinmux.html#a4574a78b021153df050672c3cf275cbb',1,'sBSPACMdeviceEFM32pinmux::pin()']]],
-  ['port',['port',['../structsBSPACMdeviceTM4Cpinmux.html#a238262346b937c3023e4a6844757ea62',1,'sBSPACMdeviceTM4Cpinmux::port()'],['../structsBSPACMdeviceEFM32pinmux.html#a626c3bb505f5731128bc34580bb9d42b',1,'sBSPACMdeviceEFM32pinmux::port()']]],
-  ['port_5fshift',['port_shift',['../structsBSPACMdeviceTM4Cpinmux.html#aa49b04e3869e9d10a0b26f136b7e21ec',1,'sBSPACMdeviceTM4Cpinmux']]],
-  ['ptr',['ptr',['../structsBSPACMperiphUARTstate.html#abd80a4c4d271f2dcee30042d7c01b901',1,'sBSPACMperiphUARTstate']]]
+  ['op_5fclose',['op_close',['../structsBSPACMnewlibFDOPSfileOps.html#a655fb4265172cad3c7d3f4457f6a26c2',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5ffstat',['op_fstat',['../structsBSPACMnewlibFDOPSfileOps.html#a13bd4dc25d85ac908b74e1ddafec4932',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fioctl',['op_ioctl',['../structsBSPACMnewlibFDOPSfileOps.html#afd6629b466d424dd1abda296baec4ef1',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fisatty',['op_isatty',['../structsBSPACMnewlibFDOPSfileOps.html#ad4b655275a092d291e4b889d712a6e16',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5flseek',['op_lseek',['../structsBSPACMnewlibFDOPSfileOps.html#a1c0a82d0c5b8e301be5435403c38690e',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fread',['op_read',['../structsBSPACMnewlibFDOPSfileOps.html#a36147a23f27f792762e2cab01aed7351',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fwrite',['op_write',['../structsBSPACMnewlibFDOPSfileOps.html#acedb69c025cb900258aba41782688321',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['ops',['ops',['../structsBSPACMnewlibFDOPSfile.html#ae1738ceed2ce17124b8b03a5b5f45ad8',1,'sBSPACMnewlibFDOPSfile::ops()'],['../structsBSPACMperiphUARTstate.html#af41ef178cd99aab5b1c732116baf7332',1,'sBSPACMperiphUARTstate::ops()']]]
 ];

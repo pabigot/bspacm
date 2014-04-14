@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -89,7 +89,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p class="endli"></p>
 </li>
 <li>
-<p class="startli">Support for several experimenter boards across two vendor lines (two Tiva&trade; C Series launchpads; two Silicon Labs EFM32&trade; Gecko STKs);</p>
+<p class="startli">Support for several experimenter boards across two vendor lines (two Tiva&trade; C Series launchpads; four Silicon Labs EFM32&trade; Gecko STKs);</p>
 <p class="endli"></p>
 </li>
 <li>
@@ -103,7 +103,7 @@ Leverages:<ul>
 <p class="endli"></p>
 </li>
 <li>
-A higher-level API to abstract the vendor-specific peripherals into common capabilities (such as LED control, UARTs, etc.) </li>
+A higher-level API to abstract the vendor-specific peripherals into common capabilities (such as <a class="el" href="led_8h.html">LED control</a>, <a class="el" href="periph_2uart_8h.html">UARTs</a>, etc.) </li>
 </ul>
 </li>
 </ul>
@@ -118,11 +118,11 @@ A higher-level API to abstract the vendor-specific peripherals into common capab
 <p class="endli"></p>
 </li>
 <li>
-Vendor-specific CMSIS files for the target device. These are readily provided by most vendors; CMSIS for some Texas Instruments devices may be found. </li>
+Vendor-specific CMSIS files for the target device. These are readily provided by most vendors; CMSIS for some Texas Instruments devices may be found if you search hard enough. </li>
 </ul>
-<p>The overall concept is similar to <a href="http://pabigot.github.io/bsp430/">BSP430</a>, which provides a similar solution for the TI MSP430&trade; microcontroller. The Cortex-M is much more architecturally consistent and allows use of board-specific libraries without relying on a complex application-specific compile-time configuration infrastructure.</p>
-<p>BSPACM is released as open source under the <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> license. Files that have no significant IP and might reasonably be the basis of derived works by users of BSPACM are released under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Public Domain</a>. A few files are derived from BSD-3-Clause works copyrighted by others; see the COPYING file for details.</p>
-<p>For further details, please see the Background, Philosophy, <a class="el" href="coding.html">Coding Style</a>, and Maintenance pages.</p>
+<p>The overall concept is similar to <a href="http://pabigot.github.io/bsp430/">BSP430</a>, which supports device-independent software development for the TI MSP430&trade; microcontroller. The Cortex-M is much more architecturally consistent and allows use of board-specific libraries without relying on a complex application-specific compile-time configuration infrastructure that was required by BSP430.</p>
+<p>BSPACM is released as open source under the <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> license. Files that have no significant IP and might reasonably be the basis of derived works by users of BSPACM are released under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Public Domain</a>. A few files are derived from open source works copyrighted by others; see the COPYING file for details.</p>
+<p>For further details, please see the <a class="el" href="framework.html">Framework Architecture</a>, <a class="el" href="coding.html">Coding Style</a>, and Maintenance pages.</p>
 <p>The project page is at <a href="http://github.com/pabigot/bspacm">http://github.com/pabigot/bspacm</a>. Releases can be obtained by cloning the git repository:</p>
 <div class="fragment"><div class="line">git clone git:<span class="comment">//github.com/pabigot/bspacm.git</span></div>
 </div><!-- fragment --><p>Please file support requests and bug reports on the <a href="http://github.com/pabigot/bspacm/issues">issue tracker</a>.</p>
@@ -130,7 +130,7 @@ Vendor-specific CMSIS files for the target device. These are readily provided by
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -90,7 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="include_2bspacm_2periph_2uart_8h_source.html">bspacm/periph/uart.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="periph_2uart_8h_source.html">bspacm/periph/uart.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
@@ -107,10 +107,10 @@ Data Fields</h2></td></tr>
 <a class="el" href="structsBSPACMperiphUARToperations.html">sBSPACMperiphUARToperations</a> <br class="typebreak"/>
 *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#af41ef178cd99aab5b1c732116baf7332">ops</a></td></tr>
 <tr class="separator:af41ef178cd99aab5b1c732116baf7332"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a531da6b55d94490d3b6f61aff3e0f1e6"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structsFIFO.html">sFIFO</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#a531da6b55d94490d3b6f61aff3e0f1e6">tx_fifo</a></td></tr>
-<tr class="separator:a531da6b55d94490d3b6f61aff3e0f1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a029a73d8b13ab2d7265f3bd4ffdc369c"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structsFIFO.html">sFIFO</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#a029a73d8b13ab2d7265f3bd4ffdc369c">rx_fifo</a></td></tr>
-<tr class="separator:a029a73d8b13ab2d7265f3bd4ffdc369c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae017fce81144d2230decf5804b6377ae"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structsFIFO.html">sFIFO</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#ae017fce81144d2230decf5804b6377ae">tx_fifo_ni_</a></td></tr>
+<tr class="separator:ae017fce81144d2230decf5804b6377ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46274c2ca538cb73af93734acb026a8"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structsFIFO.html">sFIFO</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#ac46274c2ca538cb73af93734acb026a8">rx_fifo_ni_</a></td></tr>
+<tr class="separator:ac46274c2ca538cb73af93734acb026a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a224e5f3ccafad32c9dbfe66160179622"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#a224e5f3ccafad32c9dbfe66160179622">flags</a></td></tr>
 <tr class="separator:a224e5f3ccafad32c9dbfe66160179622"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a883e97e892edbde907d1f9fcbaf7d915"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#a883e97e892edbde907d1f9fcbaf7d915">rx_count</a></td></tr>
@@ -127,6 +127,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a8590883ffe65fcfd277c9d21733e9b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0be194b76c2af137bd531d6fb822c47"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#ac0be194b76c2af137bd531d6fb822c47">rx_overrun_errors</a></td></tr>
 <tr class="separator:ac0be194b76c2af137bd531d6fb822c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43fdea4efc9b6c58b5a9b8f4b95ec58e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMperiphUARTstate.html#a43fdea4efc9b6c58b5a9b8f4b95ec58e">tx_state_</a></td></tr>
+<tr class="separator:a43fdea4efc9b6c58b5a9b8f4b95ec58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>State associated with a UART device.</p>
@@ -223,16 +225,19 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a029a73d8b13ab2d7265f3bd4ffdc369c"></a>
+<a class="anchor" id="ac46274c2ca538cb73af93734acb026a8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structsFIFO.html">sFIFO</a>* const sBSPACMperiphUARTstate::rx_fifo</td>
+          <td class="memname">struct <a class="el" href="structsFIFO.html">sFIFO</a>* const sBSPACMperiphUARTstate::rx_fifo_ni_</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Pointer to a device-specific software FIFO to hold data that has been received but not accepted by the application. </p>
+<p>Pointer to a device-specific software FIFO to hold data that has been received but not accepted by the application.</p>
+<dl class="section note"><dt>Note</dt><dd>The structure referenced by this field is mutated by both ISRs and driver code. Interrupts must be disabled when accessing this field unless the UART is turned off.</dd>
+<dd>
+While you can transmit data without a <a class="el" href="structsBSPACMperiphUARTstate.html#ae017fce81144d2230decf5804b6377ae">tx_fifo_ni_</a>, you cannot receive data without an <a class="el" href="structsBSPACMperiphUARTstate.html#ac46274c2ca538cb73af93734acb026a8">rx_fifo_ni_</a>. </dd></dl>
 
 </div>
 </div>
@@ -288,16 +293,31 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a531da6b55d94490d3b6f61aff3e0f1e6"></a>
+<a class="anchor" id="ae017fce81144d2230decf5804b6377ae"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structsFIFO.html">sFIFO</a>* const sBSPACMperiphUARTstate::tx_fifo</td>
+          <td class="memname">struct <a class="el" href="structsFIFO.html">sFIFO</a>* const sBSPACMperiphUARTstate::tx_fifo_ni_</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Pointer to a device-specific software FIFO to hold data to be transmitted. </p>
+<p>Pointer to a device-specific software FIFO to hold data to be transmitted.</p>
+<dl class="section note"><dt>Note</dt><dd>The structure referenced by this field is mutated by both ISRs and driver code. Interrupts must be disabled when accessing this field unless the UART is turned off. State read from the structure should be synchronized with state read from <a class="el" href="structsBSPACMperiphUARTstate.html#a43fdea4efc9b6c58b5a9b8f4b95ec58e">tx_state_</a>. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a43fdea4efc9b6c58b5a9b8f4b95ec58e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t sBSPACMperiphUARTstate::tx_state_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A stage in an internal state machine used to support <a class="el" href="periph_2uart_8h.html#a98d8e76b6c1922416c17b4cecaa9c790">BSPACM_PERIPH_UART_FLAG_ONLCR</a> or other driver-layer transmitted data translation.</p>
+<dl class="section note"><dt>Note</dt><dd>This field is mutated only by driver code, so it may be read without disabling interrupts. However, its information combines with state read from <a class="el" href="structsBSPACMperiphUARTstate.html#ae017fce81144d2230decf5804b6377ae">tx_fifo_ni_</a>, so interrupts must disabled when mutating this value, or accessing both fields to determine fifo state. </dd></dl>
 
 </div>
 </div>
@@ -328,12 +348,12 @@ Data Fields</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/bspacm/periph/<a class="el" href="include_2bspacm_2periph_2uart_8h_source.html">uart.h</a></li>
+<li>include/bspacm/periph/<a class="el" href="periph_2uart_8h_source.html">uart.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

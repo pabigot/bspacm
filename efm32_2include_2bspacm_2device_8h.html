@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -86,6 +86,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">device.h File Reference</div>  </div>
 </div><!--header-->
@@ -94,16 +97,141 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Common device header for all EFM32 series devices.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;em_device.h&gt;</code><br/>
+<code>#include &lt;em_emu.h&gt;</code><br/>
 </div>
 <p><a href="efm32_2include_2bspacm_2device_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a772e089aed4ed7d653db94d9415614f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="efm32_2include_2bspacm_2device_8h.html#a772e089aed4ed7d653db94d9415614f3">BSPACM_CORE_SLEEP</a>()</td></tr>
+<tr class="separator:a772e089aed4ed7d653db94d9415614f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d56bececfd4defe714af6899e1906cb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="efm32_2include_2bspacm_2device_8h.html#a4d56bececfd4defe714af6899e1906cb">BSPACM_CORE_DEEP_SLEEP</a>()</td></tr>
+<tr class="separator:a4d56bececfd4defe714af6899e1906cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a4418eb9a810a4ba160af1a025b664317"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="efm32_2include_2bspacm_2device_8h.html#a4418eb9a810a4ba160af1a025b664317">vBSPACMdeviceEFM32setupSWO</a> (void)</td></tr>
+<tr class="separator:a4418eb9a810a4ba160af1a025b664317"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf5959e84a3122438bf656468ae1814f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="efm32_2include_2bspacm_2device_8h.html#adf5959e84a3122438bf656468ae1814f">vBSPACMdeviceEFM32setPinNybble</a> (volatile uint32_t *regp, unsigned int pin, int value)</td></tr>
+<tr class="separator:adf5959e84a3122438bf656468ae1814f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Common device header for all EFM32 series devices. </p>
 <dl class="section user"><dt>Homepage</dt><dd><a href="http://github.com/pabigot/bspacm">http://github.com/pabigot/bspacm</a> </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>Copyright 2014, Peter A. Bigot. Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> </dd></dl>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a4d56bececfd4defe714af6899e1906cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_DEEP_SLEEP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {   \</div>
+<div class="line">    EMU_EnterEM2(<span class="keyword">true</span>);                 \</div>
+<div class="line">    SCB-&gt;SCR &amp;= ~SCB_SCR_SLEEPDEEP_Msk; \</div>
+<div class="line">  } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment --><p>Bypass default implementation in favor of EFM32 standard, invoked in a way that causes it to restore clock configurations, and augmented by clearing the <code>SLEEPDEEP</code> bit which EMU_EnterEM2() leaves set. </p>
+
+</div>
+</div>
+<a class="anchor" id="a772e089aed4ed7d653db94d9415614f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BSPACM_CORE_SLEEP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div>
+<div class="line">    EMU_EnterEM1();              \</div>
+<div class="line">  } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment --><p>Bypass default implementation in favor of EFM32 standard. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="adf5959e84a3122438bf656468ae1814f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a> void vBSPACMdeviceEFM32setPinNybble </td>
+          <td>(</td>
+          <td class="paramtype">volatile uint32_t *&#160;</td>
+          <td class="paramname"><em>regp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>pin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to set the value of a nybble in a two-word array.</p>
+<p>This is the API for things like GPIO pin alternative function selection and interrupt source port selection.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">regp</td><td>pointer to a consecutive sequence of two words that hold packed nybble values.</td></tr>
+    <tr><td class="paramname">pin</td><td>the pin number is the ordinal of the nybble to be set</td></tr>
+    <tr><td class="paramname">value</td><td>the nybble value to be stored </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4418eb9a810a4ba160af1a025b664317"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vBSPACMdeviceEFM32setupSWO </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function to turn on the EFM32 Serial Wire Output (SWO) feature, required when using the Trace Port Interface Unit to feed back PC sample and interrupt information to the energyAware Profiler application.</p>
+<dl class="section note"><dt>Note</dt><dd>SWO is only available on Cortex-M3 and Cortex-M4 device lines, not on the Zero Gecko. </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

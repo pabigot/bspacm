@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -125,6 +125,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The size of the receive buffer for the default UART device.</p>
+<p>This may be set to zero if it is ok that <a class="el" href="periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6">iBSPACMperiphUARTread()</a> always fail.</p>
 <dl class="section user"><dt>Defaulted:</dt><dd>The value here is superseded by previously encountered definitions. </dd></dl>
 <dl class="section user"><dt>Dependency:</dt><dd><a class="el" href="config_8h.html#a60dab6301520e7fecb45128e7c90e2a1">BSPACM_CONFIG_ENABLE_UART</a> </dd></dl>
 
@@ -140,6 +141,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The size of the transmit buffer for the default UART device.</p>
+<p>This may be set to zero to prevent interrupt-driven transmission.</p>
 <dl class="section user"><dt>Defaulted:</dt><dd>The value here is superseded by previously encountered definitions. </dd></dl>
 <dl class="section user"><dt>Dependency:</dt><dd><a class="el" href="config_8h.html#a60dab6301520e7fecb45128e7c90e2a1">BSPACM_CONFIG_ENABLE_UART</a> </dd></dl>
 
@@ -163,7 +165,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

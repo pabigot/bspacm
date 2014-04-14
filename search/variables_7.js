@@ -8,6 +8,6 @@ var searchData=
   ['nbspacmdevicetm4cperiphuart',['nBSPACMdeviceTM4CperiphUART',['../periphs_8h.html#ac89f5a6354f45f180811355ee0105a58',1,'periphs.h']]],
   ['nbspacmdevicetm4cperiphwtimer',['nBSPACMdeviceTM4CperiphWTIMER',['../periphs_8h.html#acba5552d584b6d71f87311ce1e959bd9',1,'periphs.h']]],
   ['nbspacmdevicetm4cpinmuxuart',['nBSPACMdeviceTM4CpinmuxUART',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa7fabb370acf5b9afa746ba05807f2d7',1,'gpio.h']]],
-  ['nbspacmleds',['nBSPACMleds',['../include_2bspacm_2utility_2led_8h.html#a4ccecb84d22d8237adba3929ba9f8174',1,'led.h']]],
+  ['nbspacmleds',['nBSPACMleds',['../led_8h.html#a4ccecb84d22d8237adba3929ba9f8174',1,'led.h']]],
   ['nbspacmnewlibfdopsfile',['nBSPACMnewlibFDOPSfile',['../fdops_8h.html#a4e0662a1864298049e4bd14892a480e9',1,'fdops.h']]]
 ];

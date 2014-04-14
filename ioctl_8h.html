@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>BSPACM: include/bspacm/newlib/uart.h File Reference</title>
+<title>BSPACM: include/bspacm/newlib/ioctl.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140408</span>
+   &#160;<span id="projectnumber">20140414</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -87,47 +87,86 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">uart.h File Reference</div>  </div>
+<div class="title">ioctl.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>File-descriptor capabilities associated with UART/CONSOLE peripherals.  
+<p><a class="el" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl()</a> support for BSPACM's newlib file descriptor operations  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;<a class="el" href="core_8h_source.html">bspacm/core.h</a>&gt;</code><br/>
-<code>#include &lt;<a class="el" href="fdops_8h_source.html">bspacm/newlib/fdops.h</a>&gt;</code><br/>
-<code>#include &lt;<a class="el" href="include_2bspacm_2periph_2uart_8h_source.html">bspacm/periph/uart.h</a>&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="fdops_8h_source.html">bspacm/newlib/fdops.h</a>&gt;</code><br/>
 </div>
-<p><a href="include_2bspacm_2newlib_2uart_8h_source.html">Go to the source code of this file.</a></p>
+<p><a href="ioctl_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a509b6684fecfc97e6ab879c895e51242"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ioctl_8h.html#a509b6684fecfc97e6ab879c895e51242">BSPACM_IOCTL_FLUSH</a>&#160;&#160;&#160;0x100</td></tr>
+<tr class="separator:a509b6684fecfc97e6ab879c895e51242"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a98540e1e1c7651625a355e40d4117237"><td class="memItemLeft" align="right" valign="top"><a class="el" href="fdops_8h.html#a3f47a4bad11923847eaf18193bb4a5e5">hBSPACMnewlibFDOPSfile</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind</a> (<a class="el" href="include_2bspacm_2periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5">hBSPACMperiphUART</a> usp)</td></tr>
-<tr class="separator:a98540e1e1c7651625a355e40d4117237"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bbae5fb156a23dc09cc9639426b94a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a> (const char *pathname, int flags)</td></tr>
-<tr class="separator:a7bbae5fb156a23dc09cc9639426b94a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0971a75f3178a0c3aa6b1cf871d0d7c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl</a> (int fd, int request,...)</td></tr>
+<tr class="separator:a0971a75f3178a0c3aa6b1cf871d0d7c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>File-descriptor capabilities associated with UART/CONSOLE peripherals. </p>
+<div class="textblock"><p><a class="el" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl()</a> support for BSPACM's newlib file descriptor operations </p>
+<p>This file defines ioctl request values common to multiple BSPACM devices. More specific ioctl requests may be defined in other headers.</p>
+<p>Applications should make no attempt to interpret ioctl values; they are to be treated as opaque integers that are constant within a given application.</p>
 <dl class="section user"><dt>Homepage</dt><dd><a href="http://github.com/pabigot/bspacm">http://github.com/pabigot/bspacm</a> </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>Copyright 2014, Peter A. Bigot. Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> </dd></dl>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a7bbae5fb156a23dc09cc9639426b94a0"></a>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a509b6684fecfc97e6ab879c895e51242"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a>* fBSPACMnewlibFDOPSdriverCONSOLE </td>
+          <td class="memname">#define BSPACM_IOCTL_FLUSH&#160;&#160;&#160;0x100</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Flush read and write buffers at the device layer.</p>
+<p>This blocks, with interrupts enabled, as long as the underlying device still has data pending for transmission or reception; e.g. see <a class="el" href="periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844">iBSPACMperiphUARTfifoState()</a> for an example device-layer utility used by this ioctl.</p>
+<p>A common use for this would be to flush pending information written through <code>stdout</code> prior to entering a sleep mode that might disable the peripheral that supports the device. E.g.:</p>
+<div class="fragment"><div class="line"><span class="comment">// Flush past any libc buffering</span></div>
+<div class="line">fflush(stdout);</div>
+<div class="line"><span class="comment">// Flush past any device buffering</span></div>
+<div class="line">(void)<a class="code" href="ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6">ioctl</a>(1, <a class="code" href="ioctl_8h.html#a509b6684fecfc97e6ab879c895e51242">BSPACM_IOCTL_FLUSH</a>, O_WRONLY);</div>
+<div class="line"><span class="comment">// Now go to sleep</span></div>
+<div class="line"><a class="code" href="core_8h.html#a4d56bececfd4defe714af6899e1906cb">BSPACM_CORE_DEEP_SLEEP</a>();</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">flags</td><td>One of the values <code>O_RDONLY</code> (0), <code>O_WRONLY</code> (1), or <code>O_RDWR</code> (2) as defined in &lt;fcntl.h&gt;. <code>O_RDONLY</code> and <code>O_RDWR</code> will block until all material received by the device has been consumed by the application. <code>O_WRONLY</code> and <code>O_RDWR</code> will block until all material submitted to the device has been written.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if all data could be flushed, or a negative error code. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a0971a75f3178a0c3aa6b1cf871d0d7c6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ioctl </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>pathname</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>fd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -136,52 +175,24 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A driver function to support <code>/dev/console</code> as a UART.</p>
-<p>The UART will be configured at a peripheral-specific speed. This should be 115200 8N1 for most UARTs, but if a low-speed peripheral is selected it may be 9600 8N1.</p>
-<p>This should be placed into <a class="el" href="fdops_8h.html#a933f0ef974895bea2ace09798afda59c">xBSPACMnewlibFDOPSdriver</a> if the BSPACM board default UART is to be recognized as the console device for stdin/stdout/stderr.</p>
-<p>Because there is only one console device, but it may need to be referenced by multiple descriptors, the returned structure is reference counted. The associated UART is deconfigured and the structure released only when no descriptors still reference it.</p>
-<p>If the console device was already bound to a non-console descriptor through <a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237">hBSPACMnewlibFDOPSdriverUARTbind()</a>, the call will fail with <code>errno</code> set to <code>EBUSY</code>.</p>
+<p>Manipulate the underlying parameters of the device.</p>
+<p>The semantics of this are specific to <code>request</code> and to the device that <code>fd</code> references.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pathname</td><td>the path that was passed to open(). This function returns a null pointer if  is not equal to <code>"/dev/console"</code>.</td></tr>
-    <tr><td class="paramname">flags</td><td>ignored</td></tr>
+    <tr><td class="paramname">fd</td><td>descriptor for an open device </td></tr>
+    <tr><td class="paramname">request</td><td>operation-specific request identifier </td></tr>
+    <tr><td class="paramname">...</td><td>any parameters associated with <code>request</code> </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>pointer to the singleton instance of the console descriptor state. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a98540e1e1c7651625a355e40d4117237"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="fdops_8h.html#a3f47a4bad11923847eaf18193bb4a5e5">hBSPACMnewlibFDOPSfile</a> hBSPACMnewlibFDOPSdriverUARTbind </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="include_2bspacm_2periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5">hBSPACMperiphUART</a>&#160;</td>
-          <td class="paramname"><em>usp</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Utility function to bind a UART peripheral to file descriptor state.</p>
-<p>This function allocates a file descriptor state object, assigns <code>usp</code> into its <a class="el" href="structsBSPACMnewlibFDOPSfile.html#aefceb5f7e7dcebb56ea0d61de4f682ba">dev</a> field, and assigning the standard UART operations table.</p>
-<dl class="section note"><dt>Note</dt><dd>If <code>usp</code> refers to the default console device, and that device is already open, the call will fail with <code>errno</code> set to EBUSY. Similarly, successfully binding the default console device through this API will prevent <a class="el" href="include_2bspacm_2newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE()</a> from succeeding.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">usp</td><td>a pointer to a UART peripheral. The peripheral is <b>not</b> configured by this function. (The peripheral is deconfigured by the implementation of close() in the operations table assigned by this function.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a newly allocated file descriptor state object, or null if something went wrong. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Usually zero on success, with errors indicated by returning -1 and setting <code>errno</code>. </dd></dl>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 8 2014 21:05:53 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

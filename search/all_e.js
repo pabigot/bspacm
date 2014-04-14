@@ -1,17 +1,13 @@
 var searchData=
 [
-  ['sbspacmdeviceefm32periphleuartdevcfg',['sBSPACMdeviceEFM32periphLEUARTdevcfg',['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg'],['../device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#ae05fff56c02ea013531f7facad07c5ee',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg():&#160;uart.h']]],
-  ['sbspacmdeviceefm32periphusartdevcfg',['sBSPACMdeviceEFM32periphUSARTdevcfg',['../structsBSPACMdeviceEFM32periphUSARTdevcfg.html',1,'sBSPACMdeviceEFM32periphUSARTdevcfg'],['../device_2efm32_2include_2bspacm_2internal_2periph_2uart_8h.html#ad6ba1691ef8e8027fbefc7ca1712e106',1,'sBSPACMdeviceEFM32periphUSARTdevcfg():&#160;uart.h']]],
-  ['sbspacmdeviceefm32pinmux',['sBSPACMdeviceEFM32pinmux',['../structsBSPACMdeviceEFM32pinmux.html',1,'sBSPACMdeviceEFM32pinmux'],['../efm32_2include_2bspacm_2periph_2gpio_8h.html#a83556cc1de5b50a499009cf566719956',1,'sBSPACMdeviceEFM32pinmux():&#160;gpio.h']]],
-  ['sbspacmdeviceefm32pinmuxuart',['sBSPACMdeviceEFM32pinmuxUART',['../structsBSPACMdeviceEFM32pinmuxUART.html',1,'sBSPACMdeviceEFM32pinmuxUART'],['../efm32_2include_2bspacm_2periph_2gpio_8h.html#ac897c49b57feb72e894095c2b528214e',1,'sBSPACMdeviceEFM32pinmuxUART():&#160;gpio.h']]],
-  ['sbspacmdevicetm4cpinmux',['sBSPACMdeviceTM4Cpinmux',['../structsBSPACMdeviceTM4Cpinmux.html',1,'sBSPACMdeviceTM4Cpinmux'],['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#abc99b7b584aec1b9280d2d0d90717288',1,'sBSPACMdeviceTM4Cpinmux():&#160;gpio.h']]],
-  ['sbspacmdevicetm4cpinmuxuart',['sBSPACMdeviceTM4CpinmuxUART',['../structsBSPACMdeviceTM4CpinmuxUART.html',1,'sBSPACMdeviceTM4CpinmuxUART'],['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#a08f80eafaad03fba0fa80e76787067fb',1,'sBSPACMdeviceTM4CpinmuxUART():&#160;gpio.h']]],
-  ['sbspacmnewlibfdopsfile',['sBSPACMnewlibFDOPSfile',['../structsBSPACMnewlibFDOPSfile.html',1,'sBSPACMnewlibFDOPSfile'],['../fdops_8h.html#a3a77b8f8b56ff94174d273dc81aebbf7',1,'sBSPACMnewlibFDOPSfile():&#160;fdops.h']]],
-  ['sbspacmnewlibfdopsfileops',['sBSPACMnewlibFDOPSfileOps',['../structsBSPACMnewlibFDOPSfileOps.html',1,'sBSPACMnewlibFDOPSfileOps'],['../fdops_8h.html#a88ef05fd2c65e75470113b82de9e0102',1,'sBSPACMnewlibFDOPSfileOps():&#160;fdops.h']]],
-  ['sbspacmperiphuartconfiguration',['sBSPACMperiphUARTconfiguration',['../structsBSPACMperiphUARTconfiguration.html',1,'sBSPACMperiphUARTconfiguration'],['../include_2bspacm_2periph_2uart_8h.html#a1937257ce26538652e2c6cc706269785',1,'sBSPACMperiphUARTconfiguration():&#160;uart.h']]],
-  ['sbspacmperiphuartoperations',['sBSPACMperiphUARToperations',['../structsBSPACMperiphUARToperations.html',1,'sBSPACMperiphUARToperations'],['../include_2bspacm_2periph_2uart_8h.html#a066cefc71781d5a422ba6e4fbe6e5946',1,'sBSPACMperiphUARToperations():&#160;uart.h']]],
-  ['sbspacmperiphuartstate',['sBSPACMperiphUARTstate',['../structsBSPACMperiphUARTstate.html',1,'sBSPACMperiphUARTstate'],['../include_2bspacm_2periph_2uart_8h.html#aeb0f5e339e85729acf1762880c54f5af',1,'sBSPACMperiphUARTstate():&#160;uart.h']]],
-  ['sfifo',['sFIFO',['../structsFIFO.html',1,'sFIFO'],['../fifo_8h.html#afcbad100897b483f96348f96f3112a5d',1,'sFIFO():&#160;fifo.h']]],
-  ['size',['size',['../structsFIFO.html#a9dffbef44feb99505b98393820e33e8c',1,'sFIFO']]],
-  ['speed_5fbaud',['speed_baud',['../structsBSPACMperiphUARTconfiguration.html#a8689b0553a0f69c2f136627b49ea8d02',1,'sBSPACMperiphUARTconfiguration']]]
+  ['rts_5fpinmux',['rts_pinmux',['../structsBSPACMdeviceTM4CpinmuxUART.html#ab979da2336eafae98b10e9301b7c671f',1,'sBSPACMdeviceTM4CpinmuxUART::rts_pinmux()'],['../structsBSPACMdeviceEFM32pinmuxUART.html#a1af4f312ee26af7e094bca429954f11d',1,'sBSPACMdeviceEFM32pinmuxUART::rts_pinmux()']]],
+  ['rx_5fbreak_5ferrors',['rx_break_errors',['../structsBSPACMperiphUARTstate.html#a8590883ffe65fcfd277c9d21733e9b34',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5fcount',['rx_count',['../structsBSPACMperiphUARTstate.html#a883e97e892edbde907d1f9fcbaf7d915',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5fdropped_5ferrors',['rx_dropped_errors',['../structsBSPACMperiphUARTstate.html#aba80993ecdf203547ba5c07bc5abdb9a',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5ffifo_5fni_5f',['rx_fifo_ni_',['../structsBSPACMperiphUARTstate.html#ac46274c2ca538cb73af93734acb026a8',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5fframe_5ferrors',['rx_frame_errors',['../structsBSPACMperiphUARTstate.html#a8c941b22a634cb5a2159dc7c983f9468',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5firqn',['rx_irqn',['../structsBSPACMdeviceEFM32periphUSARTdevcfg.html#a8ff193f58fe72f593ac24f767e91fed7',1,'sBSPACMdeviceEFM32periphUSARTdevcfg']]],
+  ['rx_5foverrun_5ferrors',['rx_overrun_errors',['../structsBSPACMperiphUARTstate.html#ac0be194b76c2af137bd531d6fb822c47',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5fparity_5ferrors',['rx_parity_errors',['../structsBSPACMperiphUARTstate.html#acfa5174529bac9ee91dba500b8bac87f',1,'sBSPACMperiphUARTstate']]],
+  ['rx_5fpinmux',['rx_pinmux',['../structsBSPACMdeviceTM4CpinmuxUART.html#a35714a436a0190c7ad9f7f3ce1b60830',1,'sBSPACMdeviceTM4CpinmuxUART::rx_pinmux()'],['../structsBSPACMdeviceEFM32pinmuxUART.html#a73272b710caa1a0555040e03cb34f1cc',1,'sBSPACMdeviceEFM32pinmuxUART::rx_pinmux()']]]
 ];
