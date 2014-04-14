@@ -52,37 +52,15 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-#include <bspacm/core.h>
-#include <sys/types.h>
-#include <errno.h>
-
 /* We're providing system call implementation here, so ensure we have
  * visible prototypes that match what newlib is expecting. */
 #define _COMPILING_NEWLIB
 #include <sys/unistd.h>
 
-/** This function is invoked whenever _sbrk() runs out of memory.  By
- * default it causes the application to hang, but since the definition
- * is weak the application may provide an alternative implementation
- * that is more diagnostic or that returns the responsibility of
- * handling out-of-memory to the application (see description of
- * return value).
- *
- * The API could be changed to support mapping new memory at @p brk,
- * but this seems unlikely to every be used.
- *
- * @param brk the current program break
- *
- * @param current total number of bytes allocated by previous
- * successful invocations of _sbrk() (i.e., allocated bytes preceding
- * @p brk)
- *
- * @param increment the number of bytes in the request _sbrk() cannot
- * satisfy
- *
- * @return This implementation does not return.  If superseded, an
- * implementation that does return must set @c errno to @c ENOMEM and
- * return <tt>(void*)-1</tt>. */
+#include <bspacm/newlib/system.h>
+#include <sys/types.h>
+#include <errno.h>
+
 void *
 __attribute__((__weak__))
 _bspacm_sbrk_error (void * brk,
@@ -120,7 +98,7 @@ common_sbrk (char * const upper_bound,
 
 /** An sbrk() implementation that rejects any attempt to allocate
  * memory dynamically.  The behavior is equivalent to
- * _bspack_sbrk_heap() with a zero-sized heap. */
+ * _bspacm_sbrk_heap() with a zero-sized heap. */
 void *
 _bspacm_sbrk_fatal (ptrdiff_t increment)
 {
