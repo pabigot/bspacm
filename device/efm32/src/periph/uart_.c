@@ -180,6 +180,10 @@ const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations = {
   .fifo_state = usart_fifo_state,
 };
 
+/* UART is not supported on some device lines.  Use the
+ * presence/absence of the following macro as the clue. */
+#if defined(UART_FRAME_DATABITS_EIGHT) /* UART module available */
+
 static
 int
 uart_configure (sBSPACMperiphUARTstate * usp,
@@ -261,10 +265,13 @@ uart_configure (sBSPACMperiphUARTstate * usp,
 
 const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUARToperations = {
   .configure = uart_configure,
+  /* Remaining functions share USART implementation */
   .hw_transmit = usart_hw_transmit,
   .hw_txien = usart_hw_txien,
   .fifo_state = usart_fifo_state,
 };
+
+#endif /* UART module available */
 
 void
 vBSPACMdeviceEFM32periphUSARTrxirqhandler (sBSPACMperiphUARTstate * const usp)
