@@ -124,7 +124,9 @@ typedef struct sFIFO {
 /** Define a #sFIFO instance that supports at least @p size_ value
  * cells.
  *
- * @warning The definition has @c static storage class.
+ * @warning The definition has @c static storage class.  A reference
+ * to the fifo instance must be shared with the infrastructure that
+ * uses it.
  *
  * @see FIFO_FROM_ALLOCATION()
  *
