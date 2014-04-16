@@ -43,14 +43,6 @@
  * @li @c BSPACM_INC_PERIPHNUM to the instance number that should be
  * adjoined to the peripheral name (e.g. 0 for LEUART0, 1 for LEUART1)
  *
- * @li @c BSPACM_INC_LOCATION to the LEUART_ROUTE_LOCx to use for GPIO
- * configuration
- *
- * @li @c BSPACM_INC_LFBSEL to the LFB CMU_Select_TypeDef value to use
- * to as the clock source for LFB.  Explicitly set to 0 to leave the
- * existing LFB clock source in place; the default if not provided is
- * cmuSelect_LFXO.
- *
  * @li @c BSPACM_INC_TX_BUFFER_SIZE (optional) to the desired size for
  * the internal transmit fifo
  *
@@ -72,18 +64,6 @@
 #include <bspacm/internal/utility/cppinc.h>
 
 /* @cond DOXYGEN_EXCLUDE */
-
-static sBSPACMdeviceEFM32periphLEUARTdevcfg BSPACM_INC_CATENATE3(xBSPACMdeviceEFM32periphLEUART,BSPACM_INC_PERIPHNUM,devcfg) = {
-  .clock = BSPACM_INC_CATENATE(cmuClock_LEUART,BSPACM_INC_PERIPHNUM),
-  .location = BSPACM_INC_LOCATION,
-  .lfbsel =
-#if defined(BSPACM_INC_LFBSEL)
-  BSPACM_INC_LFBSEL
-#else
-  cmuSelect_LFXO
-#endif
-  , .irqn = BSPACM_INC_CATENATE3(LEUART,BSPACM_INC_PERIPHNUM,_IRQn),
-};
 
 #define BSPACM_INC_TX_ALLOCATION BSPACM_INC_CATENATE(tx_allocation_LEUART,BSPACM_INC_PERIPHNUM)
 #define BSPACM_INC_RX_ALLOCATION BSPACM_INC_CATENATE(rx_allocation_LEUART,BSPACM_INC_PERIPHNUM)

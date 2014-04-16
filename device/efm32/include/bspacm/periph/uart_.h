@@ -59,30 +59,97 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
-/** Device-specific information for an EFM32 USART/UART instance.
+#include <bspacm/periph/gpio.h>
+
+/** The intersection of configuration information relevant to all
+ * EFM32 devices that support UART functionality: USART, UART, and
+ * LEUART. */
+typedef struct sBSPACMdeviceEFM32periphXRTdevcfg {
+  /** The base address of the UART peripheral register map to which
+   * the mapping applies.  From the CMSIS header, e.g. @c
+   * USART1_BASE. */
+  uint32_t uart_base;
+
+  /** The port pin mux configuration for the RX (MISO) signal. */
+  sBSPACMdeviceEFM32pinmux rx_pinmux;
+
+  /** The port pin mux configuration for the TX (MOSI) signal. */
+  sBSPACMdeviceEFM32pinmux tx_pinmux;
+
+  /** The peripheral clock configuration that must be enabled.  From
+   * the <em_cmu.h> header, e.g. @c cmuClock_USART1 */
+  uint32_t clock;
+
+  /** Routing selection for USART.  From the CMSIS header, e.g. @c
+   * USART_ROUTE_LOCATION_LOC1 */
+  uint16_t location;
+} sBSPACMdeviceEFM32periphXRTdevcfg;
+
+/** Pin assignment structure for USART devices.
  *
- * Contains the information that cannot be easily deduced from the
- * peripheral base address. */
+ * These support both asynchronous (UART) and synchronous
+ * (SPI/SSI/I2S) capabilities. */
 typedef struct sBSPACMdeviceEFM32periphUSARTdevcfg {
-  uint32_t clock;           /**< The peripheral clock configuration */
-  int16_t tx_irqn;          /**< Transmit interrupt offset in NVIC */
-  int16_t rx_irqn;          /**< Receive interrupt offset in NVIC */
-  uint32_t location;        /**< Routing selection for USART */
+  /** Configuration for which code can be shared with other devices. */
+  sBSPACMdeviceEFM32periphXRTdevcfg common;
+
+  /** The port pin mux configuration for the CLK signal. */
+  sBSPACMdeviceEFM32pinmux clk_pinmux;
+
+  /** The port pin mux configuration for the CS signal.  Used only
+   * when the USART controls the CS line. */
+  sBSPACMdeviceEFM32pinmux cs_pinmux;
+
+  /** Transmit interrupt offset in NVIC.  From the CMSIS header,
+   * e.g. @c USART1_TX_IRQn */
+  uint8_t tx_irqn;
+
+  /** Receive interrupt offset in NVIC.  From the CMSIS header,
+   * e.g. @c USART1_RX_IRQn */
+  uint8_t rx_irqn;
 } sBSPACMdeviceEFM32periphUSARTdevcfg;
+
+/** Device-specific information for an EFM32 UART device.
+ *
+ * The UART is functionally and structurally equivalent to the
+ * asynchronous portion of the USART. */
+typedef struct sBSPACMdeviceEFM32periphUARTdevcfg {
+  /** Configuration for which code can be shared with other devices. */
+  sBSPACMdeviceEFM32periphXRTdevcfg common;
+
+  /** Transmit interrupt offset in NVIC.  From the CMSIS header,
+   * e.g. @c USART1_TX_IRQn */
+  uint8_t tx_irqn;
+
+  /** Receive interrupt offset in NVIC.  From the CMSIS header,
+   * e.g. @c USART1_RX_IRQn */
+  uint8_t rx_irqn;
+} sBSPACMdeviceEFM32periphUARTdevcfg;
 
 /** Device-specific information for an EFM32 LEUART instance.
  *
  * Contains the information that cannot be easily deduced from the
  * peripheral base address. */
 typedef struct sBSPACMdeviceEFM32periphLEUARTdevcfg {
-  uint32_t clock;           /**< The peripheral clock configuration */
-  uint16_t location;        /**< Routing selection for LEART */
-  uint8_t irqn;             /**< Interrupt offset in NVIC */
-  uint8_t lfbsel;           /**< CMU_Select_TypeDef for LFB if not already configured */
+  /** Configuration for which code can be shared with other devices. */
+  sBSPACMdeviceEFM32periphXRTdevcfg common;
+
+  /** Interrupt offset in NVIC.  From the CMSIS header, e.g. @c
+   * LEART1_IRQn */
+  uint8_t irqn;
+
+  /** Clock source selection for LFBCLK.  From the <em_cmu.h> header,
+   * e.g. @c cmuSelect_ULFRCO.  The value zero (mapping to @c
+   * cmuSelect_Error) means to leave LFB in its existing
+   * configuration. */
+  uint8_t lfbsel;
 } sBSPACMdeviceEFM32periphLEUARTdevcfg;
 
-/** The operations table for USART/UART devices. */
+/** The operations table for USART devices. */
 extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations;
+
+/** The operations table for UART devices. */
+extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUARToperations;
 
 /** The operations table for LEUART devices. */
 extern const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphLEUARToperations;
@@ -104,6 +171,23 @@ void vBSPACMdeviceEFM32periphUSARTtxirqhandler (sBSPACMperiphUARTstate * const u
  * The handler in the vector table invokes this with the appropriate
  * state reference. */
 void vBSPACMdeviceEFM32periphLEUARTirqhandler (sBSPACMperiphUARTstate * const usp);
+
+/** Device configuration information for USART0 peripheral, where this
+ * exists.  The board @c periph_cfg.c file provides a weak definition
+ * of this that may be overridden by the application. */
+extern const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART0devcfg;
+/** USART1 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART1devcfg;
+/** USART2 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART2devcfg;
+/** UART0 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphUARTdevcfg xBSPACMdeviceEFM32periphUART0devcfg;
+/** UART1 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphUARTdevcfg xBSPACMdeviceEFM32periphUART1devcfg;
+/** LEUART0 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphLEUARTdevcfg xBSPACMdeviceEFM32periphLEUART0devcfg;
+/** LEUART1 version of #xBSPACMdeviceEFM32periphUSART0devcfg */
+extern const sBSPACMdeviceEFM32periphLEUARTdevcfg xBSPACMdeviceEFM32periphLEUART1devcfg;
 
 /** State for USART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceEFM32periphUSART0;

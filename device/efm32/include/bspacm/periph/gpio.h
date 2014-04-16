@@ -96,27 +96,6 @@ typedef struct sBSPACMdeviceEFM32pinmux {
   uint8_t mode;
 } sBSPACMdeviceEFM32pinmux;
 
-/** Pin assignment structure for UART devices. */
-typedef struct sBSPACMdeviceEFM32pinmuxUART {
-  /** The base address of the UART peripheral register map to which
-   * the mapping applies.  For example, @c USART1_BASE. */
-  uint32_t uart_base;
-
-  /** The port pin mux configuration for the UnRx signal. */
-  sBSPACMdeviceEFM32pinmux rx_pinmux;
-
-  /** The port pin mux configuration for the UnTx signal. */
-  sBSPACMdeviceEFM32pinmux tx_pinmux;
-
-  /** The port pin mux configuration for the UnRTS signal.  Leave as
-   * zeros if not configured. */
-  sBSPACMdeviceEFM32pinmux rts_pinmux;
-
-  /** The port pin mux configuration for the UnCTS signal.  Leave as
-   * zeros if not configured. */
-  sBSPACMdeviceEFM32pinmux cts_pinmux;
-} sBSPACMdeviceEFM32pinmuxUART;
-
 /** Function to configure a GPIO according to @p *cfgp and provide an
  * initial value.
  *
@@ -138,13 +117,5 @@ typedef struct sBSPACMdeviceEFM32pinmuxUART {
 void vBSPACMdeviceEFM32pinmuxConfigure (const sBSPACMdeviceEFM32pinmux * cfgp,
                                         int enablep,
                                         int initial_high);
-
-/** The port pin mux mapping for UART peripherals in the
- * application/board/device. */
-extern const sBSPACMdeviceEFM32pinmuxUART xBSPACMdeviceEFM32pinmuxUART[];
-
-/** The number of entries in the #xBSPACMdeviceEFM32pinmuxUART
- * array. */
-extern const uint8_t nBSPACMdeviceEFM32pinmuxUART;
 
 #endif /* BSPACM_DEVICE_EFM32_PERIPH_GPIO_H */
