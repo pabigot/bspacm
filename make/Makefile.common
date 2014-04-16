@@ -230,6 +230,15 @@ $(error No DEVICE identified)
 endif # DEVICE
 endif # BYPASS_CHECKS
 
+# Upper-case identifier-sanitized version of BOARD
+BOARD_UC=$(call uc,$(BOARD))
+# Upper-case identifier-sanitized version of DEVICE_SERIES
+DEVICE_SERIES_UC=$(call uc,$(DEVICE_SERIES))
+# Upper-case identifier-sanitized version of DEVICE_LINE
+DEVICE_LINE_UC=$(call uc,$(DEVICE_LINE))
+# Upper-case identifier-sanitized version of DEVICE
+DEVICE_UC=$(call uc,$(DEVICE))
+
 # EVALUATE_AFTER_BOARD_INCLUSION: Optional Make variable that expands
 # into Makefile source that needs to be evaluated after the
 # BOARD/DEVICE/DEVICE_SERIES/DEVICE_LINE material has been defined.
@@ -388,10 +397,10 @@ RT_CXXFLAGS ?= -fno-rtti -fno-exceptions
 # Aggregate individual flags
 CPPFLAGS = $(TARGET_CPPFLAGS)
 # Provide board and device information for source code reference.
-CPPFLAGS += -DBSPACM_BOARD_$(call uc,$(BOARD))
-CPPFLAGS += -DBSPACM_DEVICE_SERIES_$(call uc,$(DEVICE_SERIES))
-CPPFLAGS += -DBSPACM_DEVICE_LINE_$(call uc,$(DEVICE_LINE))
-CPPFLAGS += -DBSPACM_DEVICE_$(call uc,$(DEVICE))
+CPPFLAGS += -DBSPACM_BOARD_$(BOARD_UC)
+CPPFLAGS += -DBSPACM_DEVICE_SERIES_$(DEVICE_SERIES_UC)
+CPPFLAGS += -DBSPACM_DEVICE_LINE_$(DEVICE_LINE_UC)
+CPPFLAGS += -DBSPACM_DEVICE_$(DEVICE_UC)
 
 # Allow each layer to override the standard include hierarchy.
 # The priority is: BOARD > DEVICE > LINE > SERIES > BSPACM
