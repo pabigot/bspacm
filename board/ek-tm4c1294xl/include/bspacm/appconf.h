@@ -33,6 +33,12 @@
 #ifndef BSPACM_APPCONF_H
 #define BSPACM_APPCONF_H
 
+/* Propagate to each supported peripheral.  UART0 is the default
+ * UART, and is the only one implicitly enabled. */
+#ifndef BSPACM_CONFIG_ENABLE_UART0
+#define BSPACM_CONFIG_ENABLE_UART0 (BSPACM_CONFIG_ENABLE_UART - 0)
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
+
 /* Propagate default UART constants to UART0 */
 
 #if defined(BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE) \

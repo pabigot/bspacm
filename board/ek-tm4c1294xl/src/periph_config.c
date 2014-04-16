@@ -28,17 +28,19 @@
  * PN 12   *PP 13  PQ 14   PR 15
  * PS 16   PT 17
  */
-const sBSPACMdeviceTM4CpinmuxUART xBSPACMdeviceTM4CpinmuxUART[] = {
-  {
-    .uart_base = UART0_BASE,
-    /* JP4/JP5 in UART configuration: virtual COM
-     * JP4/JP5 in CAN configuration: A2.3, A2.4 */
-    .rx_pinmux = { .port = GPIOA_AHB, .port_shift = 0, .pin = 0, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOA_AHB, .port_shift = 0, .pin = 1, .pctl = 1 },
-    .irqn = UART0_IRQn,
-  },
+
+#if (BSPACM_CONFIG_ENABLE_UART0 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg = {
+  .uart_base = UART0_BASE,
+  /* JP4/JP5 in UART configuration: virtual COM
+   * JP4/JP5 in CAN configuration: A2.3, A2.4 */
+  .rx_pinmux = { .port = GPIOA_AHB, .port_shift = 0, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOA_AHB, .port_shift = 0, .pin = 1, .pctl = 1 },
+  .irqn = UART0_IRQn,
+  .instance =  0
 };
-const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/sizeof(*xBSPACMdeviceTM4CpinmuxUART);
 
 #ifdef BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
 #define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
@@ -51,6 +53,8 @@ const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/
 #undef BSPACM_INC_PERIPHNUM
 #undef BSPACM_INC_RX_BUFFER_SIZE
 #undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
 
 /** Override the weak default that references no peripheral */
 const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceTM4CperiphUART0;

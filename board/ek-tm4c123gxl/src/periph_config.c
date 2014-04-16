@@ -24,62 +24,18 @@
  * PN 12   *PP 13  PQ 14   PR 15
  * PS 16   PT 17
  */
-const sBSPACMdeviceTM4CpinmuxUART xBSPACMdeviceTM4CpinmuxUART[] = {
+
+#if (BSPACM_CONFIG_ENABLE_UART0 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg = {
   /* UART0 is connected to the virtual COM port via PA0 and PA1 */
-  {
-    .uart_base = UART0_BASE,
-    .rx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 0, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 1, .pctl = 1 },
-    .irqn = UART0_IRQn,
-  },
-  /* UART1 is available on A.3(RX=PB0), A.4(TX=PB1), D.4(RTS=PC4), D.5(CTS=PC5).
-   * Alternatively some functions are on D.4 and D.5 */
-  {
-    .uart_base = UART1_BASE,
-    .rx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 0, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 1, .pctl = 1 },
-    .rts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 8 },
-    .cts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 8 },
-    .irqn = UART1_IRQn,
-  },
-  /* UART2 is available on D.8(RX=PD6), D.9(TX=PD7). */
-  {
-    .uart_base = UART2_BASE,
-    .rx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 6, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 7, .pctl = 1 }, /* NMI */
-    .irqn = UART2_IRQn,
-  },
-  /* UART3 is available on D.6(RX=PC6), D.7(TX=PC7). */
-  {
-    .uart_base = UART3_BASE,
-    .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 6, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 7, .pctl = 1 },
-    .irqn = UART3_IRQn,
-  },
-  /* UART4 is available on D.4(RX=PC4), D.5(TX=PC5). */
-  {
-    .uart_base = UART4_BASE,
-    .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 1 },
-    .irqn = UART4_IRQn,
-  },
-  /* UART5 is available on A.5(RX=PE4), A.6(TX=PE5). */
-  {
-    .uart_base = UART5_BASE,
-    .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 4, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 5, .pctl = 1 },
-    .irqn = UART5_IRQn,
-  },
-  /* UART6 is on PD4 and PD5 which are not brought out to boosterpack headers. */
-  /* UART7 is available on B.3(RX=PE0), C.7(TX=PE1). */
-  {
-    .uart_base = UART7_BASE,
-    .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 0, .pctl = 1 },
-    .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 1, .pctl = 1 },
-    .irqn = UART7_IRQn,
-  },
+  .uart_base = UART0_BASE,
+  .rx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 1, .pctl = 1 },
+  .irqn = UART0_IRQn,
+  .instance = 0
 };
-const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/sizeof(*xBSPACMdeviceTM4CpinmuxUART);
 
 #ifdef BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
 #define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
@@ -92,6 +48,168 @@ const uint8_t nBSPACMdeviceTM4CpinmuxUART = sizeof(xBSPACMdeviceTM4CpinmuxUART)/
 #undef BSPACM_INC_PERIPHNUM
 #undef BSPACM_INC_RX_BUFFER_SIZE
 #undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART0 */
+
+#if (BSPACM_CONFIG_ENABLE_UART1 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART1devcfg = {
+  /* UART1 is available on A.3(RX=PB0), A.4(TX=PB1), D.4(RTS=PC4), D.5(CTS=PC5).
+   * Alternatively some functions are on D.4 and D.5 */
+  .uart_base = UART1_BASE,
+  .rx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 1, .pctl = 1 },
+  .rts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 8 },
+  .cts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 8 },
+  .irqn = UART1_IRQn,
+  .instance = 1
+};
+
+#ifdef BSPACM_PERIPH_UART1_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART1_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART1_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART1_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART1_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART1_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 1
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART1 */
+
+#if (BSPACM_CONFIG_ENABLE_UART2 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART2devcfg = {
+  /* UART2 is available on D.8(RX=PD6), D.9(TX=PD7). */
+  .uart_base = UART2_BASE,
+  .rx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 6, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 7, .pctl = 1 }, /* NMI */
+  .irqn = UART2_IRQn,
+  .instance = 2
+};
+
+#ifdef BSPACM_PERIPH_UART2_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART2_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART2_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART2_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART2_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART2_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 2
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART2 */
+
+#if (BSPACM_CONFIG_ENABLE_UART3 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART3devcfg = {
+  /* UART3 is available on D.6(RX=PC6), D.7(TX=PC7). */
+  .uart_base = UART3_BASE,
+  .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 6, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 7, .pctl = 1 },
+  .irqn = UART3_IRQn,
+  .instance = 3
+};
+
+#ifdef BSPACM_PERIPH_UART3_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART3_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART3_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART3_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART3_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART3_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 3
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART3 */
+
+#if (BSPACM_CONFIG_ENABLE_UART4 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART4devcfg = {
+  /* UART4 is available on D.4(RX=PC4), D.5(TX=PC5). */
+  .uart_base = UART4_BASE,
+  .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 1 },
+  .irqn = UART4_IRQn,
+  .instance = 4
+};
+
+#ifdef BSPACM_PERIPH_UART4_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART4_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART4_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART4_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART4_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART4_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 4
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART4 */
+
+#if (BSPACM_CONFIG_ENABLE_UART5 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART5devcfg = {
+  /* UART5 is available on A.5(RX=PE4), A.6(TX=PE5). */
+  .uart_base = UART5_BASE,
+  .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 4, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 5, .pctl = 1 },
+  .irqn = UART5_IRQn,
+  .instance = 5
+};
+
+#ifdef BSPACM_PERIPH_UART5_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART5_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART5_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART5_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART5_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART5_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 5
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART5 */
+
+/* UART6 is on PD4 and PD5 which are not brought out to boosterpack headers. */
+#if (BSPACM_CONFIG_ENABLE_UART7 - 0)
+
+__attribute__((__weak__))
+const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART7devcfg = {
+  /* UART7 is available on B.3(RX=PE0), C.7(TX=PE1). */
+  .uart_base = UART7_BASE,
+  .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 1, .pctl = 1 },
+  .irqn = UART7_IRQn,
+  .instance = 7
+};
+
+#ifdef BSPACM_PERIPH_UART7_TX_BUFFER_SIZE
+#define BSPACM_INC_TX_BUFFER_SIZE BSPACM_PERIPH_UART7_TX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART7_TX_BUFFER_SIZE */
+#ifdef BSPACM_PERIPH_UART7_RX_BUFFER_SIZE
+#define BSPACM_INC_RX_BUFFER_SIZE BSPACM_PERIPH_UART7_RX_BUFFER_SIZE
+#endif /* BSPACM_PERIPH_UART7_RX_BUFFER_SIZE */
+#define BSPACM_INC_PERIPHNUM 7
+#include <bspacm/internal/periph/uart.inc>
+#undef BSPACM_INC_PERIPHNUM
+#undef BSPACM_INC_RX_BUFFER_SIZE
+#undef BSPACM_INC_TX_BUFFER_SIZE
+
+#endif /* BSPACM_CONFIG_ENABLE_UART7 */
 
 /** Override the weak default that references no peripheral */
 const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceTM4CperiphUART0;

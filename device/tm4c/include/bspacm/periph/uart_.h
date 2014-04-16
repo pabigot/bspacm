@@ -32,6 +32,8 @@
 #ifndef BSPACM_DEVICE_TM4C_INTERNAL_PERIPH_UART_H
 #define BSPACM_DEVICE_TM4C_INTERNAL_PERIPH_UART_H
 
+#include <bspacm/periph/gpio.h>
+
 /** @file
  *
  * @brief TM4C series-specific UART interface for BSPACM
@@ -49,6 +51,40 @@
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
 
+/** Pin assignment structure for UART devices. */
+typedef struct sBSPACMdeviceTM4CperiphUARTdevcfg {
+  /** The base address of the UART peripheral register map to which
+   * the mapping applies.  For example, @c UART0_BASE.  The ordinal
+   * peripheral index may be determined using
+   * #wBSPACMdeviceTM4CperiphUART. */
+  uint32_t uart_base;
+
+  /** The port pin mux configuration for the UnRx signal. */
+  sBSPACMdeviceTM4Cpinmux rx_pinmux;
+
+  /** The port pin mux configuration for the UnTx signal. */
+  sBSPACMdeviceTM4Cpinmux tx_pinmux;
+
+  /** The port pin mux configuration for the UnRTS signal.  Leave as
+   * zeros if not configured. */
+  sBSPACMdeviceTM4Cpinmux rts_pinmux;
+
+  /** The port pin mux configuration for the UnCTS signal.  Leave as
+   * zeros if not configured. */
+  sBSPACMdeviceTM4Cpinmux cts_pinmux;
+
+  /** The IRQ number corresponding to #uart_base.
+   *
+   * @note Values are truly interrupt numbers (e.g. @c UART0_IRQn from
+   * the CMSIS device header), not exception numbers (e.g. @c
+   * INT_UART0 from TivaWare <int/hw_ints.h>).  Using the latter
+   * numbering will result in values offset by 16. */
+  uint16_t irqn;
+
+  /** The ordinal instance number of the UART within its device. */
+  uint8_t instance;
+} sBSPACMdeviceTM4CperiphUARTdevcfg;
+
 /** The operations table for UART devices.
  *
  * This is used to initialize sBSPACMperiphUARTstate::ops. */
@@ -59,6 +95,25 @@ extern const sBSPACMperiphUARToperations xBSPACMdeviceTM4CperiphUARToperations;
  * The handler in the vector table invokes this with the appropriate
  * state reference. */
 void vBSPACMdeviceTM4CperiphUARTirqhandler (sBSPACMperiphUARTstate * const usp);
+
+/** Device configuration information for UART0 peripheral, where this
+ * exists.  The board @c periph_cfg.c file provides a weak definition
+ * of this that may be overridden by the application. */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg;
+/** UART1 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART1devcfg;
+/** UART2 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART2devcfg;
+/** UART3 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART3devcfg;
+/** UART4 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART4devcfg;
+/** UART5 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART5devcfg;
+/** UART6 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART6devcfg;
+/** UART7 version of #xBSPACMdeviceTM4CperiphUART0devcfg */
+extern const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART7devcfg;
 
 /** State for UART0 peripheral, where this exists. */
 extern sBSPACMperiphUARTstate xBSPACMdeviceTM4CperiphUART0;

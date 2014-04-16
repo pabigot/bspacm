@@ -48,42 +48,14 @@ int
 uart_configure (sBSPACMperiphUARTstate * usp,
                 const sBSPACMperiphUARTconfiguration * cfgp)
 {
-  const sBSPACMdeviceTM4CpinmuxUART * pmp = xBSPACMdeviceTM4CpinmuxUART;
-  const sBSPACMdeviceTM4CpinmuxUART * const pmpe = pmp + nBSPACMdeviceTM4CpinmuxUART;
+  const sBSPACMdeviceTM4CperiphUARTdevcfg * devcfgp;
   UART0_Type * uart;
-  uint32_t uart_base;
-  unsigned int uart_idx;
 
   if (! (usp && usp->uart)) {
     return -1;
   }
   uart = (UART0_Type *)usp->uart;
-  uart_base = (uint32_t)usp->uart;
-
-  /* Find the pinmux configuration for the selected UART.  Fail if
-   * there isn't one, or if it doesn't provide at least RX and TX
-   * pins. */
-  while ((pmp < pmpe) && (pmp->uart_base != uart_base)) {
-    ++pmp;
-  }
-  if (pmp >= pmpe) {
-    return -1;
-  }
-  if (! (pmp->rx_pinmux.pctl && pmp->tx_pinmux.pctl)) {
-    return -1;
-  }
-
-  /* Determine the UART index.  Fail if we can't figure it out. */
-  uart_idx = 0;
-  while (uart_idx < nBSPACMdeviceTM4CperiphUART) {
-    if ((uint32_t)uart == wBSPACMdeviceTM4CperiphUART[uart_idx]) {
-      break;
-    }
-    ++uart_idx;
-  }
-  if (nBSPACMdeviceTM4CperiphUART == uart_idx) {
-    return -1;
-  }
+  devcfgp = (const sBSPACMdeviceTM4CperiphUARTdevcfg *)usp->devcfg.ptr;
 
   /* If enabling configuration, enable clocks to the GPIOs and UART.
    * Do GPIO first, so the minimum 3-cycle delay between enabling
@@ -93,42 +65,42 @@ uart_configure (sBSPACMperiphUARTstate * usp,
    * If disabling configuration, reset the UART (if it's enabled) and
    * remove interrupts. */
   if (cfgp) {
-    uint32_t rcgcgpio = (SYSCTL_RCGCGPIO_R0 << pmp->rx_pinmux.port_shift);
-    rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << pmp->tx_pinmux.port_shift);
-    if (pmp->rts_pinmux.pctl) {
-      rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << pmp->rts_pinmux.port_shift);
+    uint32_t rcgcgpio = (SYSCTL_RCGCGPIO_R0 << devcfgp->rx_pinmux.port_shift);
+    rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << devcfgp->tx_pinmux.port_shift);
+    if (devcfgp->rts_pinmux.pctl) {
+      rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << devcfgp->rts_pinmux.port_shift);
     }
-    if (pmp->cts_pinmux.pctl) {
-      rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << pmp->cts_pinmux.port_shift);
+    if (devcfgp->cts_pinmux.pctl) {
+      rcgcgpio |= (SYSCTL_RCGCGPIO_R0 << devcfgp->cts_pinmux.port_shift);
     }
     SYSCTL->RCGCGPIO |= rcgcgpio;
-    SYSCTL->RCGCUART |= (SYSCTL_RCGCUART_R0 << uart_idx);
+    SYSCTL->RCGCUART |= (SYSCTL_RCGCUART_R0 << devcfgp->instance);
   } else {
     /* Disable and clear interrupts at the NVIC, then disable the
      * UART if it's currently enabled. */
-    NVIC_DisableIRQ(pmp->irqn);
-    NVIC_ClearPendingIRQ(pmp->irqn);
-    if (SYSCTL->RCGCUART & (SYSCTL_RCGCUART_R0 << uart_idx)) {
+    NVIC_DisableIRQ(devcfgp->irqn);
+    NVIC_ClearPendingIRQ(devcfgp->irqn);
+    if (SYSCTL->RCGCUART & (SYSCTL_RCGCUART_R0 << devcfgp->instance)) {
       uart->CTL = 0;
-      SYSCTL->RCGCUART &= ~(SYSCTL_RCGCUART_R0 << uart_idx);
+      SYSCTL->RCGCUART &= ~(SYSCTL_RCGCUART_R0 << devcfgp->instance);
     }
   }
 
   /* Enable or disable GPIO pins used by UART, as long as the GPIO
    * module is on.  Note that RTS and CTS may not be available. */
-  if (SYSCTL->RCGCGPIO & (1U << pmp->rx_pinmux.port_shift)) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&pmp->rx_pinmux, !!cfgp, 1);
+  if (SYSCTL->RCGCGPIO & (1U << devcfgp->rx_pinmux.port_shift)) {
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rx_pinmux, !!cfgp, 1);
   }
-  if (SYSCTL->RCGCGPIO & (1U << pmp->tx_pinmux.port_shift)) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&pmp->tx_pinmux, !!cfgp, 0);
+  if (SYSCTL->RCGCGPIO & (1U << devcfgp->tx_pinmux.port_shift)) {
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->tx_pinmux, !!cfgp, 0);
   }
-  if (pmp->rts_pinmux.pctl
-      && (SYSCTL->RCGCGPIO & (1U << pmp->rts_pinmux.port_shift))) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&pmp->rts_pinmux, !!cfgp, 0);
+  if (devcfgp->rts_pinmux.pctl
+      && (SYSCTL->RCGCGPIO & (1U << devcfgp->rts_pinmux.port_shift))) {
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rts_pinmux, !!cfgp, 0);
   }
-  if (pmp->cts_pinmux.pctl
-      && (SYSCTL->RCGCGPIO & (1U << pmp->cts_pinmux.port_shift))) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&pmp->cts_pinmux, !!cfgp, 0);
+  if (devcfgp->cts_pinmux.pctl
+      && (SYSCTL->RCGCGPIO & (1U << devcfgp->cts_pinmux.port_shift))) {
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->cts_pinmux, !!cfgp, 0);
   }
 
   /* Reset the FIFOs */
@@ -163,8 +135,8 @@ uart_configure (sBSPACMperiphUARTstate * usp,
     /* Clear all interrupts at the module and at the NVIC; enable at
      * the NVIC, then enable the UART */
     uart->ICR = uart->RIS;
-    NVIC_ClearPendingIRQ(pmp->irqn);
-    NVIC_EnableIRQ(pmp->irqn);
+    NVIC_ClearPendingIRQ(devcfgp->irqn);
+    NVIC_EnableIRQ(devcfgp->irqn);
     uart->IM = UART_IM_RXIM | UART_IM_RTIM;
     uart->CTL = UART_CTL_UARTEN | UART_CTL_TXE | UART_CTL_RXE;
   }
