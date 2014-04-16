@@ -33,25 +33,9 @@
 #ifndef BSPACM_APPCONF_H
 #define BSPACM_APPCONF_H
 
-/* Propagate to each supported peripheral.  USART1 is the default
- * UART, and is the only one implicitly enabled. */
-#ifndef BSPACM_CONFIG_ENABLE_USART1
-#define BSPACM_CONFIG_ENABLE_USART1 (BSPACM_CONFIG_ENABLE_UART - 0)
-#endif /* BSPACM_CONFIG_ENABLE_USART1 */
-#ifndef BSPACM_CONFIG_ENABLE_LEUART0
-#define BSPACM_CONFIG_ENABLE_LEUART0 0
-#endif /* BSPACM_CONFIG_ENABLE_LEUART0 */
-
-/* Propagate default UART constants to USART1 */
-
-#if defined(BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE) \
-  && ! defined(BSPACM_PERIPH_USART1_TX_BUFFER_SIZE)
-#define BSPACM_PERIPH_USART1_TX_BUFFER_SIZE BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE
-#endif /* Copy TX_BUFFER_SIZE */
-
-#if defined(BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE) \
-  && ! defined(BSPACM_PERIPH_USART1_RX_BUFFER_SIZE)
-#define BSPACM_PERIPH_USART1_RX_BUFFER_SIZE BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE
-#endif /* Copy RX_BUFFER_SIZE */
+/* All STKs are configured supply a subset of USART1, UART0, and
+ * LEUART0 for consoles.  Share the material that selects among
+ * them. */
+#include <bspacm/board/default_appconf.h>
 
 #endif /* BSPACM_APPCONF_H */

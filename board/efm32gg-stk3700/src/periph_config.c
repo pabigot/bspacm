@@ -147,6 +147,24 @@ const sBSPACMdeviceEFM32periphLEUARTdevcfg xBSPACMdeviceEFM32periphLEUART0devcfg
 #endif /* BSPACM_CONFIG_ENABLE_LEUART0 */
 
 /** Override the weak default that references no peripheral */
-const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceEFM32periphUSART1;
+const hBSPACMperiphUART hBSPACMdefaultUART =
+#if (BSPACM_CONFIG_DEFAULT_USART0 - 0)
+  &xBSPACMdeviceEFM32periphUSART0
+#elif (BSPACM_CONFIG_DEFAULT_USART1 - 0)
+  &xBSPACMdeviceEFM32periphUSART1
+#elif (BSPACM_CONFIG_DEFAULT_USART2 - 0)
+  &xBSPACMdeviceEFM32periphUSART2
+#elif (BSPACM_CONFIG_DEFAULT_UART0 - 0)
+  &xBSPACMdeviceEFM32periphUART0
+#elif (BSPACM_CONFIG_DEFAULT_UART1 - 0)
+  &xBSPACMdeviceEFM32periphUART1
+#elif (BSPACM_CONFIG_DEFAULT_LEUART0 - 0)
+  &xBSPACMdeviceEFM32periphLEUART0
+#elif (BSPACM_CONFIG_DEFAULT_LEUART1 - 0)
+  &xBSPACMdeviceEFM32periphLEUART1
+#else
+#error no specified default UART
+#endif
+  ;
 
 #endif /* BSPACM_CONFIG_ENABLE_UART */
