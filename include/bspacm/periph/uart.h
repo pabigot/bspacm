@@ -61,7 +61,7 @@ typedef struct sBSPACMperiphUARTstate {
    * identifier for the module clock. */
   union {
     uint32_t u32;               /**< some integral value */
-    void * ptr;                 /**< null, or a pointer to an internal structure */
+    const void * ptr;           /**< null, or a pointer to an internal structure */
   } const devcfg;
 
   /** Pointer to the operations table that implements UART
