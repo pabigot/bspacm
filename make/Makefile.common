@@ -436,8 +436,8 @@ BOARD_LIBBSPACM_A=$(BSPACM_ROOT)/board/$(BOARD)/libbspacm.a
 # include device-agnostic code from the root src directory, as well as
 # device-specific code from device src directories.  By convention,
 # the latter have base file names that end in underscore, to
-# distinguish periph/uart.c (the high-level interface) from
-# periph/uart_.c (the device-specific interface).
+# distinguish periph/uart.c (the abstracted implementation) from
+# periph/uart_.c (the device-specific implementation).
 BOARD_LIBBSPACM_SRC ?=
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/periph/uart.c
 

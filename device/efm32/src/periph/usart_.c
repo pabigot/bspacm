@@ -29,7 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Implementation for EFM32 device series UART peripheral interface.
+/* Implementation for EFM32 device series USART/UART/LEUART peripherals.
  * @homepage http://github.com/pabigot/bspacm
  * @copyright Copyright 2014, Peter A. Bigot.  Licensed under <a href="http://www.opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
  */
