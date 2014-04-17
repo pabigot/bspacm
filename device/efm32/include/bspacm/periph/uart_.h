@@ -85,30 +85,6 @@ typedef struct sBSPACMdeviceEFM32periphXRTdevcfg {
   uint16_t location;
 } sBSPACMdeviceEFM32periphXRTdevcfg;
 
-/** Pin assignment structure for USART devices.
- *
- * These support both asynchronous (UART) and synchronous
- * (SPI/SSI/I2S) capabilities. */
-typedef struct sBSPACMdeviceEFM32periphUSARTdevcfg {
-  /** Configuration for which code can be shared with other devices. */
-  sBSPACMdeviceEFM32periphXRTdevcfg common;
-
-  /** The port pin mux configuration for the CLK signal. */
-  sBSPACMdeviceEFM32pinmux clk_pinmux;
-
-  /** The port pin mux configuration for the CS signal.  Used only
-   * when the USART controls the CS line. */
-  sBSPACMdeviceEFM32pinmux cs_pinmux;
-
-  /** Transmit interrupt offset in NVIC.  From the CMSIS header,
-   * e.g. @c USART1_TX_IRQn */
-  uint8_t tx_irqn;
-
-  /** Receive interrupt offset in NVIC.  From the CMSIS header,
-   * e.g. @c USART1_RX_IRQn */
-  uint8_t rx_irqn;
-} sBSPACMdeviceEFM32periphUSARTdevcfg;
-
 /** Device-specific information for an EFM32 UART device.
  *
  * The UART is functionally and structurally equivalent to the
@@ -126,10 +102,25 @@ typedef struct sBSPACMdeviceEFM32periphUARTdevcfg {
   uint8_t rx_irqn;
 } sBSPACMdeviceEFM32periphUARTdevcfg;
 
+/** Device-specific information for an EFM32 USART devices.
+ *
+ * These support both asynchronous (UART) and synchronous
+ * (SPI/SSI/I2S) capabilities by adding two signals to the UART. */
+typedef struct sBSPACMdeviceEFM32periphUSARTdevcfg {
+  /** Configuration for which code can be shared with other devices. */
+  sBSPACMdeviceEFM32periphUARTdevcfg uart;
+
+  /** The port pin mux configuration for the CLK signal. */
+  sBSPACMdeviceEFM32pinmux clk_pinmux;
+
+  /** The port pin mux configuration for the CS signal.  Used only
+   * when the USART controls the CS line. */
+  sBSPACMdeviceEFM32pinmux cs_pinmux;
+} sBSPACMdeviceEFM32periphUSARTdevcfg;
+
 /** Device-specific information for an EFM32 LEUART instance.
  *
- * Contains the information that cannot be easily deduced from the
- * peripheral base address. */
+ * The LEUART has a similar but incompatible API to the USART/UART. */
 typedef struct sBSPACMdeviceEFM32periphLEUARTdevcfg {
   /** Configuration for which code can be shared with other devices. */
   sBSPACMdeviceEFM32periphXRTdevcfg common;

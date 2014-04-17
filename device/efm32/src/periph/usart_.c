@@ -44,17 +44,21 @@
 
 static
 int
-usart_configure (sBSPACMperiphUARTstate * usp,
-                 const sBSPACMperiphUARTconfiguration * cfgp)
+usart_configure_as_uart (sBSPACMperiphUARTstate * usp,
+                         const sBSPACMperiphUARTconfiguration * cfgp)
 {
   USART_TypeDef * usart;
-  const sBSPACMdeviceEFM32periphUSARTdevcfg * devcfgp;
+  const sBSPACMdeviceEFM32periphUARTdevcfg * devcfgp;
 
   if (! (usp && usp->uart)) {
     return -1;
   }
   usart = (USART_TypeDef *)usp->uart;
-  devcfgp = (const sBSPACMdeviceEFM32periphUSARTdevcfg *)usp->devcfg.ptr;
+
+  /* For a USART the devcfgp object is actual a
+   * sBSPACMdeviceEFM32periphUSARTdevcfg, but that structure simply
+   * extends the UART part of the configuration. */
+  devcfgp = (const sBSPACMdeviceEFM32periphUARTdevcfg *)usp->devcfg.ptr;
 
   /* If enabling configuration, enable the high-frequency peripheral
    * clock and the clock for the uart itself.
@@ -174,7 +178,7 @@ usart_fifo_state (sBSPACMperiphUARTstate * usp)
 }
 
 const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations = {
-  .configure = usart_configure,
+  .configure = usart_configure_as_uart,
   .hw_transmit = usart_hw_transmit,
   .hw_txien = usart_hw_txien,
   .fifo_state = usart_fifo_state,
@@ -184,88 +188,9 @@ const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUSARToperations = {
  * presence/absence of the following macro as the clue. */
 #if defined(UART_FRAME_DATABITS_EIGHT) /* UART module available */
 
-static
-int
-uart_configure (sBSPACMperiphUARTstate * usp,
-                const sBSPACMperiphUARTconfiguration * cfgp)
-{
-  USART_TypeDef * uart;
-  const sBSPACMdeviceEFM32periphUARTdevcfg * devcfgp;
-
-  if (! (usp && usp->uart)) {
-    return -1;
-  }
-  uart = (USART_TypeDef *)usp->uart;
-  devcfgp = (const sBSPACMdeviceEFM32periphUARTdevcfg *)usp->devcfg.ptr;
-
-  /* If enabling configuration, enable the high-frequency peripheral
-   * clock and the clock for the uart itself.
-   *
-   * If disabling configuration, disable the interrupts. */
-  if (cfgp) {
-    CMU_ClockEnable(cmuClock_HFPER, true);
-    CMU_ClockEnable(devcfgp->common.clock, true);
-  } else {
-    NVIC_DisableIRQ(devcfgp->rx_irqn);
-    NVIC_DisableIRQ(devcfgp->tx_irqn);
-    NVIC_ClearPendingIRQ(devcfgp->rx_irqn);
-    NVIC_ClearPendingIRQ(devcfgp->tx_irqn);
-  }
-  USART_Reset(uart);
-  if (usp->rx_fifo_ni_) {
-    fifo_reset(usp->rx_fifo_ni_);
-  }
-  if (usp->tx_fifo_ni_) {
-    fifo_reset(usp->tx_fifo_ni_);
-  }
-  usp->tx_state_ = 0;
-
-  if (cfgp) {
-    unsigned int baud_rate = cfgp->speed_baud;
-
-    if (0 == baud_rate) {
-      baud_rate = 115200;
-    }
-    /* Configure the UART for 8N1.  Set TXBL at half-full. */
-    uart->FRAME = UART_FRAME_DATABITS_EIGHT | UART_FRAME_PARITY_NONE | UART_FRAME_STOPBITS_ONE;
-    uart->CTRL |= UART_CTRL_TXBIL_HALFFULL;
-    USART_BaudrateAsyncSet(uart, 0, baud_rate, usartOVS16);
-    CMU_ClockEnable(cmuClock_GPIO, true);
-  } else {
-    /* Done with device; turn it off */
-    CMU_ClockEnable(devcfgp->common.clock, false);
-  }
-
-  /* Enable or disable UART pins. To avoid false start, when enabling
-   * configure TX as high.  This relies on a comment in the EMLIB code
-   * that manipulating registers of disabled modules has no effect
-   * (unlike TM4C where it causes a HardFault).  We'll see. */
-  vBSPACMdeviceEFM32pinmuxConfigure(&devcfgp->common.rx_pinmux, !!cfgp, 1);
-  vBSPACMdeviceEFM32pinmuxConfigure(&devcfgp->common.tx_pinmux, !!cfgp, 0);
-
-  if (cfgp) {
-    uart->ROUTE = UART_ROUTE_RXPEN | UART_ROUTE_TXPEN | devcfgp->common.location;
-
-    /* Clear and enable RX interrupts.  TX interrupts are enabled at the
-     * peripheral when there's something to transmit.  TX and RX are
-     * enabled at the NVIC now. */
-    uart->IFC = _UART_IF_MASK;
-    uart->IEN = UART_IF_RXDATAV;
-    NVIC_ClearPendingIRQ(devcfgp->rx_irqn);
-    NVIC_ClearPendingIRQ(devcfgp->tx_irqn);
-    NVIC_EnableIRQ(devcfgp->rx_irqn);
-    NVIC_EnableIRQ(devcfgp->tx_irqn);
-
-    /* Configuration complete; enable the UART */
-    uart->CMD = UART_CMD_RXEN | UART_CMD_TXEN;
-  }
-
-  return 0;
-}
-
 const sBSPACMperiphUARToperations xBSPACMdeviceEFM32periphUARToperations = {
-  .configure = uart_configure,
-  /* Remaining functions share USART implementation */
+  /* For asynchronous operations a UART is just a USART. */
+  .configure = usart_configure_as_uart,
   .hw_transmit = usart_hw_transmit,
   .hw_txien = usart_hw_txien,
   .fifo_state = usart_fifo_state,

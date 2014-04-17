@@ -25,20 +25,24 @@
 
 __attribute__((__weak__))
 const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART1devcfg = {
-  .common = {
-    .uart_base = USART1_BASE,
-    .rx_pinmux = {
-      .port = GPIO->P + gpioPortD,
-      .pin = 6,
-      .mode = gpioModeInput,
+  .uart = {
+    .common = {
+      .uart_base = USART1_BASE,
+      .rx_pinmux = {
+        .port = GPIO->P + gpioPortD,
+        .pin = 6,
+        .mode = gpioModeInput,
+      },
+      .tx_pinmux = {
+        .port = GPIO->P + gpioPortD,
+        .pin = 7,
+        .mode = gpioModePushPull,
+      },
+      .clock = cmuClock_USART1,
+      .location = USART_ROUTE_LOCATION_LOC3,
     },
-    .tx_pinmux = {
-      .port = GPIO->P + gpioPortD,
-      .pin = 7,
-      .mode = gpioModePushPull,
-    },
-    .clock = cmuClock_USART1,
-    .location = USART_ROUTE_LOCATION_LOC3,
+    .tx_irqn = USART1_TX_IRQn,
+    .rx_irqn = USART1_RX_IRQn
   },
   .clk_pinmux = {
     .port = GPIO->P + gpioPortC,
@@ -50,8 +54,6 @@ const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART1devcfg =
     .pin = 14,
     .mode = gpioModePushPull,
   },
-  .tx_irqn = USART1_TX_IRQn,
-  .rx_irqn = USART1_RX_IRQn
 };
 
 #ifdef BSPACM_PERIPH_USART1_TX_BUFFER_SIZE
