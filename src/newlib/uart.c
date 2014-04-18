@@ -215,12 +215,16 @@ static const sBSPACMnewlibFDOPSfileOps console_ops = {
   .op_ioctl = uart_ioctl,
 };
 
+__attribute__((__weak__))
+const sBSPACMperiphUARTconfiguration xBSPACMnewlibFDOPSconsoleConfiguration = {
+  .speed_baud = 0
+};
+
 sBSPACMnewlibFDOPSfile *
 fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
                                  int flags)
 {
   sBSPACMnewlibFDOPSfile * fp = NULL;
-  const sBSPACMperiphUARTconfiguration cfg = { .speed_baud = 0 };
   static const char dev_name[] = "/dev/console";
 
 #if 1
@@ -249,7 +253,7 @@ fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
   do {
     fp = console_state.handle;
     if (! fp) {
-      hBSPACMperiphUART usp = hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, &cfg);
+      hBSPACMperiphUART usp = hBSPACMperiphUARTconfigure(hBSPACMdefaultUART, &xBSPACMnewlibFDOPSconsoleConfiguration);
       if (! usp) {
         errno = ENXIO;
         break;

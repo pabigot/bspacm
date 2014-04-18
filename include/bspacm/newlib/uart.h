@@ -96,4 +96,13 @@ sBSPACMnewlibFDOPSfile *
 fBSPACMnewlibFDOPSdriverCONSOLE (const char * pathname,
                                  int flags);
 
+/** The configuration that will be used by the console driver.
+ *
+ * @weakdef A weak definition of this that uses a device-specific
+ * default baud rate is provided in the newlib_fdops library, but may
+ * be overridden by an application that requires another
+ * configuration, e.g. when the clock rate will be reduced below the
+ * speed required to support the UART-specific default. */
+extern const sBSPACMperiphUARTconfiguration xBSPACMnewlibFDOPSconsoleConfiguration;
+
 #endif /* BSPACM_NEWLIB_UART_H */
