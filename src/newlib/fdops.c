@@ -75,18 +75,26 @@ __attribute__((__weak__))
 void
 vBSPACMnewlibFDOPSinitializeStdio_ (void)
 {
-  int fd;
+  hBSPACMnewlibFDOPSfile * fp = xBSPACMnewlibFDOPSfile_;
+  hBSPACMnewlibFDOPSfile * const fpe = fp + nBSPACMnewlibFDOPSfile;
 
-  (void)open("/dev/console", O_RDONLY); /* stdin */
-  (void)open("/dev/console", O_RDWR);   /* stdout */
-  (void)open("/dev/console", O_RDWR);   /* stderr */
-  for (fd = 0; fd < 3; ++fd) {
-    if (nBSPACMnewlibFDOPSfile <= fd) {
-      break;
-    }
-    if (0 == xBSPACMnewlibFDOPSfile_[fd]) {
-      xBSPACMnewlibFDOPSfile_[fd] = hBSPACMnewlibFDOPSfileRESERVED;
-    }
+  /* Make a strong effort to ensure the right descriptor indexes go
+   * with each instance, just in case somebody invokes this multiple
+   * times. */
+  (void)close(0); /* stdin */
+  (void)open("/dev/console", O_RDONLY);
+  if ((fp < fpe) && (! *fp)) {
+    *fp = hBSPACMnewlibFDOPSfileRESERVED;
+  }
+  (void)close(1); /* stdout */
+  (void)open("/dev/console", O_RDWR);
+  if ((fp < fpe) && (! *fp)) {
+    *fp = hBSPACMnewlibFDOPSfileRESERVED;
+  }
+  (void)close(2); /* stderr */
+  (void)open("/dev/console", O_RDWR);
+  if ((fp < fpe) && (! *fp)) {
+    *fp = hBSPACMnewlibFDOPSfileRESERVED;
   }
 }
 

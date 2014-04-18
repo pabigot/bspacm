@@ -224,10 +224,12 @@ extern hBSPACMnewlibFDOPSfile const hBSPACMnewlibFDOPSfileRESERVED;
  *
  * @weakdef The newlib_fdops library provides a weak default
  * implementation of this, which opens @c /dev/console three times
- * with parameters appropriate for @c stdin, @c stdout, and @c stderr.
- * If something goes wrong it uses #hBSPACMnewlibFDOPSfileRESERVED to
- * prevent the descriptors from being unintentionally used in
- * subsequent open() calls.
+ * with parameters appropriate for @c stdin, @c stdout, and @c stderr,
+ * closing the corresponding descriptors first to ensure the
+ * association with the file handle is correct.  If something goes
+ * wrong it uses #hBSPACMnewlibFDOPSfileRESERVED to prevent the
+ * descriptors from being unintentionally used in subsequent open()
+ * calls.
  *
  * @note This function may be overridden by the application, but need
  * not be.  It should never be explicitly invoked by the application;
