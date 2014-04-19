@@ -214,7 +214,7 @@
     uint32_t in_sleepdeep = (SCB->SCR & SCB_SCR_SLEEPDEEP_Msk); \
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;                          \
     __WFI();                                                    \
-    SCB->SRC &= ~in_sleepdeep;                                  \
+    SCB->SCR &= ~in_sleepdeep;                                  \
   } while(0)
 #endif /* BSPACM_CORE_DEEP_SLEEP */
 
