@@ -100,6 +100,10 @@ typedef struct sBSPACMdeviceTM4Cpinmux {
    * is not needed/supported by the mapping (e.g. the RTS/CTS signals
    * on a UART). */
   uint8_t pctl;
+
+  /** The port IRQ number (starting from 0 = Reset_Handler).  This
+   * field is likely only set with #pctl is zero.  */
+  uint8_t irqn;
 } sBSPACMdeviceTM4Cpinmux;
 
 /** Set the AFSEL bit and other bits required to configure a pin for a
