@@ -212,6 +212,26 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART7devcfg = {
 #endif /* BSPACM_CONFIG_ENABLE_UART7 */
 
 /** Override the weak default that references no peripheral */
-const hBSPACMperiphUART hBSPACMdefaultUART = &xBSPACMdeviceTM4CperiphUART0;
+const hBSPACMperiphUART hBSPACMdefaultUART =
+#if (BSPACM_CONFIG_DEFAULT_UART0 - 0)
+  &xBSPACMdeviceTM4CperiphUART0
+#elif (BSPACM_CONFIG_DEFAULT_UART1 - 0)
+  &xBSPACMdeviceTM4CperiphUART1
+#elif (BSPACM_CONFIG_DEFAULT_UART2 - 0)
+  &xBSPACMdeviceTM4CperiphUART2
+#elif (BSPACM_CONFIG_DEFAULT_UART3 - 0)
+  &xBSPACMdeviceTM4CperiphUART3
+#elif (BSPACM_CONFIG_DEFAULT_UART4 - 0)
+  &xBSPACMdeviceTM4CperiphUART4
+#elif (BSPACM_CONFIG_DEFAULT_UART5 - 0)
+  &xBSPACMdeviceTM4CperiphUART5
+#elif (BSPACM_CONFIG_DEFAULT_UART6 - 0)
+  &xBSPACMdeviceTM4CperiphUART6
+#elif (BSPACM_CONFIG_DEFAULT_UART7 - 0)
+  &xBSPACMdeviceTM4CperiphUART7
+#else
+#error no specified default UART
+#endif
+  ;
 
 #endif /* BSPACM_CONFIG_ENABLE_UART */
