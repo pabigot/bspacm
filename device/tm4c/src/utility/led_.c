@@ -40,7 +40,7 @@
 
 xBSPACMled const xBSPACMleds[] = {
 #define BSPACM_INC_EXPAND_LED_CONFIGURE(periph_,port_,bits_)
-#define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_) &(port_->DATA[1U << (pin_)]),
+#define BSPACM_INC_EXPAND_LED_REFERENCE(port_,pin_) &(BSPACM_CORE_BITBAND_PERIPH(port_->DATA, pin_)),
 #include <bspacm/internal/board/led.inc>
 #undef BSPACM_INC_EXPAND_LED_REFERENCE
 #undef BSPACM_INC_EXPAND_LED_CONFIGURE
