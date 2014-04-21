@@ -27,7 +27,6 @@ __attribute__((__weak__))
 const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART1devcfg = {
   .uart = {
     .common = {
-      .uart_base = USART1_BASE,
       .rx_pinmux = {
         .port = GPIO->P + gpioPortD,
         .pin = 6,
@@ -76,7 +75,6 @@ const sBSPACMdeviceEFM32periphUSARTdevcfg xBSPACMdeviceEFM32periphUSART1devcfg =
 __attribute__((__weak__))
 const sBSPACMdeviceEFM32periphLEUARTdevcfg xBSPACMdeviceEFM32periphLEUART0devcfg = {
   .common = {
-    .uart_base = LEUART0_BASE,
     .rx_pinmux = {
       .port = GPIO->P + gpioPortD,
       .pin = 5,

@@ -65,11 +65,6 @@
  * EFM32 devices that support UART functionality: USART, UART, and
  * LEUART. */
 typedef struct sBSPACMdeviceEFM32periphXRTdevcfg {
-  /** The base address of the UART peripheral register map to which
-   * the mapping applies.  From the CMSIS header, e.g. @c
-   * USART1_BASE. */
-  uint32_t uart_base;
-
   /** The port pin mux configuration for the RX (MISO) signal. */
   sBSPACMdeviceEFM32pinmux rx_pinmux;
 
