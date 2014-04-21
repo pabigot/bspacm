@@ -53,12 +53,6 @@
 
 /** Pin assignment structure for UART devices. */
 typedef struct sBSPACMdeviceTM4CperiphUARTdevcfg {
-  /** The base address of the UART peripheral register map to which
-   * the mapping applies.  For example, @c UART0_BASE.  The ordinal
-   * peripheral index may be determined using
-   * #wBSPACMdeviceTM4CperiphUART. */
-  uint32_t uart_base;
-
   /** The port pin mux configuration for the UnRx signal. */
   sBSPACMdeviceTM4Cpinmux rx_pinmux;
 
@@ -73,16 +67,13 @@ typedef struct sBSPACMdeviceTM4CperiphUARTdevcfg {
    * zeros if not configured. */
   sBSPACMdeviceTM4Cpinmux cts_pinmux;
 
-  /** The IRQ number corresponding to #uart_base.
+  /** The IRQ number for that UART.
    *
    * @note Values are truly interrupt numbers (e.g. @c UART0_IRQn from
    * the CMSIS device header), not exception numbers (e.g. @c
    * INT_UART0 from TivaWare <int/hw_ints.h>).  Using the latter
    * numbering will result in values offset by 16. */
-  uint16_t irqn;
-
-  /** The ordinal instance number of the UART within its device. */
-  uint8_t instance;
+  uint8_t irqn;
 } sBSPACMdeviceTM4CperiphUARTdevcfg;
 
 /** The operations table for UART devices.

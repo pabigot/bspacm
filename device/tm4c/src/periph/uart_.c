@@ -50,6 +50,7 @@ uart_configure (sBSPACMperiphUARTstate * usp,
 {
   const sBSPACMdeviceTM4CperiphUARTdevcfg * devcfgp;
   UART0_Type * uart;
+  unsigned int uart_instance;
   uint32_t rx_port_mask = 0;
   uint32_t tx_port_mask = 0;
   uint32_t rts_port_mask = 0;
@@ -60,6 +61,14 @@ uart_configure (sBSPACMperiphUARTstate * usp,
   }
   uart = (UART0_Type *)usp->uart;
   devcfgp = (const sBSPACMdeviceTM4CperiphUARTdevcfg *)usp->devcfg.ptr;
+
+  /* Determine the instance of the UART.  This relies on the fact that
+   * each UART instance is given 0x1000 bytes of peripheral memory,
+   * and UART0 through UART7 are contiguous in that memory.  This
+   * consistency is not present for other peripherals like I2C or
+   * WTIMER, or GPIO, but that's no reason not to take advantage of it
+   * here. */
+  uart_instance = ((uintptr_t)uart - (uintptr_t)UART0) / 0x1000;
 
   if (devcfgp->rx_pinmux.port) {
     rx_port_mask = 1U << iBSPACMdeviceTM4CgpioPortShift(devcfgp->rx_pinmux.port);
@@ -90,16 +99,13 @@ uart_configure (sBSPACMperiphUARTstate * usp,
       rcgcgpio |= cts_port_mask;
     }
     SYSCTL->RCGCGPIO |= rcgcgpio;
-    SYSCTL->RCGCUART |= (SYSCTL_RCGCUART_R0 << devcfgp->instance);
+    BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCUART, uart_instance) = 1;
   } else {
     /* Disable and clear interrupts at the NVIC, then shut down the
      * UART. */
     NVIC_DisableIRQ(devcfgp->irqn);
     NVIC_ClearPendingIRQ(devcfgp->irqn);
-    if (SYSCTL->RCGCUART & (SYSCTL_RCGCUART_R0 << devcfgp->instance)) {
-      uart->CTL = 0;
-      SYSCTL->RCGCUART &= ~(SYSCTL_RCGCUART_R0 << devcfgp->instance);
-    }
+    BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCUART, uart_instance) = 0;
   }
 
   /* Enable or disable GPIO pins used by UART, as long as the GPIO

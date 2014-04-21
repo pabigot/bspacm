@@ -35,13 +35,11 @@
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg = {
-  .uart_base = UART0_BASE,
   /* JP4/JP5 in UART configuration: virtual COM
    * JP4/JP5 in CAN configuration: A2.3, A2.4 */
   .rx_pinmux = { .port = GPIOA_AHB, .pin = 0, .pctl = 1 },
   .tx_pinmux = { .port = GPIOA_AHB, .pin = 1, .pctl = 1 },
-  .irqn = UART0_IRQn,
-  .instance = 0
+  .irqn = UART0_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART0_TX_BUFFER_SIZE
@@ -63,12 +61,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART1devcfg = {
-  .uart_base = UART1_BASE,
   /* X11.58 PB0 RX, X11.60 PB1 TX */
   .rx_pinmux = { .port = GPIOB_AHB, .pin = 0, .pctl = 1 },
   .tx_pinmux = { .port = GPIOB_AHB, .pin = 1, .pctl = 1 },
-  .irqn = UART1_IRQn,
-  .instance = 1
+  .irqn = UART1_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART1_TX_BUFFER_SIZE
@@ -89,13 +85,11 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART1devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART2devcfg = {
-  .uart_base = UART2_BASE,
   /* JP4/JP5 in UART configuration: A2.5 PD4 RX, A2.6 PD5 TX
    * JP4/JP5 in CAN configuration: N/A */
   .rx_pinmux = { .port = GPIOD_AHB, .pin = 4, .pctl = 1 },
   .tx_pinmux = { .port = GPIOD_AHB, .pin = 5, .pctl = 1 },
-  .irqn = UART2_IRQn,
-  .instance = 2
+  .irqn = UART2_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART2_TX_BUFFER_SIZE
@@ -116,12 +110,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART2devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART3devcfg = {
-  .uart_base = UART3_BASE,
   /* B2.9 PA4 RX, B2.10 PA5 TX */
   .rx_pinmux = { .port = GPIOA_AHB, .pin = 4, .pctl = 1 },
   .tx_pinmux = { .port = GPIOA_AHB, .pin = 5, .pctl = 1 },
-  .irqn = UART3_IRQn,
-  .instance = 3
+  .irqn = UART3_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART3_TX_BUFFER_SIZE
@@ -142,12 +134,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART3devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART4devcfg = {
-  .uart_base = UART4_BASE,
   /* B2.5 PK0 RX, B2.6 PK1 TX */
   .rx_pinmux = { .port = GPIOK, .pin = 0, .pctl = 1 },
   .tx_pinmux = { .port = GPIOK, .pin = 1, .pctl = 1 },
-  .irqn = UART4_IRQn,
-  .instance = 4
+  .irqn = UART4_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART4_TX_BUFFER_SIZE
@@ -168,12 +158,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART4devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART5devcfg = {
-  .uart_base = UART5_BASE,
   /* A1.5 PC6 RX, A1.8 PC7 TX */
   .rx_pinmux = { .port = GPIOC_AHB, .pin = 6, .pctl = 1 },
   .tx_pinmux = { .port = GPIOC_AHB, .pin = 7, .pctl = 1 },
-  .irqn = UART5_IRQn,
-  .instance = 5
+  .irqn = UART5_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART5_TX_BUFFER_SIZE
@@ -194,12 +182,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART5devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART6devcfg = {
-  .uart_base = UART6_BASE,
   /* A2.3 PP0 RX, A2.4 PP1 TX */
   .rx_pinmux = { .port = GPIOP3, .pin = 0, .pctl = 1 },
   .tx_pinmux = { .port = GPIOP3, .pin = 1, .pctl = 1 },
-  .irqn = UART6_IRQn,
-  .instance = 6
+  .irqn = UART6_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART6_TX_BUFFER_SIZE
@@ -220,12 +206,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART6devcfg = {
 
 __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART7devcfg = {
-  .uart_base = UART7_BASE,
   /* A1.3 PC4 RX, A1.4 PC5 TX */
   .rx_pinmux = { .port = GPIOC_AHB, .pin = 4, .pctl = 1 },
   .tx_pinmux = { .port = GPIOC_AHB, .pin = 5, .pctl = 1 },
-  .irqn = UART7_IRQn,
-  .instance = 7
+  .irqn = UART7_IRQn
 };
 
 #ifdef BSPACM_PERIPH_UART7_TX_BUFFER_SIZE
