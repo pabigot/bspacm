@@ -50,12 +50,6 @@ void vBSPACMdeviceTM4CpinmuxConfigure (const sBSPACMdeviceTM4Cpinmux * cfgp,
   if (! gpio) {
     return;
   }
-  /* Verify the port index matches the port.  Lacking an assert
-   * mechanism, spin here under the expectation that the bug will be
-   * discovered during testing. */
-  while (wBSPACMdeviceTM4CperiphGPIO[cfgp->port_shift] != (uint32_t)gpio) {
-    /* port != port_shift */;
-  }
   with_lock = !(bit & gpio->CR);
   gpio->PCTL &= ~(0x0F << pctl_shift);
   if (with_lock) {
@@ -65,12 +59,11 @@ void vBSPACMdeviceTM4CpinmuxConfigure (const sBSPACMdeviceTM4Cpinmux * cfgp,
   if (enablep && cfgp->pctl) {
     gpio->PCTL |= (cfgp->pctl << pctl_shift);
     gpio->AFSEL |= bit;
-    gpio->ODR &= ~bit;
   } else {
     gpio->DIR &= ~bit;
     gpio->AFSEL &= ~bit;
-    gpio->ODR &= ~bit;
   }
+  gpio->ODR &= ~bit;
   gpio->DEN |= bit;
   if (with_lock) {
     gpio->LOCK = GPIO_LOCK_KEY;

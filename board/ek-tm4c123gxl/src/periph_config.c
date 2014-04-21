@@ -31,8 +31,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART0devcfg = {
   /* UART0 is connected to the virtual COM port via PA0 and PA1 */
   .uart_base = UART0_BASE,
-  .rx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 0, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOA, .port_shift = 0, .pin = 1, .pctl = 1 },
+  .rx_pinmux = { .port = GPIOA, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOA, .pin = 1, .pctl = 1 },
   .irqn = UART0_IRQn,
   .instance = 0
 };
@@ -58,10 +58,10 @@ const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART1devcfg = {
   /* UART1 is available on A.3(RX=PB0), A.4(TX=PB1), D.4(RTS=PC4), D.5(CTS=PC5).
    * Alternatively some functions are on D.4 and D.5 */
   .uart_base = UART1_BASE,
-  .rx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 0, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOB, .port_shift = 1, .pin = 1, .pctl = 1 },
-  .rts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 8 },
-  .cts_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 8 },
+  .rx_pinmux = { .port = GPIOB, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOB, .pin = 1, .pctl = 1 },
+  .rts_pinmux = { .port = GPIOC, .pin = 4, .pctl = 8 },
+  .cts_pinmux = { .port = GPIOC, .pin = 5, .pctl = 8 },
   .irqn = UART1_IRQn,
   .instance = 1
 };
@@ -86,8 +86,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART2devcfg = {
   /* UART2 is available on D.8(RX=PD6), D.9(TX=PD7). */
   .uart_base = UART2_BASE,
-  .rx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 6, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOD, .port_shift = 3, .pin = 7, .pctl = 1 }, /* NMI */
+  .rx_pinmux = { .port = GPIOD, .pin = 6, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOD, .pin = 7, .pctl = 1 }, /* NMI */
   .irqn = UART2_IRQn,
   .instance = 2
 };
@@ -112,8 +112,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART3devcfg = {
   /* UART3 is available on D.6(RX=PC6), D.7(TX=PC7). */
   .uart_base = UART3_BASE,
-  .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 6, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 7, .pctl = 1 },
+  .rx_pinmux = { .port = GPIOC, .pin = 6, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOC, .pin = 7, .pctl = 1 },
   .irqn = UART3_IRQn,
   .instance = 3
 };
@@ -138,8 +138,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART4devcfg = {
   /* UART4 is available on D.4(RX=PC4), D.5(TX=PC5). */
   .uart_base = UART4_BASE,
-  .rx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 4, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOC, .port_shift = 2, .pin = 5, .pctl = 1 },
+  .rx_pinmux = { .port = GPIOC, .pin = 4, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOC, .pin = 5, .pctl = 1 },
   .irqn = UART4_IRQn,
   .instance = 4
 };
@@ -164,8 +164,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART5devcfg = {
   /* UART5 is available on A.5(RX=PE4), A.6(TX=PE5). */
   .uart_base = UART5_BASE,
-  .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 4, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 5, .pctl = 1 },
+  .rx_pinmux = { .port = GPIOE, .pin = 4, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOE, .pin = 5, .pctl = 1 },
   .irqn = UART5_IRQn,
   .instance = 5
 };
@@ -191,8 +191,8 @@ __attribute__((__weak__))
 const sBSPACMdeviceTM4CperiphUARTdevcfg xBSPACMdeviceTM4CperiphUART7devcfg = {
   /* UART7 is available on B.3(RX=PE0), C.7(TX=PE1). */
   .uart_base = UART7_BASE,
-  .rx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 0, .pctl = 1 },
-  .tx_pinmux = { .port = GPIOE, .port_shift = 4, .pin = 1, .pctl = 1 },
+  .rx_pinmux = { .port = GPIOE, .pin = 0, .pctl = 1 },
+  .tx_pinmux = { .port = GPIOE, .pin = 1, .pctl = 1 },
   .irqn = UART7_IRQn,
   .instance = 7
 };

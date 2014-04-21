@@ -135,20 +135,6 @@ typedef struct sBSPACMdeviceTM4Cpinmux {
    * device line, though the two types are structurally equivalent. */
   GPIOCommon_Type * port;
 
-  /** The index of the port's bit within registers such as @c
-   * SYSCTL->RCGCGPIO.  Note that @c PORTI and @c PORTO do not exist;
-   * use this table:
-   *
-   * @code
-   * // PA 0    PB 1    PC 2    PD 3
-   * // PE 4    PF 5    PG 6    PH 7
-   * // *PJ 8   PK 9    PL 10   PM 11
-   * // PN 12   *PP 13  PQ 14   PR 15
-   * // PS 16   PT 17
-   * @endcode
-   */
-  uint8_t port_shift;
-
   /** The pin number, ranging from 0 through 7. */
   uint8_t pin;
 

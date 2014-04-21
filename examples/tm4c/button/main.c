@@ -31,11 +31,11 @@
  */
 const sBSPACMdeviceTM4Cpinmux button[] = {
 #if (BSPACM_BOARD_EK_TM4C123GXL - 0)
-  { .port = GPIOF, .port_shift = 5, .pin = 4, .pctl = 0, .irqn = GPIOF_IRQn },
-  { .port = GPIOF, .port_shift = 5, .pin = 0, .pctl = 0, .irqn = GPIOF_IRQn },
+  { .port = GPIOF, .pin = 4, .pctl = 0, .irqn = GPIOF_IRQn },
+  { .port = GPIOF, .pin = 0, .pctl = 0, .irqn = GPIOF_IRQn },
 #else
-  { .port = GPIOJ_AHB, .port_shift = 8, .pin = 0, .pctl = 0, .irqn = GPIOJ_IRQn },
-  { .port = GPIOJ_AHB, .port_shift = 8, .pin = 1, .pctl = 0, .irqn = GPIOJ_IRQn },
+  { .port = GPIOJ_AHB, .pin = 0, .pctl = 0, .irqn = GPIOJ_IRQn },
+  { .port = GPIOJ_AHB, .pin = 1, .pctl = 0, .irqn = GPIOJ_IRQn },
 #endif
 };
 static const unsigned int nbutton = sizeof(button)/sizeof(*button);
