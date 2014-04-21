@@ -17,6 +17,7 @@
 
 #include <bspacm/utility/led.h>
 #include <bspacm/periph/gpio.h>
+#include <inc/hw_gpio.h>
 #include <fcntl.h>
 #include <bspacm/newlib/ioctl.h>
 #include <string.h>
@@ -86,16 +87,34 @@ void main ()
       GPIOCommon_Type * const gpio = (GPIOCommon_Type *)button[i].port;
       const unsigned int pin = button[i].pin;
       const unsigned int irqn = button[i].irqn;
+      bool with_lock;
 
-      BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, button[i].port_shift) = 1;
-      vBSPACMdeviceTM4CpinmuxConfigure(button+i, 1, 0);
-      BSPACM_CORE_BITBAND_PERIPH(gpio->IM, pin) = 0; /* mask */
+      BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(button[i].port)) = 1;
+      __NOP(); __NOP(); __NOP(); /* delay 3 cycles */
+      /* If commit register is cleared (e.g. because button port is
+       * used for JTAG, WAKE, etc.) need to override so we can
+       * configure AFSEL, PUR, and DEN. */
+      with_lock = ! BSPACM_CORE_BITBAND_PERIPH(gpio->CR, pin);
+      if (with_lock) {
+        gpio->LOCK = GPIO_LOCK_KEY;
+        BSPACM_CORE_BITBAND_PERIPH(gpio->CR, pin) = 1;
+      }
+      BSPACM_CORE_BITBAND_PERIPH(gpio->DIR, pin) = 0; /* input */
+      BSPACM_CORE_BITBAND_PERIPH(gpio->AFSEL, pin) = 0; /* gpio */
+      BSPACM_CORE_BITBAND_PERIPH(gpio->PUR, pin) = 1; /* pull-up enabled */
+      BSPACM_CORE_BITBAND_PERIPH(gpio->ODR, pin) = 0; /* not open drain */
+      BSPACM_CORE_BITBAND_PERIPH(gpio->DEN, pin) = 1; /* enable digital function */
+      BSPACM_CORE_BITBAND_PERIPH(gpio->IM, pin) = 0; /* mask while configuring */
       BSPACM_CORE_BITBAND_PERIPH(gpio->IS, pin) = 0; /* edge-sense */
       BSPACM_CORE_BITBAND_PERIPH(gpio->IEV, pin) = 0; /* falling edge */
       BSPACM_CORE_BITBAND_PERIPH(gpio->IBE, pin) = 0; /* not also rising edge */
-      BSPACM_CORE_BITBAND_PERIPH(gpio->PUR, pin) = 1; /* pull-up enabled */
       BSPACM_CORE_BITBAND_PERIPH(gpio->ICR, pin) = 1; /* clear previous interrupt */
       BSPACM_CORE_BITBAND_PERIPH(gpio->IM, pin) = 1;  /* unmask interrupt */
+      if (with_lock) {
+        /* Put the commit register back the way we found it */
+        gpio->LOCK = GPIO_LOCK_KEY;
+        BSPACM_CORE_BITBAND_PERIPH(gpio->CR, pin) = 0;
+      }
       NVIC_ClearPendingIRQ(irqn);
       NVIC_EnableIRQ(irqn);
     }
