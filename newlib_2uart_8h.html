@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -87,7 +87,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">uart.h File Reference</div>  </div>
 </div><!--header-->
@@ -107,6 +108,12 @@ Functions</h2></td></tr>
 <tr class="separator:a98540e1e1c7651625a355e40d4117237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bbae5fb156a23dc09cc9639426b94a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMnewlibFDOPSfile.html">sBSPACMnewlibFDOPSfile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0">fBSPACMnewlibFDOPSdriverCONSOLE</a> (const char *pathname, int flags)</td></tr>
 <tr class="separator:a7bbae5fb156a23dc09cc9639426b94a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a6baa150a33ff62857fa6ba0722e5bff5"><td class="memItemLeft" align="right" valign="top">const <br class="typebreak"/>
+<a class="el" href="structsBSPACMperiphUARTconfiguration.html">sBSPACMperiphUARTconfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="newlib_2uart_8h.html#a6baa150a33ff62857fa6ba0722e5bff5">xBSPACMnewlibFDOPSconsoleConfiguration</a></td></tr>
+<tr class="separator:a6baa150a33ff62857fa6ba0722e5bff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>File-descriptor capabilities associated with UART/CONSOLE peripherals. </p>
@@ -178,10 +185,25 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a class="anchor" id="a6baa150a33ff62857fa6ba0722e5bff5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structsBSPACMperiphUARTconfiguration.html">sBSPACMperiphUARTconfiguration</a> xBSPACMnewlibFDOPSconsoleConfiguration</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The configuration that will be used by the console driver.</p>
+<dl class="section user"><dt>Weakly Defined</dt><dd>A weak definition of this that uses a device-specific default baud rate is provided in the newlib_fdops library, but may be overridden by an application that requires another configuration, e.g. when the clock rate will be reduced below the speed required to support the UART-specific default. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -94,10 +94,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a9df5403cf21a81331319cae0c8f70dc6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a9df5403cf21a81331319cae0c8f70dc6">clock</a></td></tr>
-<tr class="separator:a9df5403cf21a81331319cae0c8f70dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb138b90b9b41f8bb8360c2bb12dd9fe"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#abb138b90b9b41f8bb8360c2bb12dd9fe">location</a></td></tr>
-<tr class="separator:abb138b90b9b41f8bb8360c2bb12dd9fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a488403afa474476d7969323ee46d455b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMdeviceEFM32periphXRTdevcfg.html">sBSPACMdeviceEFM32periphXRTdevcfg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a488403afa474476d7969323ee46d455b">common</a></td></tr>
+<tr class="separator:a488403afa474476d7969323ee46d455b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85d2e3ab94dd507e6324e7994b647438"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a85d2e3ab94dd507e6324e7994b647438">irqn</a></td></tr>
 <tr class="separator:a85d2e3ab94dd507e6324e7994b647438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3882632fdde4dbe54a808e1ad9dd5812"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a3882632fdde4dbe54a808e1ad9dd5812">lfbsel</a></td></tr>
@@ -105,18 +103,18 @@ Data Fields</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Device-specific information for an EFM32 LEUART instance.</p>
-<p>Contains the information that cannot be easily deduced from the peripheral base address. </p>
+<p>The LEUART has a similar but incompatible API to the USART/UART. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a9df5403cf21a81331319cae0c8f70dc6"></a>
+<a class="anchor" id="a488403afa474476d7969323ee46d455b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t sBSPACMdeviceEFM32periphLEUARTdevcfg::clock</td>
+          <td class="memname"><a class="el" href="structsBSPACMdeviceEFM32periphXRTdevcfg.html">sBSPACMdeviceEFM32periphXRTdevcfg</a> sBSPACMdeviceEFM32periphLEUARTdevcfg::common</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The peripheral clock configuration </p>
+<p>Configuration for which code can be shared with other devices. </p>
 
 </div>
 </div>
@@ -129,7 +127,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Interrupt offset in NVIC </p>
+<p>Interrupt offset in NVIC. From the CMSIS header, e.g. <code>LEART1_IRQn</code> </p>
 
 </div>
 </div>
@@ -142,20 +140,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>CMU_Select_TypeDef for LFB if not already configured </p>
-
-</div>
-</div>
-<a class="anchor" id="abb138b90b9b41f8bb8360c2bb12dd9fe"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t sBSPACMdeviceEFM32periphLEUARTdevcfg::location</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Routing selection for LEART </p>
+<p>Clock source selection for LFBCLK. From the &lt;em_cmu.h&gt; header, e.g. <code>cmuSelect_ULFRCO</code>. The value zero (mapping to <code>cmuSelect_Error</code>) means to leave LFB in its existing configuration. </p>
 
 </div>
 </div>
@@ -165,7 +150,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -94,19 +94,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a238262346b937c3023e4a6844757ea62"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#a238262346b937c3023e4a6844757ea62">port</a></td></tr>
-<tr class="separator:a238262346b937c3023e4a6844757ea62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa49b04e3869e9d10a0b26f136b7e21ec"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#aa49b04e3869e9d10a0b26f136b7e21ec">port_shift</a></td></tr>
-<tr class="separator:aa49b04e3869e9d10a0b26f136b7e21ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5071df5fc76b073dc0775d2b95d15ba0"><td class="memItemLeft" align="right" valign="top">GPIOCommon_Type *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#a5071df5fc76b073dc0775d2b95d15ba0">port</a></td></tr>
+<tr class="separator:a5071df5fc76b073dc0775d2b95d15ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace8bcc51bdd50addf3004753beb1ef46"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">pin</a></td></tr>
 <tr class="separator:ace8bcc51bdd50addf3004753beb1ef46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00a0f610b1e3782b41659c93497e051e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">pctl</a></td></tr>
 <tr class="separator:a00a0f610b1e3782b41659c93497e051e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af50c0525d0d03c4abf3d0c7ce8894cd4"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4">irqn</a></td></tr>
+<tr class="separator:af50c0525d0d03c4abf3d0c7ce8894cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Core structure associating a GPIO port, pin, and port control function.</p>
 <dl class="section note"><dt>Note</dt><dd>An all-zero pinmux denotes an unconfigured GPIO due to <a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">pctl</a> being zero. </dd></dl>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="af50c0525d0d03c4abf3d0c7ce8894cd4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t sBSPACMdeviceTM4Cpinmux::irqn</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The port IRQ number (starting from 0 = Reset_Handler). This field is likely only set with <a class="el" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">pctl</a> is zero. </p>
+
+</div>
+</div>
 <a class="anchor" id="a00a0f610b1e3782b41659c93497e051e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -134,35 +147,17 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a238262346b937c3023e4a6844757ea62"></a>
+<a class="anchor" id="a5071df5fc76b073dc0775d2b95d15ba0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* sBSPACMdeviceTM4Cpinmux::port</td>
+          <td class="memname">GPIOCommon_Type* sBSPACMdeviceTM4Cpinmux::port</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>The register pointer for the port to be configured. The specific device is GPIOA_Type or GPIOA_AHB_Type, depending on device line, though the two types are structurally equivalent. </p>
 
-</div>
-</div>
-<a class="anchor" id="aa49b04e3869e9d10a0b26f136b7e21ec"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t sBSPACMdeviceTM4Cpinmux::port_shift</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The index of the port's bit within registers such as <code>SYSCTL-&gt;RCGCGPIO</code>. Note that <code>PORTI</code> and <code>PORTO</code> do not exist; use this table:</p>
-<div class="fragment"><div class="line"><span class="comment">// PA 0    PB 1    PC 2    PD 3</span></div>
-<div class="line"><span class="comment">// PE 4    PF 5    PG 6    PH 7</span></div>
-<div class="line"><span class="comment">// *PJ 8   PK 9    PL 10   PM 11</span></div>
-<div class="line"><span class="comment">// PN 12   *PP 13  PQ 14   PR 15</span></div>
-<div class="line"><span class="comment">// PS 16   PT 17</span></div>
-</div><!-- fragment --> 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
@@ -171,7 +166,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

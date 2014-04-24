@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -213,7 +213,7 @@ All <code>fifo_*</code> operations are assumed to operate in mutex context: i.e.
 <div class="ttc" id="fifo_8h_html_afcbad100897b483f96348f96f3112a5d"><div class="ttname"><a href="fifo_8h.html#afcbad100897b483f96348f96f3112a5d">sFIFO</a></div><div class="ttdeci">struct sFIFO sFIFO</div></div>
 <div class="ttc" id="structsFIFO_html"><div class="ttname"><a href="structsFIFO.html">sFIFO</a></div><div class="ttdef"><b>Definition:</b> fifo.h:101</div></div>
 </div><!-- fragment --><p>Define a <a class="el" href="structsFIFO.html">sFIFO</a> instance that supports at least <code>size_</code> value cells.</p>
-<dl class="section warning"><dt>Warning</dt><dd>The definition has <code>static</code> storage class.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The definition has <code>static</code> storage class. A reference to the fifo instance must be shared with the infrastructure that uses it.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="fifo_8h.html#aae4ae108da38caa190f3f4a3f6919d5b">FIFO_FROM_ALLOCATION()</a></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -525,7 +525,7 @@ All <code>fifo_*</code> operations are assumed to operate in mutex context: i.e.
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

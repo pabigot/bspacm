@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -121,66 +121,180 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#ifndef BSPACM_DEVICE_TM4C_PERIPH_GPIO_H</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define BSPACM_DEVICE_TM4C_PERIPH_GPIO_H</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html">   67</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> {</div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#a238262346b937c3023e4a6844757ea62">   71</a></span>&#160;  <span class="keywordtype">void</span> * <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#a238262346b937c3023e4a6844757ea62">port</a>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#aa49b04e3869e9d10a0b26f136b7e21ec">   85</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#aa49b04e3869e9d10a0b26f136b7e21ec">port_shift</a>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">   88</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">pin</a>;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">  102</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">pctl</a>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;} <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#abc99b7b584aec1b9280d2d0d90717288">sBSPACMdeviceTM4Cpinmux</a>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a3d0690e837b5528b9b20d45f8ee503a6">vBSPACMdeviceTM4CpinmuxConfigure</a> (<span class="keyword">const</span> <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> * cfgp,</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                                       <span class="keywordtype">int</span> enablep,</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                                       <span class="keywordtype">int</span> initial_high);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html">  127</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html">sBSPACMdeviceTM4CpinmuxUART</a> {</div>
-<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#a93337d47f7ea818bee5dc57d84dd8a9d">  132</a></span>&#160;  uint32_t <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#a93337d47f7ea818bee5dc57d84dd8a9d">uart_base</a>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#a35714a436a0190c7ad9f7f3ce1b60830">  135</a></span>&#160;  <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#a35714a436a0190c7ad9f7f3ce1b60830">rx_pinmux</a>;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#ad8a525f477830741c970ba86dd6f8336">  138</a></span>&#160;  <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#ad8a525f477830741c970ba86dd6f8336">tx_pinmux</a>;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
-<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#ab979da2336eafae98b10e9301b7c671f">  142</a></span>&#160;  <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#ab979da2336eafae98b10e9301b7c671f">rts_pinmux</a>;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#a37e0842978c543d47fcfa31300a133ce">  146</a></span>&#160;  <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#a37e0842978c543d47fcfa31300a133ce">cts_pinmux</a>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4CpinmuxUART.html#a7722f55d4d0995c357a0f536bd3b8bfc">  154</a></span>&#160;  uint16_t <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html#a7722f55d4d0995c357a0f536bd3b8bfc">irqn</a>;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;} <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a08f80eafaad03fba0fa80e76787067fb">sBSPACMdeviceTM4CpinmuxUART</a>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <a class="code" href="structsBSPACMdeviceTM4CpinmuxUART.html">sBSPACMdeviceTM4CpinmuxUART</a> <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa1055a5a45e0d516a6ba34bf227dde06">xBSPACMdeviceTM4CpinmuxUART</a>[];</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa7fabb370acf5b9afa746ba05807f2d7">nBSPACMdeviceTM4CpinmuxUART</a>;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DEVICE_TM4C_PERIPH_GPIO_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_ad8a525f477830741c970ba86dd6f8336"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#ad8a525f477830741c970ba86dd6f8336">sBSPACMdeviceTM4CpinmuxUART::tx_pinmux</a></div><div class="ttdeci">sBSPACMdeviceTM4Cpinmux tx_pinmux</div><div class="ttdef"><b>Definition:</b> gpio.h:138</div></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#ifndef BSPACM_DEVICE_TM4C_PERIPH_GPIO_H</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#define BSPACM_DEVICE_TM4C_PERIPH_GPIO_H</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">/* Standard port tag/shift map:</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment"> * PA 0    PB 1    PC 2    PD 3</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment"> * PE 4    PF 5    PG 6    PH 7</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment"> * *PJ 8   PK 9    PL 10   PM 11</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment"> * PN 12   *PP 13  PQ 14   PR 15</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment"> * PS 16   PT 17</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="core_8h.html">bspacm/core.h</a>&gt;</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html">  132</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> {</div>
+<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#a5071df5fc76b073dc0775d2b95d15ba0">  136</a></span>&#160;  GPIOCommon_Type * <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#a5071df5fc76b073dc0775d2b95d15ba0">port</a>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">  139</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">pin</a>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">  153</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">pctl</a>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4">  157</a></span>&#160;  uint8_t <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4">irqn</a>;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;} <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#abc99b7b584aec1b9280d2d0d90717288">sBSPACMdeviceTM4Cpinmux</a>;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a3d0690e837b5528b9b20d45f8ee503a6">vBSPACMdeviceTM4CpinmuxConfigure</a> (<span class="keyword">const</span> <a class="code" href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a> * cfgp,</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                                       <span class="keywordtype">int</span> enablep,</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                                       <span class="keywordtype">int</span> initial_high);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keywordtype">int</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ae6d98ecd145761e88ff30bbb9bb79812">  193</a></span>&#160;<a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ae6d98ecd145761e88ff30bbb9bb79812">iBSPACMdeviceTM4CgpioPortTagFromShift</a> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> shift)</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;{</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="keywordtype">int</span> tag = <span class="charliteral">&#39;A&#39;</span> + shift;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keywordflow">if</span> ((<span class="charliteral">&#39;O&#39;</span> - 2) &lt; tag) {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    tag += 2;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((<span class="charliteral">&#39;I&#39;</span> - 1) &lt; tag) {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    tag += 1;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  }</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  <span class="keywordflow">return</span> tag;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="keyword">static</span> <a class="code" href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="keywordtype">int</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ad43a3fabd2f440771abc79c4457a257b">  219</a></span>&#160;<a class="code" href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ad43a3fabd2f440771abc79c4457a257b">iBSPACMdeviceTM4CgpioPortShift</a> (<span class="keywordtype">void</span> * gpio)</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;{</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">#if defined(GPIOA_BASE)</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOA_BASE) <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor">#if defined(GPIOA_AHB_BASE)</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOA_AHB_BASE) <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#if defined(GPIOB_BASE)</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOB_BASE) <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">#if defined(GPIOB_AHB_BASE)</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOB_AHB_BASE) <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="preprocessor">#if defined(GPIOC_BASE)</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOC_BASE) <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">#if defined(GPIOC_AHB_BASE)</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOC_AHB_BASE) <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">#if defined(GPIOD_BASE)</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOD_BASE) <span class="keywordflow">return</span> 3;</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="preprocessor">#if defined(GPIOD_AHB_BASE)</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOD_AHB_BASE) <span class="keywordflow">return</span> 3;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">#if defined(GPIOE_BASE)</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOE_BASE) <span class="keywordflow">return</span> 4;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">#if defined(GPIOE_AHB_BASE)</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOE_AHB_BASE) <span class="keywordflow">return</span> 4;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">#if defined(GPIOF_BASE)</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOF_BASE) <span class="keywordflow">return</span> 5;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="preprocessor">#if defined(GPIOF_AHB_BASE)</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOF_AHB_BASE) <span class="keywordflow">return</span> 5;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">#if defined(GPIOG_BASE)</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOG_BASE) <span class="keywordflow">return</span> 6;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">#if defined(GPIOG_AHB_BASE)</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOG_AHB_BASE) <span class="keywordflow">return</span> 6;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">#if defined(GPIOH_BASE)</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOH_BASE) <span class="keywordflow">return</span> 7;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">#if defined(GPIOH_AHB_BASE)</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOH_AHB_BASE) <span class="keywordflow">return</span> 7;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="comment">/* No GPIOI */</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#if defined(GPIOJ_BASE)</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOJ_BASE) <span class="keywordflow">return</span> 8;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="preprocessor">#if defined(GPIOJ_AHB_BASE)</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOJ_AHB_BASE) <span class="keywordflow">return</span> 8;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="preprocessor">#if defined(GPIOK_BASE)</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOK_BASE) <span class="keywordflow">return</span> 9;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="preprocessor">#if defined(GPIOK_AHB_BASE)</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOK_AHB_BASE) <span class="keywordflow">return</span> 9;</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="preprocessor">#if defined(GPIOL_BASE)</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOL_BASE) <span class="keywordflow">return</span> 10;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="preprocessor">#if defined(GPIOL_AHB_BASE)</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOL_AHB_BASE) <span class="keywordflow">return</span> 10;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="preprocessor">#if defined(GPIOM_BASE)</span></div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOM_BASE) <span class="keywordflow">return</span> 11;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">#if defined(GPIOM_AHB_BASE)</span></div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOM_AHB_BASE) <span class="keywordflow">return</span> 11;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="preprocessor">#if defined(GPION_BASE)</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPION_BASE) <span class="keywordflow">return</span> 12;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="preprocessor">#if defined(GPION_AHB_BASE)</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPION_AHB_BASE) <span class="keywordflow">return</span> 12;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="comment">/* No GPIOO */</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="preprocessor">#if defined(GPIOP_BASE)</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOP_BASE) <span class="keywordflow">return</span> 13;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="preprocessor">#if defined(GPIOP_AHB_BASE)</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOP_AHB_BASE) <span class="keywordflow">return</span> 13;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;<span class="preprocessor">#if defined(GPIOQ_BASE)</span></div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOQ_BASE) <span class="keywordflow">return</span> 14;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;<span class="preprocessor">#if defined(GPIOQ_AHB_BASE)</span></div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOQ_AHB_BASE) <span class="keywordflow">return</span> 14;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="preprocessor">#if defined(GPIOR_BASE)</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOR_BASE) <span class="keywordflow">return</span> 15;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="preprocessor">#if defined(GPIOR_AHB_BASE)</span></div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOR_AHB_BASE) <span class="keywordflow">return</span> 15;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="preprocessor">#if defined(GPIOS_BASE)</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOS_BASE) <span class="keywordflow">return</span> 16;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;<span class="preprocessor">#if defined(GPIOS_AHB_BASE)</span></div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOS_AHB_BASE) <span class="keywordflow">return</span> 16;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="preprocessor">#if defined(GPIOT_BASE)</span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOT_BASE) <span class="keywordflow">return</span> 17;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;<span class="preprocessor">#if defined(GPIOT_AHB_BASE)</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;  <span class="keywordflow">if</span> (gpio == (<span class="keywordtype">void</span>*)GPIOT_AHB_BASE) <span class="keywordflow">return</span> 17;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;}</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BSPACM_DEVICE_TM4C_PERIPH_GPIO_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="core_8h_html"><div class="ttname"><a href="core_8h.html">core.h</a></div><div class="ttdoc">Common header included by all BSPACM leaf headers. </div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html">sBSPACMdeviceTM4CpinmuxUART</a></div><div class="ttdef"><b>Definition:</b> gpio.h:127</div></div>
 <div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_abc99b7b584aec1b9280d2d0d90717288"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#abc99b7b584aec1b9280d2d0d90717288">sBSPACMdeviceTM4Cpinmux</a></div><div class="ttdeci">struct sBSPACMdeviceTM4Cpinmux sBSPACMdeviceTM4Cpinmux</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_a238262346b937c3023e4a6844757ea62"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#a238262346b937c3023e4a6844757ea62">sBSPACMdeviceTM4Cpinmux::port</a></div><div class="ttdeci">void * port</div><div class="ttdef"><b>Definition:</b> gpio.h:71</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_a00a0f610b1e3782b41659c93497e051e"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">sBSPACMdeviceTM4Cpinmux::pctl</a></div><div class="ttdeci">uint8_t pctl</div><div class="ttdef"><b>Definition:</b> gpio.h:102</div></div>
-<div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_aa1055a5a45e0d516a6ba34bf227dde06"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa1055a5a45e0d516a6ba34bf227dde06">xBSPACMdeviceTM4CpinmuxUART</a></div><div class="ttdeci">const sBSPACMdeviceTM4CpinmuxUART xBSPACMdeviceTM4CpinmuxUART[]</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_ab979da2336eafae98b10e9301b7c671f"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#ab979da2336eafae98b10e9301b7c671f">sBSPACMdeviceTM4CpinmuxUART::rts_pinmux</a></div><div class="ttdeci">sBSPACMdeviceTM4Cpinmux rts_pinmux</div><div class="ttdef"><b>Definition:</b> gpio.h:142</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_a93337d47f7ea818bee5dc57d84dd8a9d"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#a93337d47f7ea818bee5dc57d84dd8a9d">sBSPACMdeviceTM4CpinmuxUART::uart_base</a></div><div class="ttdeci">uint32_t uart_base</div><div class="ttdef"><b>Definition:</b> gpio.h:132</div></div>
+<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_a00a0f610b1e3782b41659c93497e051e"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#a00a0f610b1e3782b41659c93497e051e">sBSPACMdeviceTM4Cpinmux::pctl</a></div><div class="ttdeci">uint8_t pctl</div><div class="ttdef"><b>Definition:</b> gpio.h:153</div></div>
+<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_a5071df5fc76b073dc0775d2b95d15ba0"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#a5071df5fc76b073dc0775d2b95d15ba0">sBSPACMdeviceTM4Cpinmux::port</a></div><div class="ttdeci">GPIOCommon_Type * port</div><div class="ttdef"><b>Definition:</b> gpio.h:136</div></div>
+<div class="ttc" id="core_8h_html_a1d7c3e78ed005aa264211e43bf2a64c5"><div class="ttname"><a href="core_8h.html#a1d7c3e78ed005aa264211e43bf2a64c5">BSPACM_CORE_INLINE</a></div><div class="ttdeci">#define BSPACM_CORE_INLINE</div><div class="ttdef"><b>Definition:</b> core.h:65</div></div>
+<div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_ad43a3fabd2f440771abc79c4457a257b"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ad43a3fabd2f440771abc79c4457a257b">iBSPACMdeviceTM4CgpioPortShift</a></div><div class="ttdeci">static BSPACM_CORE_INLINE int iBSPACMdeviceTM4CgpioPortShift(void *gpio)</div><div class="ttdef"><b>Definition:</b> gpio.h:219</div></div>
 <div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_a3d0690e837b5528b9b20d45f8ee503a6"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a3d0690e837b5528b9b20d45f8ee503a6">vBSPACMdeviceTM4CpinmuxConfigure</a></div><div class="ttdeci">void vBSPACMdeviceTM4CpinmuxConfigure(const sBSPACMdeviceTM4Cpinmux *cfgp, int enablep, int initial_high)</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_aa49b04e3869e9d10a0b26f136b7e21ec"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#aa49b04e3869e9d10a0b26f136b7e21ec">sBSPACMdeviceTM4Cpinmux::port_shift</a></div><div class="ttdeci">uint8_t port_shift</div><div class="ttdef"><b>Definition:</b> gpio.h:85</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_a35714a436a0190c7ad9f7f3ce1b60830"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#a35714a436a0190c7ad9f7f3ce1b60830">sBSPACMdeviceTM4CpinmuxUART::rx_pinmux</a></div><div class="ttdeci">sBSPACMdeviceTM4Cpinmux rx_pinmux</div><div class="ttdef"><b>Definition:</b> gpio.h:135</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_ace8bcc51bdd50addf3004753beb1ef46"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">sBSPACMdeviceTM4Cpinmux::pin</a></div><div class="ttdeci">uint8_t pin</div><div class="ttdef"><b>Definition:</b> gpio.h:88</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_a37e0842978c543d47fcfa31300a133ce"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#a37e0842978c543d47fcfa31300a133ce">sBSPACMdeviceTM4CpinmuxUART::cts_pinmux</a></div><div class="ttdeci">sBSPACMdeviceTM4Cpinmux cts_pinmux</div><div class="ttdef"><b>Definition:</b> gpio.h:146</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a></div><div class="ttdef"><b>Definition:</b> gpio.h:67</div></div>
-<div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_a08f80eafaad03fba0fa80e76787067fb"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#a08f80eafaad03fba0fa80e76787067fb">sBSPACMdeviceTM4CpinmuxUART</a></div><div class="ttdeci">struct sBSPACMdeviceTM4CpinmuxUART sBSPACMdeviceTM4CpinmuxUART</div></div>
-<div class="ttc" id="structsBSPACMdeviceTM4CpinmuxUART_html_a7722f55d4d0995c357a0f536bd3b8bfc"><div class="ttname"><a href="structsBSPACMdeviceTM4CpinmuxUART.html#a7722f55d4d0995c357a0f536bd3b8bfc">sBSPACMdeviceTM4CpinmuxUART::irqn</a></div><div class="ttdeci">uint16_t irqn</div><div class="ttdef"><b>Definition:</b> gpio.h:154</div></div>
-<div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_aa7fabb370acf5b9afa746ba05807f2d7"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#aa7fabb370acf5b9afa746ba05807f2d7">nBSPACMdeviceTM4CpinmuxUART</a></div><div class="ttdeci">const uint8_t nBSPACMdeviceTM4CpinmuxUART</div></div>
+<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_ace8bcc51bdd50addf3004753beb1ef46"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#ace8bcc51bdd50addf3004753beb1ef46">sBSPACMdeviceTM4Cpinmux::pin</a></div><div class="ttdeci">uint8_t pin</div><div class="ttdef"><b>Definition:</b> gpio.h:139</div></div>
+<div class="ttc" id="tm4c_2include_2bspacm_2periph_2gpio_8h_html_ae6d98ecd145761e88ff30bbb9bb79812"><div class="ttname"><a href="tm4c_2include_2bspacm_2periph_2gpio_8h.html#ae6d98ecd145761e88ff30bbb9bb79812">iBSPACMdeviceTM4CgpioPortTagFromShift</a></div><div class="ttdeci">static BSPACM_CORE_INLINE int iBSPACMdeviceTM4CgpioPortTagFromShift(unsigned int shift)</div><div class="ttdef"><b>Definition:</b> gpio.h:193</div></div>
+<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html">sBSPACMdeviceTM4Cpinmux</a></div><div class="ttdef"><b>Definition:</b> gpio.h:132</div></div>
+<div class="ttc" id="structsBSPACMdeviceTM4Cpinmux_html_af50c0525d0d03c4abf3d0c7ce8894cd4"><div class="ttname"><a href="structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4">sBSPACMdeviceTM4Cpinmux::irqn</a></div><div class="ttdeci">uint8_t irqn</div><div class="ttdef"><b>Definition:</b> gpio.h:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

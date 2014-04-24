@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -94,68 +94,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a066ae212a3757888b8125865960f29d0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#a066ae212a3757888b8125865960f29d0">clock</a></td></tr>
-<tr class="separator:a066ae212a3757888b8125865960f29d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac43d51b631ac1709164b4ea8fe2409b5"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#ac43d51b631ac1709164b4ea8fe2409b5">tx_irqn</a></td></tr>
-<tr class="separator:ac43d51b631ac1709164b4ea8fe2409b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ff193f58fe72f593ac24f767e91fed7"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#a8ff193f58fe72f593ac24f767e91fed7">rx_irqn</a></td></tr>
-<tr class="separator:a8ff193f58fe72f593ac24f767e91fed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea3820ea1e266b36f4fb69c83314e876"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#aea3820ea1e266b36f4fb69c83314e876">location</a></td></tr>
-<tr class="separator:aea3820ea1e266b36f4fb69c83314e876"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09f519c2c1ac72ef8d5bfa3024d917ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMdeviceEFM32periphUARTdevcfg.html">sBSPACMdeviceEFM32periphUARTdevcfg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#a09f519c2c1ac72ef8d5bfa3024d917ef">uart</a></td></tr>
+<tr class="separator:a09f519c2c1ac72ef8d5bfa3024d917ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af93f7ca1e0a611ecc739145c8bdeabb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMdeviceEFM32pinmux.html">sBSPACMdeviceEFM32pinmux</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#af93f7ca1e0a611ecc739145c8bdeabb9">clk_pinmux</a></td></tr>
+<tr class="separator:af93f7ca1e0a611ecc739145c8bdeabb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abae0a0d891a9862169e8b460d5623c34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsBSPACMdeviceEFM32pinmux.html">sBSPACMdeviceEFM32pinmux</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsBSPACMdeviceEFM32periphUSARTdevcfg.html#abae0a0d891a9862169e8b460d5623c34">cs_pinmux</a></td></tr>
+<tr class="separator:abae0a0d891a9862169e8b460d5623c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Device-specific information for an EFM32 USART/UART instance.</p>
-<p>Contains the information that cannot be easily deduced from the peripheral base address. </p>
+<div class="textblock"><p>Device-specific information for an EFM32 USART devices.</p>
+<p>These support both asynchronous (UART) and synchronous (SPI/SSI/I2S) capabilities by adding two signals to the UART. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a066ae212a3757888b8125865960f29d0"></a>
+<a class="anchor" id="af93f7ca1e0a611ecc739145c8bdeabb9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t sBSPACMdeviceEFM32periphUSARTdevcfg::clock</td>
+          <td class="memname"><a class="el" href="structsBSPACMdeviceEFM32pinmux.html">sBSPACMdeviceEFM32pinmux</a> sBSPACMdeviceEFM32periphUSARTdevcfg::clk_pinmux</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The peripheral clock configuration </p>
+<p>The port pin mux configuration for the CLK signal. </p>
 
 </div>
 </div>
-<a class="anchor" id="aea3820ea1e266b36f4fb69c83314e876"></a>
+<a class="anchor" id="abae0a0d891a9862169e8b460d5623c34"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t sBSPACMdeviceEFM32periphUSARTdevcfg::location</td>
+          <td class="memname"><a class="el" href="structsBSPACMdeviceEFM32pinmux.html">sBSPACMdeviceEFM32pinmux</a> sBSPACMdeviceEFM32periphUSARTdevcfg::cs_pinmux</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Routing selection for USART </p>
+<p>The port pin mux configuration for the CS signal. Used only when the USART controls the CS line. </p>
 
 </div>
 </div>
-<a class="anchor" id="a8ff193f58fe72f593ac24f767e91fed7"></a>
+<a class="anchor" id="a09f519c2c1ac72ef8d5bfa3024d917ef"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int16_t sBSPACMdeviceEFM32periphUSARTdevcfg::rx_irqn</td>
+          <td class="memname"><a class="el" href="structsBSPACMdeviceEFM32periphUARTdevcfg.html">sBSPACMdeviceEFM32periphUARTdevcfg</a> sBSPACMdeviceEFM32periphUSARTdevcfg::uart</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Receive interrupt offset in NVIC </p>
-
-</div>
-</div>
-<a class="anchor" id="ac43d51b631ac1709164b4ea8fe2409b5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int16_t sBSPACMdeviceEFM32periphUSARTdevcfg::tx_irqn</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Transmit interrupt offset in NVIC </p>
+<p>Configuration for which code can be shared with other devices. </p>
 
 </div>
 </div>
@@ -165,7 +150,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

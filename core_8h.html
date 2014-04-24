@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -111,7 +111,7 @@ Macros</h2></td></tr>
 <tr class="separator:a33aec9db511c37252fe188e680170085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a067cdbba9dbc1fb5b12afea1b3faa27f">BSPACM_CORE_PACKED_STRUCT</a>(nm_)&#160;&#160;&#160;struct __attribute__((__packed__)) nm_</td></tr>
 <tr class="separator:a067cdbba9dbc1fb5b12afea1b3faa27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a334d2789d3560b3630f2c1c633c3998a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">BSPACM_VERSION</a>&#160;&#160;&#160;20140414</td></tr>
+<tr class="memitem:a334d2789d3560b3630f2c1c633c3998a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#a334d2789d3560b3630f2c1c633c3998a">BSPACM_VERSION</a>&#160;&#160;&#160;20140424</td></tr>
 <tr class="separator:a334d2789d3560b3630f2c1c633c3998a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core_8h.html#aa62b35cf6685650b3c9a7b38699c6c0f">BSPACM_CORE_DISABLE_INTERRUPT</a>()&#160;&#160;&#160;__disable_irq()</td></tr>
 <tr class="separator:aa62b35cf6685650b3c9a7b38699c6c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -317,7 +317,7 @@ Macros</h2></td></tr>
 <div class="line">    uint32_t in_sleepdeep = (SCB-&gt;SCR &amp; SCB_SCR_SLEEPDEEP_Msk); \</div>
 <div class="line">    SCB-&gt;SCR |= SCB_SCR_SLEEPDEEP_Msk;                          \</div>
 <div class="line">    __WFI();                                                    \</div>
-<div class="line">    SCB-&gt;SRC &amp;= ~in_sleepdeep;                                  \</div>
+<div class="line">    SCB-&gt;SCR &amp;= ~in_sleepdeep;                                  \</div>
 <div class="line">  } <span class="keywordflow">while</span>(0)</div>
 </div><!-- fragment --><p>Enter the Cortex-M deep sleep mode.</p>
 <p>The specific effect of this is vendor-specific, but in concept it turns off the processor clock and any number of other clocks. The implementation may map to a vendor-specific function or macro, but is expected to be roughly equivalent to invoking the ARM instruction <code>WFI</code> (or <code>WFE</code>) with the <code>SLEEPDEEP</code> bit of the System Control Register set.</p>
@@ -588,7 +588,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define BSPACM_VERSION&#160;&#160;&#160;20140414</td>
+          <td class="memname">#define BSPACM_VERSION&#160;&#160;&#160;20140424</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -600,7 +600,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

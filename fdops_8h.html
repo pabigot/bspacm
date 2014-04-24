@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">BSPACM
-   &#160;<span id="projectnumber">20140414</span>
+   &#160;<span id="projectnumber">20140424</span>
    </div>
    <div id="projectbrief">Board Support Package for ARM Cortex-M Microcontrollers</div>
   </td>
@@ -229,7 +229,7 @@ Variables</h2></td></tr>
 <p>Function to initialize descriptors used by stdio.</p>
 <p>newlib expects <code>stdin</code> (descriptor 0), <code>stdout</code> (1), and <code>stderr</code> (2) to be immediately available for use, but does not open them or associate them with a device. To ensure the C library descriptors are consistent with the handles in <a class="el" href="fdops_8h.html#aee8b71a6be0d967a892fc5aba5a8210e">xBSPACMnewlibFDOPSfile_</a>, the first invocation of any file-descriptor operation will initialize handles associated with these descriptors. That is done by this function.</p>
 <p>The check for stdio being initialized is bypassed for calls to file descriptor operations invoked by this function. Consequently, implementations of this function may use open(), so long as the resulting descriptors end up as 0, 1, and 2 with their required properties.</p>
-<dl class="section user"><dt>Weakly Defined</dt><dd>The newlib_fdops library provides a weak default implementation of this, which opens <code>/dev/console</code> three times with parameters appropriate for <code>stdin</code>, <code>stdout</code>, and <code>stderr</code>. If something goes wrong it uses <a class="el" href="fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f">hBSPACMnewlibFDOPSfileRESERVED</a> to prevent the descriptors from being unintentionally used in subsequent open() calls.</dd></dl>
+<dl class="section user"><dt>Weakly Defined</dt><dd>The newlib_fdops library provides a weak default implementation of this, which opens <code>/dev/console</code> three times with parameters appropriate for <code>stdin</code>, <code>stdout</code>, and <code>stderr</code>, closing the corresponding descriptors first to ensure the association with the file handle is correct. If something goes wrong it uses <a class="el" href="fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f">hBSPACMnewlibFDOPSfileRESERVED</a> to prevent the descriptors from being unintentionally used in subsequent open() calls.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function may be overridden by the application, but need not be. It should never be explicitly invoked by the application; it is documented solely to describe the infrastructure requirements for any overriding implementation.</dd>
 <dd>
 Although the implementation will open the three standard descriptors, applications are permitted to close any or all of them, based on their needs. The corresponding slots in <a class="el" href="fdops_8h.html#aee8b71a6be0d967a892fc5aba5a8210e">xBSPACMnewlibFDOPSfile_</a> will then be available for use as normal descriptors or as the standard ones. </dd></dl>
@@ -299,7 +299,7 @@ Although the implementation will open the three standard descriptors, applicatio
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 14 2014 13:26:10 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 24 2014 10:01:18 for BSPACM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
