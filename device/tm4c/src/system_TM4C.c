@@ -72,12 +72,15 @@ uint32_t SystemCoreClock = __SYSTEM_CLOCK;   /*!< System Clock Frequency (Core C
  *----------------------------------------------------------------------------*/
 void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 {
-  /* CMSIS specifies that this should read the clock registers and
+  /* This function has no effect..
+   *
+   * CMSIS specifies that this should read the clock registers and
    * determine the current setting.  This can only be done on TM4C123
    * and requires headers that are not part of CMSIS, so we're
-   * skipping it for now. */
-#if 0 && (BSPACM_DEVICE_LINE_TM4C123 - 0)
-#elif 0 && (BSPACM_DEVICE_LINE_TM4C123 - 0)
+   * skipping it for now.  Recommended practice is to explicitly set
+   * SystemCoreClock whenever the clock speed is changed. */
+#if (BSPACM_DEVICE_LINE_TM4C123 - 0)
+#elif (BSPACM_DEVICE_LINE_TM4C129 - 0)
 #else
   SystemCoreClock = __SYSTEM_CLOCK;
 #endif
