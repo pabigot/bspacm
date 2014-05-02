@@ -92,6 +92,19 @@
 #define BSPACM_CORE_PACKED_STRUCT(nm_) struct __attribute__((__packed__)) nm_
 #endif /* TOOLCHAIN */
 
+/** Declare an aligned object a toolchain-specific manner.
+ *
+ * @param sz_ alignment requirements in bytes.  E.g. to ensure the
+ * lower 10 bits of the address are zero, use 1024.
+ *
+ * This expands to a toolchain-specific directive that controls the
+ * alignment of the following object definition.  It is used for
+ * structures that are placed in system memory but accessed through
+ * peripherals, such as the micro-DMA peripheral. */
+#if defined(BSPACM_DOXYGEN) || (BSPACM_CORE_TOOLCHAIN_GCC - 0)
+#define BSPACM_CORE_ALIGNED_OBJECT(sz_) __attribute__((__aligned__(sz_)))
+#endif /* TOOLCHAIN */
+
 /* Device-specific material.  This includes device vendor and CMSIS
  * headers, and provides any necessary bridging declarations.  The
  * correct content should be located by the prioritization of include
