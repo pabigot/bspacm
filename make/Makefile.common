@@ -453,6 +453,9 @@ endif # utility/led_.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/newlib/sbrk.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/newlib/nosys.c
 
+# Other utility components.
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/src/utility/misc.c
+
 # The object files that comprise BOARD_LIBBSPACM_A.
 CREATED_OBJ :=
 $(foreach src,$(BOARD_LIBBSPACM_SRC),$(eval $(call generate_makescript,$(call lib_objpath,bspacm,$(src)),$(src))))
