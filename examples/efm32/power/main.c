@@ -148,7 +148,7 @@ void main ()
       const uint32_t mask = 1U << pin;
 
       vBSPACMdeviceEFM32pinmuxConfigure(button+i, 1, 0);
-      vBSPACMdeviceEFM32setPinNybble(&GPIO->EXTIPSELL, pin, port);
+      vBSPACMcoreSetPinNybble(&GPIO->EXTIPSELL, pin, port);
       GPIO->EXTIFALL |= mask;
       GPIO->EXTIRISE &= ~mask;
       GPIO->IFC = mask;

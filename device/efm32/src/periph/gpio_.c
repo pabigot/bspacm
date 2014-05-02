@@ -58,7 +58,7 @@ void vBSPACMdeviceEFM32pinmuxConfigure (const sBSPACMdeviceEFM32pinmux * cfgp,
   if (doutp && mode) {
     *doutp = bit;
   }
-  vBSPACMdeviceEFM32setPinNybble(&port->MODEL, cfgp->pin, mode);
+  vBSPACMcoreSetPinNybble(&port->MODEL, cfgp->pin, mode);
   if (doutp && ! mode) {
     *doutp = bit;
   }

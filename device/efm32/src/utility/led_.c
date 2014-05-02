@@ -57,7 +57,7 @@ vBSPACMledConfigure ()
     unsigned int const pin = (pin_);                               \
     uint32_t const bit = (1U << pin);                              \
     port->DOUTCLR = bit;                                           \
-    vBSPACMdeviceEFM32setPinNybble(&port->MODEL, pin, gpioModePushPull); \
+    vBSPACMcoreSetPinNybble(&port->MODEL, pin, gpioModePushPull); \
   } while (0);
 #include <bspacm/internal/board/led.inc>
 #undef BSPACM_INC_EXPAND_LED_REFERENCE

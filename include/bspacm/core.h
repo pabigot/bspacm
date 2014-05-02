@@ -374,4 +374,28 @@
 #define BSPACM_CORE_BITBAND_PERIPH(object_, bit_) (*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&(object_) - BSPACM_CORE_PERIPH_BASE))))
 #endif /* PERIPH bitband supported */
 
+/** Function to set the value of a nybble in a word array.
+ *
+ * This is the API for things like GPIO pin alternative function
+ * selection and interrupt source port selection on the EFM32,
+ * and DMA channel source selection on the TM4C.
+ *
+ * @param regp pointer to a consecutive sequence of one or more words
+ * that hold packed nybble values.  Each word holds eight nybbles.
+ *
+ * @param pin the pin number is the ordinal of the nybble to be set.
+ *
+ * @param value the nybble value to be stored.  Only the four low bits
+ * are used.
+ */
+static BSPACM_CORE_INLINE
+void vBSPACMcoreSetPinNybble (volatile uint32_t * basep,
+                              unsigned int pin,
+                              unsigned int value)
+{
+  volatile uint32_t * const wordp = basep + (pin / 8);
+  const unsigned int shift = 4 * (0x07 & pin);
+  *wordp = (*wordp & ~(0x0F << shift)) | ((0x0F & value) << shift);
+}
+
 #endif /* BSPACM_CORE_H */
