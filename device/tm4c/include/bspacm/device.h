@@ -66,6 +66,15 @@ typedef GPIOA_Type GPIOCommon_Type;
 typedef GPIOA_AHB_Type GPIOCommon_Type;
 #endif /* DEVICE_LINE */
 
+/** Structure for uDMA channel control.  Use UDMA_CHCTL_foo values
+ * from <inc/hw_udma.h> to manipulate the #chctl field. */
+typedef struct UDMA_CHANNEL_Type {
+  volatile void * volatile srcendp; /**< pointer to last source address involved transfer */
+  volatile void * volatile dstendp; /**< pointer to last destination address involved in transfer */
+  volatile uint32_t chctl;          /**< configuration for the transfer */
+  volatile uint32_t _reserved_0x0c; /**< unused */
+} UDMA_CHANNEL_Type;
+
 /* @cond DOXYGEN_EXCLUDE */
 /* SRAM and peripheral bitband addresses are in standard Cortex-M3/M4
  * locations. */
