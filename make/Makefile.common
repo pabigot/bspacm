@@ -588,7 +588,7 @@ delayed_default: $(AOUT.axf)
 
 # Build the executable; make sure the subset of LDLIBS that's the
 # responsibility of the BSPACM infrastructure is built first.
-$(AOUT.axf): $(OBJ) | $(GENERATED_ARCHIVES)
+$(AOUT.axf): $(OBJ) $(GENERATED_ARCHIVES)
 	$(LINKER) -o $@ $(LDFLAGS) $(OBJ) $(LDLIBS)
 	$(SIZE) $@
 
