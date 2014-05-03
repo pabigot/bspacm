@@ -374,6 +374,93 @@
 #define BSPACM_CORE_BITBAND_PERIPH(object_, bit_) (*(volatile uint32_t *)(BSPACM_CORE_PERIPH_BITBAND_BASE + 4 * ((bit_) + 8 * ((uintptr_t)&(object_) - BSPACM_CORE_PERIPH_BASE))))
 #endif /* PERIPH bitband supported */
 
+/** Convert a bit mask to a bit number.
+ *
+ * Useful for bitband object references.  Some vendors (SiLabs)
+ * provide macros for bit positions; some (TI) only provide the mask
+ * values.
+ *
+ * @warning If the passed value does not have exactly one bit set,
+ * this function will hang.
+ *
+ * @param mask a bit mask.  Exactly one bit must be set.  In normal
+ * use the parameter is a compile-time constant so this function
+ * reduces to a compile-time constant too.
+ *
+ * @return the offset of the single set bit in @p mask. */
+static BSPACM_CORE_INLINE
+unsigned int
+uiBSPACMcoreBitFromMask (uint32_t mask)
+{
+  if (0x1U == mask) {
+    return 0;
+  } else  if (0x2U == mask) {
+    return 1;
+  } else  if (0x4U == mask) {
+    return 2;
+  } else  if (0x8U == mask) {
+    return 3;
+  } else  if (0x10U == mask) {
+    return 4;
+  } else  if (0x20U == mask) {
+    return 5;
+  } else  if (0x40U == mask) {
+    return 6;
+  } else  if (0x80U == mask) {
+    return 7;
+  } else  if (0x100U == mask) {
+    return 8;
+  } else  if (0x200U == mask) {
+    return 9;
+  } else  if (0x400U == mask) {
+    return 10;
+  } else  if (0x800U == mask) {
+    return 11;
+  } else  if (0x1000U == mask) {
+    return 12;
+  } else  if (0x2000U == mask) {
+    return 13;
+  } else  if (0x4000U == mask) {
+    return 14;
+  } else  if (0x8000U == mask) {
+    return 15;
+  } else  if (0x10000U == mask) {
+    return 16;
+  } else  if (0x20000U == mask) {
+    return 17;
+  } else  if (0x40000U == mask) {
+    return 18;
+  } else  if (0x80000U == mask) {
+    return 19;
+  } else  if (0x100000U == mask) {
+    return 20;
+  } else  if (0x200000U == mask) {
+    return 21;
+  } else  if (0x400000U == mask) {
+    return 22;
+  } else  if (0x800000U == mask) {
+    return 23;
+  } else  if (0x1000000U == mask) {
+    return 24;
+  } else  if (0x2000000U == mask) {
+    return 25;
+  } else  if (0x4000000U == mask) {
+    return 26;
+  } else  if (0x8000000U == mask) {
+    return 27;
+  } else  if (0x10000000U == mask) {
+    return 28;
+  } else  if (0x20000000U == mask) {
+    return 29;
+  } else  if (0x40000000U == mask) {
+    return 30;
+  } else  if (0x80000000U != mask) {
+    /* Not exactly one bit set.  This is an error in usage. */
+    while(1);
+  }
+  return 31;
+}
+
 /** Function to set the value of a nybble in a word array.
  *
  * This is the API for things like GPIO pin alternative function
