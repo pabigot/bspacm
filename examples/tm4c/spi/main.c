@@ -46,44 +46,111 @@
 
 SSI0_Type * spi;
 
+#if (BSPACM_BOARD_EK_TM4C1294XL - 0)
+#if !defined(BSPACM_BOARD_EK_TM4C1294XL_BP)
+#define BSPACM_BOARD_EK_TM4C1294XL_BP 1
+#endif /* BSPACM_BOARD_EK_TM4C1294XL_BP */
+#endif /* BSPACM_BOARD_EK_TM4C1294XL */
+
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
 #define CC_SSI_INSTANCE 2
+#define SSI SSI2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+#define CC_SSI_INSTANCE 2
+#define SSI SSI2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+#define CC_SSI_INSTANCE 3
+#define SSI SSI3
+#endif /* BOARD */
 
 static const sBSPACMdeviceTM4Cpinmux mosi_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB7 on D.6 as SSI2Tx#2 */
   .port = GPIOB, .pin = 7, .pctl = 2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PD1 on D1.6 as SSI2XDAT0#15 */
+  .port = GPIOD_AHB, .pin = 1, .pctl = 15
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PQ3 on D2.6 as SSI3XDAT0#14 */
+  .port = GPIOQ, .pin = 2, .pctl = 14
+#endif /* BOARD */
 };
 
 static const sBSPACMdeviceTM4Cpinmux miso_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB6 on D.7 as SSI2Rx#2 ; also serves as GDO1 */
   .port = GPIOB, .pin = 6, .pctl = 2, .irqn = GPIOB_IRQn
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PD0 on D2.6 as SSI2XDAT1#15 */
+  .port = GPIOD_AHB, .pin = 0, .pctl = 15
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PQ3 on D2.6 as SSI3XDAT1#14 */
+  .port = GPIOQ, .pin = 3, .pctl = 14
+#endif /* BOARD */
 };
 
 static const sBSPACMdeviceTM4Cpinmux sclk_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB4 on A.7 as SSI2Clk#2 */
   .port = GPIOB, .pin = 4, .pctl = 2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PD3 on A1.7 as SSI2Clk#15 */
+  .port = GPIOD_AHB, .pin = 3, .pctl = 15
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PQ0 on A2.7 as SSI3Clk#14 */
+  .port = GPIOQ, .pin = 0, .pctl = 14
+#endif /* BOARD */
 };
 
 #if (PWR_CONTROLLABLE - 0)
 /* PWR hard-wired to 3V3 in boosterpack configuration */
 static const sBSPACMdeviceTM4Cpinmux pwr_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB2 on D.2 as GPIO */
   .port = GPIOB, .pin = 2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+#elif 0 && (BSPACM_BOARD_EK_TM4C1294XL - 0)
+#endif /* BOARD */
 };
 #endif /* PWR_CONTROLLABLE */
 
 static const sBSPACMdeviceTM4Cpinmux csn_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PE0 on D.3 as GPIO */
   .port = GPIOE, .pin = 0
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PH2 on D1.3 as GPIO */
+  .port = GPIOH_AHB, .pin = 2
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PP5 on D2.3 as GPIO */
+  .port = GPIOP, .pin = 5
+#endif /* BOARD */
 };
 
 static const sBSPACMdeviceTM4Cpinmux gdo0_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB2 on D.2 as GPIO */
   .port = GPIOB, .pin = 2, .irqn = GPIOB_IRQn
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PM3 on D1.2 as GPIO */
+  .port = GPIOM, .pin = 3, .irqn = GPIOM_IRQn
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PM7 on D2.2 as GPIO */
+  .port = GPIOM, .pin = 7, .irqn = GPIOM_IRQn
+#endif /* BOARD */
 };
 
 static const sBSPACMdeviceTM4Cpinmux gdo2_pinmux = {
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   /* PB5 on A.2 as GPIO */
   .port = GPIOB, .pin = 5, .irqn = GPIOB_IRQn
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PE4 on A1.2 as GPIO */
+  .port = GPIOE_AHB, .pin = 4, .irqn = GPIOE_IRQn
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  /* PP0 on A2.2 as GPIO */
+  .port = GPIOP, .pin = 0
+#endif /* BOARD */
 };
 
 int
@@ -189,9 +256,20 @@ void main ()
          iBSPACMdeviceTM4CgpioPortTagFromShift(iBSPACMdeviceTM4CgpioPortShift(csn_pinmux.port)),
          csn_pinmux.pin);
 
+#if (BSPACM_BOARD_EK_TM4C123GXL - 0)
   BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOA)) = 1;
   BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOB)) = 1;
   BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOE)) = 1;
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (1 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOD_AHB)) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOH_AHB)) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOE_AHB)) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOM)) = 1;
+#elif (BSPACM_BOARD_EK_TM4C1294XL - 0) && (2 == BSPACM_BOARD_EK_TM4C1294XL_BP)
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOQ)) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOP)) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCGPIO, iBSPACMdeviceTM4CgpioPortShift(GPIOM)) = 1;
+#endif /* BOARD */
   __NOP(); __NOP(); __NOP(); /* delay 3 cycles */
 #if (PWR_CONTROLLABLE - 0)
   BSPACM_CORE_BITBAND_PERIPH(pwr_pinmux.port->DIR, pwr_pinmux.pin) = 1;
@@ -202,21 +280,20 @@ void main ()
   BSPACM_CORE_BITBAND_PERIPH(csn_pinmux.port->DEN, csn_pinmux.pin) = 1;
   *csn_bitband = 1;
 
-  spi = SSI2;
+  spi = SSI;
   BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCSSI, CC_SSI_INSTANCE) = 1;
   vBSPACMdeviceTM4CpinmuxConfigure(&mosi_pinmux, 1, 0);
   vBSPACMdeviceTM4CpinmuxConfigure(&miso_pinmux, 1, 0);
   vBSPACMdeviceTM4CpinmuxConfigure(&sclk_pinmux, 1, 0);
-  dump_port(GPIOB);
   printf("Device up\n");
 
-  BSPACM_CORE_BITBAND_PERIPH(SSI2->CR1, _SSI_CR1_SSE_SHIFT) = 0;
-  SSI2->CR1 = 0;
-  SSI2->CPSR = 2;
-  SSI2->CR0 = ((8 - 1) << _SSI_CR0_SCR_SHIFT) | SSI_CR0_DSS_8;
-  BSPACM_CORE_BITBAND_PERIPH(SSI2->CR1, _SSI_CR1_SSE_SHIFT) = 1;
+  BSPACM_CORE_BITBAND_PERIPH(SSI->CR1, _SSI_CR1_SSE_SHIFT) = 0;
+  SSI->CR1 = 0;
+  SSI->CPSR = 2;
+  SSI->CR0 = ((8 - 1) << _SSI_CR0_SCR_SHIFT) | SSI_CR0_DSS_8;
+  BSPACM_CORE_BITBAND_PERIPH(SSI->CR1, _SSI_CR1_SSE_SHIFT) = 1;
   printf("SSI CR0 %lx CR1 %lx CPSR %lx SR %lx\n",
-         SSI2->CR0, SSI2->CR1, SSI2->CPSR, SSI2->SR);
+         SSI->CR0, SSI->CR1, SSI->CPSR, SSI->SR);
 
 #if (PWR_CONTROLLABLE - 0)
   *pwr_bitband = 1;
@@ -228,7 +305,6 @@ void main ()
     printf("GDO1 %ld\n", *gdo1_bitband);
   } while (*gdo1_bitband);
   *gdo1_afsel_bitband = 1;
-  printf("GPIOEDATA %lx bit %lx\n", GPIOE->DATA, *csn_bitband);
 
   do {
     rc = sendStrobe(0x30);
