@@ -481,7 +481,7 @@ void vBSPACMcoreSetPinNybble (volatile uint32_t * basep,
                               unsigned int value)
 {
   volatile uint32_t * const wordp = basep + (pin / 8);
-  const unsigned int shift = 4 * (0x07 & pin);
+  const unsigned int shift = 4 * (pin % 8);
   *wordp = (*wordp & ~(0x0F << shift)) | ((0x0F & value) << shift);
 }
 
