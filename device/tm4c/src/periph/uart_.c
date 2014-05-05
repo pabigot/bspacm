@@ -111,16 +111,16 @@ uart_configure (sBSPACMperiphUARTstate * usp,
   /* Enable or disable GPIO pins used by UART, as long as the GPIO
    * module is on.  Note that RTS and CTS may not be available. */
   if (SYSCTL->PRGPIO & rx_port_mask) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rx_pinmux, !!cfgp, 1);
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rx_pinmux, !!cfgp);
   }
   if (SYSCTL->PRGPIO & tx_port_mask) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->tx_pinmux, !!cfgp, 0);
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->tx_pinmux, !!cfgp);
   }
   if (devcfgp->rts_pinmux.pctl && (SYSCTL->PRGPIO & rts_port_mask)) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rts_pinmux, !!cfgp, 0);
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->rts_pinmux, !!cfgp);
   }
   if (devcfgp->cts_pinmux.pctl && (SYSCTL->PRGPIO & cts_port_mask)) {
-    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->cts_pinmux, !!cfgp, 0);
+    vBSPACMdeviceTM4CpinmuxConfigure(&devcfgp->cts_pinmux, !!cfgp);
   }
 
   /* Reset the FIFOs */

@@ -73,7 +73,7 @@
  * @li (5b) Configure ODR (n4)
  * @li (5c) Configure SLR if using 8mA drive strength
  * @li (6) Configure DEN and (if necessary) AMSEL
- * @li (7) Configure interrupts (see details in 10.3 step 7) (n5)
+ * @li (7) Configure interrupts (see details in 10.3 step 7)
  * @li (8) Optionally restore the lock bit. Note that the description
  * in 10.3 step 8 is misleading: this is not a bit in GPIOLOCK, it is
  * a bit in GPIOCR which requires a set of the GPIOLOCK key before
@@ -96,9 +96,6 @@
  * configured in certain cases regardless of direction, and should not
  * be considered a "pick one of the three options" situation as
  * implied by the description in section 10.3 step 5.
- *
- * @li (n5) Presumably interrupt configuration is relevant only when the pin is
- * an input, but I can't find text confirming this.
  *
  * TM4C129 devices have extended drive that supports 6mA, 10mA, and
  * 12mA drive strengths, but the DR2R DR4R and DR8R registers are
@@ -158,25 +155,37 @@ typedef struct sBSPACMdeviceTM4Cpinmux {
 } sBSPACMdeviceTM4Cpinmux;
 
 /** Set the AFSEL bit and other bits required to configure a pin for a
- * peripheral function according to @p *cfgp, or to reconfigure as a
- * GPIO.
+ * peripheral function according to @p *cfgp, or when disabled to be
+ * treated as a GPIO input.
  *
- * NB: Pins that happen to be commit-control locked will be unlocked
- * to perform this reconfiguration.
+ * Where @link sBSPACMdeviceTM4Cpinmux::pctl cfgp->pctl@endlink is not
+ * zero (pin provides a peripheral function): Disabling the device
+ * disables the pin entirely (clears the DEN bit).
+ *
+ * Where @p cfg->pctl is zero (pin provides GPIO): Enabling configures
+ * the pin for output; disabling configures the pin for input.  This
+ * API is inadequate for full control as lacks the ability to set GPIO
+ * output initial state, or GPIO input pullup/pulldown state.
+ *
+ * @note Pins that happen to be commit-control locked will be unlocked
+ * to perform this reconfiguration then re-locked.
+ *
+ * @warning Pins with special considerations may, when disabled, lose
+ * their special function: this routine does not return them to their
+ * power-up configuration.
  *
  * @param cfgp pointer to the configuration structure.  If @link
  * sBSPACMdeviceTM4Cpinmux::port cfgp->port@endlink is null, no
  * configuration will be performed.
  *
- * @param enablep nonzero if the pin is to be configured based on @p
- * cfgp->mode; zero if the pin is to be disabled.
- *
- * @param initial_high zero to clear the pin, positive to set the pin,
- * negative to leave the pin setting unchanged.
+ * @param enablep nonzero if the pin is to be configured based on
+ * @link sBSPACMdeviceTM4Cpinmux::pctl cfgp->pctl@endlink (it will be
+ * a GPIO output if @p cfgp->pctl is zero).  If @p enablep is zero the
+ * pin will be disabled (or configured as a GPIO input if @p
+ * cfgp->pctl is zero).
  */
 void vBSPACMdeviceTM4CpinmuxConfigure (const sBSPACMdeviceTM4Cpinmux * cfgp,
-                                       int enablep,
-                                       int initial_high);
+                                       int enablep);
 
 /** Convert a port instance index (shift) to the letter tag for the port.
  *

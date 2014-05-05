@@ -38,35 +38,34 @@
 #include <bspacm/device/periphs.h>
 #include <inc/hw_gpio.h>
 
-void vBSPACMdeviceTM4CpinmuxConfigure (const sBSPACMdeviceTM4Cpinmux * cfgp,
-                                       int enablep,
-                                       int initial_high)
+void
+vBSPACMdeviceTM4CpinmuxConfigure (const sBSPACMdeviceTM4Cpinmux * cfgp,
+                                  int enablep)
 {
   GPIOCommon_Type * const gpio = (GPIOCommon_Type *)cfgp->port;
-  const unsigned int bit = 1U << cfgp->pin;
-  const unsigned int pctl_shift = 4 * cfgp->pin;
+  volatile uint32_t * cr_bitp = &BSPACM_CORE_BITBAND_PERIPH(gpio->CR, cfgp->pin);
   int with_lock;
 
   if (! gpio) {
     return;
   }
-  with_lock = !(bit & gpio->CR);
-  gpio->PCTL &= ~(0x0F << pctl_shift);
+
+  with_lock = ! *cr_bitp;
   if (with_lock) {
     gpio->LOCK = GPIO_LOCK_KEY;
-    *(volatile uint32_t*)&gpio->CR |= bit;
+    *cr_bitp = 1;
   }
-  if (enablep && cfgp->pctl) {
-    gpio->PCTL |= (cfgp->pctl << pctl_shift);
-    gpio->AFSEL |= bit;
-  } else {
-    gpio->DIR &= ~bit;
-    gpio->AFSEL &= ~bit;
-  }
-  gpio->ODR &= ~bit;
-  gpio->DEN |= bit;
+
+  /* Input unless enabling for GPIO; then it's output */
+  BSPACM_CORE_BITBAND_PERIPH(gpio->DIR, cfgp->pin) = enablep && (0 == cfgp->pctl);
+  vBSPACMcoreSetPinNybble(&gpio->PCTL, cfgp->pin, enablep ? cfgp->pctl : 0);
+  BSPACM_CORE_BITBAND_PERIPH(gpio->AFSEL, cfgp->pin) = cfgp->pctl ? (!!enablep) : 0;
+  BSPACM_CORE_BITBAND_PERIPH(gpio->ODR, cfgp->pin) = 0;
+  /* Enabled unless disabling non-GPIO */
+  BSPACM_CORE_BITBAND_PERIPH(gpio->DEN, cfgp->pin) = enablep || (0 == cfgp->pctl);
+
   if (with_lock) {
     gpio->LOCK = GPIO_LOCK_KEY;
-    *(volatile uint32_t*)&gpio->CR &= bit;
+    *cr_bitp = 0;
   }
 }

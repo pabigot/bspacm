@@ -282,9 +282,9 @@ void main ()
 
   spi = SSI;
   BSPACM_CORE_BITBAND_PERIPH(SYSCTL->RCGCSSI, CC_SSI_INSTANCE) = 1;
-  vBSPACMdeviceTM4CpinmuxConfigure(&mosi_pinmux, 1, 0);
-  vBSPACMdeviceTM4CpinmuxConfigure(&miso_pinmux, 1, 0);
-  vBSPACMdeviceTM4CpinmuxConfigure(&sclk_pinmux, 1, 0);
+  vBSPACMdeviceTM4CpinmuxConfigure(&mosi_pinmux, 1);
+  vBSPACMdeviceTM4CpinmuxConfigure(&miso_pinmux, 1);
+  vBSPACMdeviceTM4CpinmuxConfigure(&sclk_pinmux, 1);
   printf("Device up\n");
 
   BSPACM_CORE_BITBAND_PERIPH(SSI->CR1, _SSI_CR1_SSE_SHIFT) = 0;
