@@ -125,7 +125,7 @@
  * A monotonically non-decreasing integer reflecting the version of
  * BSPACM that is being used.  The value represents a development
  * freeze date in the form YYYYMMDD as a decimal number. */
-#define BSPACM_VERSION 20140424
+#define BSPACM_VERSION 20140523
 
 /** Gratuitous alternative spelling of standard CMSIS core
  * intrinsic. */
