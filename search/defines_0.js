@@ -3,6 +3,7 @@ var searchData=
   ['bspacm_5fconfig_5fdefault_5fuart_5frx_5fbuffer_5fsize',['BSPACM_CONFIG_DEFAULT_UART_RX_BUFFER_SIZE',['../config_8h.html#a5053df85e01cf096ba74978b8faeeca0',1,'config.h']]],
   ['bspacm_5fconfig_5fdefault_5fuart_5ftx_5fbuffer_5fsize',['BSPACM_CONFIG_DEFAULT_UART_TX_BUFFER_SIZE',['../config_8h.html#a70b70fcdbaca778fce0b82e1f772f513',1,'config.h']]],
   ['bspacm_5fconfig_5fenable_5fuart',['BSPACM_CONFIG_ENABLE_UART',['../config_8h.html#a60dab6301520e7fecb45128e7c90e2a1',1,'config.h']]],
+  ['bspacm_5fcore_5faligned_5fobject',['BSPACM_CORE_ALIGNED_OBJECT',['../core_8h.html#a10e38a7c4509a2793b17bd1c1f89bc3c',1,'core.h']]],
   ['bspacm_5fcore_5fbitband_5fperiph',['BSPACM_CORE_BITBAND_PERIPH',['../core_8h.html#a55f509ffb0add02384773f2d9cf28713',1,'core.h']]],
   ['bspacm_5fcore_5fbitband_5fsram16',['BSPACM_CORE_BITBAND_SRAM16',['../core_8h.html#a99bb5b4354ca12329ada738589114255',1,'core.h']]],
   ['bspacm_5fcore_5fbitband_5fsram32',['BSPACM_CORE_BITBAND_SRAM32',['../core_8h.html#a00fcb6f950ca59704f562503ced79c98',1,'core.h']]],

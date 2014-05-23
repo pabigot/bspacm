@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['mode',['mode',['../structsBSPACMdeviceEFM32pinmux.html#a0765a668d9f3fe5bcb565ba56f0c86b7',1,'sBSPACMdeviceEFM32pinmux']]]
+  ['lfbsel',['lfbsel',['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a3882632fdde4dbe54a808e1ad9dd5812',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg']]],
+  ['location',['location',['../structsBSPACMdeviceEFM32periphXRTdevcfg.html#a7acaabe497ab59d0fe5dc8011c2de603',1,'sBSPACMdeviceEFM32periphXRTdevcfg']]]
 ];

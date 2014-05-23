@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['irqn',['irqn',['../structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4',1,'sBSPACMdeviceTM4Cpinmux::irqn()'],['../structsBSPACMdeviceTM4CperiphUARTdevcfg.html#a87ec40b2698a195b609603e913efc8c6',1,'sBSPACMdeviceTM4CperiphUARTdevcfg::irqn()'],['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a85d2e3ab94dd507e6324e7994b647438',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg::irqn()']]]
+  ['hbspacmdefaultuart',['hBSPACMdefaultUART',['../periph_2uart_8h.html#a8dbcfec140e12df894b23d179f7839a9',1,'uart.h']]],
+  ['hbspacmnewlibfdopsfilereserved',['hBSPACMnewlibFDOPSfileRESERVED',['../fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f',1,'fdops.h']]],
+  ['head',['head',['../structsFIFO.html#a2d28ad8a22368fa28a8de9f49b9d91a5',1,'sFIFO']]],
+  ['hw_5ftransmit',['hw_transmit',['../structsBSPACMperiphUARToperations.html#afd780390a405c66ddda6d3344d677999',1,'sBSPACMperiphUARToperations']]],
+  ['hw_5ftxien',['hw_txien',['../structsBSPACMperiphUARToperations.html#a2ae5d97e03d0f32c2f9b8771d374bc9c',1,'sBSPACMperiphUARToperations']]]
 ];
