@@ -1,4 +1,4 @@
-/* BSPACM - config header for nrf51-pca10031
+/* BSPACM - config header for nRF51 devices
  *
  * Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
  *
@@ -14,7 +14,7 @@
 
 /** @file
  *
- * @brief Board-specific configuration header for nRF51-Dongle (PCA10031)
+ * @brief Board-specific configuration header for nRF51 devices
  *
  * This file is included by <bspacm/config.h> which defines general
  * defaults that are overridden/extended/used here to apply
@@ -26,6 +26,8 @@
  * application-specific include directory to supersede the copy in the
  * board-specific include hierarchy.
  *
+ * @note The nRF51 line has no variation among available peripherals.
+ *
  * @homepage http://github.com/pabigot/bspacm
  * @publicdomain @cc0_doc
  */
@@ -34,7 +36,6 @@
 #define BSPACM_APPCONF_H
 
 /* The nRF51 line has no variation among available peripherals. */
-
 #include <bspacm/board/default_appconf.h>
 
 #endif /* BSPACM_APPCONF_H */
