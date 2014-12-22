@@ -15,6 +15,7 @@
 # https://www.nordicsemi.com/eng/Products/nRF51-Dongle
 
 DEVICE_SOFT_DEVICE ?= blank
+DEVICE_PART = 51422
 DEVICE_VARIANT = xxac
 DEVICE_PCA = PCA10031
 
