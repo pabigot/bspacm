@@ -1,0 +1,22 @@
+# BSPACM - Makefile.device for xxac variant nRF51422 devices
+#
+# Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to
+# the public domain worldwide. This software is distributed without
+# any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+#
+
+# 256 KiBy FLASH, 32 KiBy RAM
+DEVICE_VARIANT=xxac
+
+include $(BSPACM_ROOT)/device/nrf51/nrf51422/Makefile.line
+
+# Local Variables:
+# mode:makefile
+# End:

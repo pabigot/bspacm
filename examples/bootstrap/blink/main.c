@@ -33,7 +33,11 @@ SysTick_Handler (void)
 {
   ++ticks_ms;
 }
+#elif (BSPACM_DEVICE_SERIES_NRF51 - 0)
+#include "nrf_delay.h"
 #endif
+
+uint32_t rl = SysTick_LOAD_RELOAD_Msk;
 
 void main ()
 {
@@ -52,6 +56,10 @@ void main ()
 #elif (BSPACM_DEVICE_SERIES_EFM32 - 0)
   CHIP_Init();
   if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000)) while (1) ;
+#elif (BSPACM_DEVICE_SERIES_NRF51 - 0)
+  /* nRF51 does not implement systick, though it does keep a variable
+   * to hold the clock speed. */
+  SystemCoreClockUpdate();
 #endif /* BSPACM_DEVICE SERIES */
   vBSPACMledConfigure();
   idx = 0;
@@ -61,9 +69,9 @@ void main ()
       idx = 0;
     }
     vBSPACMledSet(idx, (1 == nBSPACMleds) ? -1 : 1);
+#if (BSPACM_DEVICE_SERIES_TM4C - 0)
     /* Delay for one second.  Parameter is number of iterations of a
      * 3-cycle loop. */
-#if (BSPACM_DEVICE_SERIES_TM4C - 0)
     MAP_SysCtlDelay(SystemCoreClock / 3);
 #elif (BSPACM_DEVICE_SERIES_EFM32 - 0)
     {
@@ -71,6 +79,8 @@ void main ()
       while ((int)(ticks_ms - start_ms) < 500) {
       }
     }
+#elif (BSPACM_DEVICE_SERIES_NRF51 - 0)
+    nrf_delay_ms(1000);
 #endif
     if (1 < nBSPACMleds) {
       vBSPACMledSet(idx, 0);

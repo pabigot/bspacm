@@ -1,0 +1,105 @@
+# Copyright 2014, Peter A. Bigot
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the software nor the names of its contributors may be
+#   used to endorse or promote products derived from this software without
+#   specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# BSPACM (http://github.com/pabigot/bspacm) vendor series build support:
+# Nordic Semiconductor ASA nRF51 ANT/Bluetooth Smart multiprotocol SoC
+DEVICE_SERIES=nrf51
+
+# Get upper-case versions of some identifiers
+DEVICE_SERIES_UC=$(call uc,$(DEVICE_SERIES))
+
+ifndef DEVICE_LINE
+$(error DEVICE_LINE has not been set: include Makefile.line first)
+endif
+
+# All nRF51 chips are Cortex-M0
+ARM_PROCESSOR=M0
+TARGET_MFLAGS=-mthumb -mcpu=cortex-m0
+
+# Unless told otherwise assume there is no soft device
+NRF51_SOFT_DEVICE ?= blank
+
+# TODO: This will vary based on soft device
+DEVICE_LDSCRIPT_PATH ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)
+
+# All boards share the same periph config
+PERIPH_CONFIG_SRC ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_config.c
+
+# Where the vendor headers can be found.
+NRF51_SDK_ROOT ?= /prj/arm/nrf51-sdk
+
+# nRF51 is CMSIS, but does not use the standard CMSIS directory layout.
+# Use this variable for the top level holding CMSIS-related material.
+NRF51_CMSIS_ROOT = $(NRF51_SDK_ROOT)/components/toolchain
+
+# Indicate that CMSIS is available
+TARGET_CPPFLAGS += -DBSPACM_CMSIS
+
+# Path to the CMSIS toolchain-specific headers
+TARGET_CPPFLAGS += -I$(NRF51_CMSIS_ROOT)/gcc
+
+# Path to the CMSIS standard headers
+TARGET_CPPFLAGS += -I$(NRF51_CMSIS_ROOT)
+
+# nRF51 uses the same system file for all devices.
+CMSIS_SYSTEM_SRC = $(NRF51_CMSIS_ROOT)/system_$(DEVICE_SERIES).c
+
+# Hardware interface headers are here
+TARGET_CPPFLAGS += -I$(NRF51_SDK_ROOT)/components/drivers_nrf/hal
+
+# Vendor HAL interface header nrf51.h needs reassurance that it's who
+# it thinks it is.
+TARGET_CPPFLAGS += -D$(DEVICE_SERIES_UC)
+
+# Special flags needed to interact with JLink
+JLINK_OPTIONS = -device nrf51422 -If SWD
+
+# This device mounts a volume; programming involves copying a bin file
+# to the volume.  Good enough as long as you're only using one device
+# at a time.
+JLINK_MP = /media/$(shell id -un)/JLINK
+DO_FLASH_IMAGE=cp $(1) $(JLINK_MP)
+
+BOARD_LIBVENDOR_A = $(BSPACM_ROOT)/board/$(BOARD)/libnrf51.a
+
+# Grab the core Nordic-provided capabilities.
+#
+# hal : nrf_delay_ms, nrf_ecb_*, nrf_nvmc_*
+$(BOARD_LIBVENDOR_A): $(wildcard $(NRF51_SDK_ROOT)/components/drivers_nrf/hal/*.c)
+	BUILDDIR="$(dir $@)/obj/nrf51lib" \
+	&& rm -rf "$${BUILDDIR}" \
+	&& mkdir -p "$${BUILDDIR}" \
+	&& ( cd "$${BUILDDIR}" \
+	     && $(CC) $(CPPFLAGS) $(CFLAGS) -c $^ \
+	     && $(AR) cr $@ $(notdir $(^:%.c=%$(OBJ_EXT))) )
+
+# Local Variables:
+# mode:makefile
+# End:
