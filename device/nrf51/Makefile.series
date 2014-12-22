@@ -49,7 +49,8 @@ NRF51_SOFT_DEVICE ?= blank
 # TODO: This will vary based on soft device
 DEVICE_LDSCRIPT_PATH ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)
 
-# All boards share the same periph config
+# All boards share the same periph config.  Board-specific pin
+# information is included from this file.
 PERIPH_CONFIG_SRC ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph_config.c
 
 # Where the vendor headers can be found.
@@ -99,6 +100,9 @@ $(BOARD_LIBVENDOR_A): $(wildcard $(NRF51_SDK_ROOT)/components/drivers_nrf/hal/*.
 	&& ( cd "$${BUILDDIR}" \
 	     && $(CC) $(CPPFLAGS) $(CFLAGS) -c $^ \
 	     && $(AR) cr $@ $(notdir $(^:%.c=%$(OBJ_EXT))) )
+
+# These sources are not customizable
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/uart_.c
 
 # Local Variables:
 # mode:makefile
