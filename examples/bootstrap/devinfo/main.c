@@ -289,5 +289,15 @@ void main ()
 #endif /* USERDATA */
 
 #endif /* BSPACM_DEVICE_SERIES_EFM32 */
+
+#if (BSPACM_DEVICE_SERIES_NRF51 - 0)
+  printf("nRF51 series device:\n");
+  printf("FICR block:");
+  dumpMemory((const uint8_t *)NRF_FICR_BASE, sizeof(*NRF_FICR), (uintptr_t)NRF_FICR_BASE);
+  printf("PART: %lx\n", NRF_FICR->INFO.PART);
+  printf("VARIANT: %lx\n", NRF_FICR->INFO.VARIANT);
+  printf("RAM: %lu KiBy\n", NRF_FICR->INFO.RAM);
+  printf("FLASH: %lu KiBy\n", NRF_FICR->INFO.FLASH);
+#endif /* BSPACM_DEVICE_SERIES_NRF51 */
   while(1);
 }
