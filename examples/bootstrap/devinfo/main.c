@@ -294,10 +294,15 @@ void main ()
   printf("nRF51 series device:\n");
   printf("FICR block:");
   dumpMemory((const uint8_t *)NRF_FICR_BASE, sizeof(*NRF_FICR), (uintptr_t)NRF_FICR_BASE);
-  printf("PART: %lx\n", NRF_FICR->INFO.PART);
-  printf("VARIANT: %lx\n", NRF_FICR->INFO.VARIANT);
-  printf("RAM: %lu KiBy\n", NRF_FICR->INFO.RAM);
-  printf("FLASH: %lu KiBy\n", NRF_FICR->INFO.FLASH);
+  printf("FICR.DEVICEID = %08lx%08lx\n", NRF_FICR->DEVICEID[1], NRF_FICR->DEVICEID[0]);
+  if (0 == ~NRF_FICR->INFO.PART) {
+    printf("FICR_INFO field not available\n");
+  } else {
+    printf("PART: %lx\n", NRF_FICR->INFO.PART);
+    printf("VARIANT: %lx\n", NRF_FICR->INFO.VARIANT);
+    printf("RAM: %lu KiBy\n", NRF_FICR->INFO.RAM);
+    printf("FLASH: %lu KiBy\n", NRF_FICR->INFO.FLASH);
+  }
 #endif /* BSPACM_DEVICE_SERIES_NRF51 */
   while(1);
 }
