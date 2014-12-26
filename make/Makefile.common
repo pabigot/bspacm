@@ -459,7 +459,7 @@ $(foreach src,$(BOARD_LIBBSPACM_SRC),$(eval $(call generate_makescript,$(call li
 BOARD_LIBBSPACM_OBJ := $(CREATED_OBJ)
 
 # Rebuild LIBBSPACM if changes occur to sources or dependencies
-DEP += $(BOARD_LIBBSPACM_OBJ:%$(OBJ_EXT)=%.d)
+DEP += $(BOARD_LIBBSPACM_OBJ:$(OBJ_EXT)=.d)
 
 # Only remove the LIBBSPACM object files with realclean; otherwise the
 # board library gets rebuilt every time we clean an application.
@@ -475,7 +475,7 @@ $(foreach src,$(BOARD_LIBBSPACM_FDOPS_SRC),$(eval $(call generate_makescript,$(c
 BOARD_LIBBSPACM_FDOPS_OBJ := $(CREATED_OBJ)
 
 # Rebuild LIBBSPACM_FDOPS_A if changes occur to sources or dependencies
-DEP += $(BOARD_LIBBSPACM_FDOPS_OBJ:%$(OBJ_EXT)=%.d)
+DEP += $(BOARD_LIBBSPACM_FDOPS_OBJ:$(OBJ_EXT)=.d)
 
 # Only remove the LIBBSPACM object files with realclean; otherwise the
 # board library gets rebuilt every time we clean an application.
@@ -594,9 +594,15 @@ $(AOUT.axf): $(OBJ) $(GENERATED_ARCHIVES)
 	$(SIZE) $@
 
 # AOUT.bin: The name of the application image as binary
-AOUT.bin = $(AOUT.axf:%.axf=%.bin)
+AOUT.bin = $(AOUT.axf:.axf=.bin)
 $(AOUT.bin): $(AOUT.axf)
 	$(OBJCOPY) -O binary $< $@
+	@$(LS) -ld $@
+
+# AOUT.hex: The name of the application image as srecord Intel hex
+AOUT.hex = $(AOUT.axf:.axf=.hex)
+$(AOUT.hex): $(AOUT.axf)
+	$(OBJCOPY) -O ihex $< $@
 	@$(LS) -ld $@
 
 # Rule for building the standard startup file.  This uses additional C
@@ -626,7 +632,7 @@ realclean: clean
 # device Makefile.series generally defines a make function that
 # expands to the command used to write an image to a board.
 .PHONY: install
-install: $(AOUT.bin)
+install: $(AOUT.bin) $(AOUT).hex
 	$(call DO_FLASH_IMAGE,$^)
 
 $(BOARD_LIBBSPACM_A): $(BOARD_LIBBSPACM_OBJ)

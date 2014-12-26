@@ -1,5 +1,6 @@
 # Ignore ARM executable files and stripped binaries
 *.axf
+*.hex
 *.bin
 # Ignore generated dependency files
 *.d
