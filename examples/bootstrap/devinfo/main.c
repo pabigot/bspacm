@@ -294,7 +294,33 @@ void main ()
   printf("nRF51 series device:\n");
   printf("FICR block:");
   dumpMemory((const uint8_t *)NRF_FICR_BASE, sizeof(*NRF_FICR), (uintptr_t)NRF_FICR_BASE);
+  printf("FICR: HWID %04x FWID %04x\n",
+         (uint16_t)NRF_FICR->CONFIGID & ~0,
+         (uint16_t)(NRF_FICR->CONFIGID >> 16));
+  printf("FICR.DEVICEADDR = %04x%08lx\n", (uint16_t)NRF_FICR->DEVICEADDR[1], NRF_FICR->DEVICEADDR[0]);
   printf("FICR.DEVICEID = %08lx%08lx\n", NRF_FICR->DEVICEID[1], NRF_FICR->DEVICEID[0]);
+  printf("Radio InitOvr:  %lx %lx %lx %lx %lx\n",
+         NRF_RADIO->OVERRIDE0,
+         NRF_RADIO->OVERRIDE1,
+         NRF_RADIO->OVERRIDE2,
+         NRF_RADIO->OVERRIDE3,
+         NRF_RADIO->OVERRIDE4);
+  if (! (NRF_FICR->OVERRIDEEN & FICR_OVERRIDEEN_BLE_1MBIT_Msk)) {
+    printf("Override BLE: %lx %lx %lx %lx %lx\n",
+           NRF_FICR->BLE_1MBIT[0],
+           NRF_FICR->BLE_1MBIT[1],
+           NRF_FICR->BLE_1MBIT[2],
+           NRF_FICR->BLE_1MBIT[3],
+           NRF_FICR->BLE_1MBIT[4]);
+  }
+  if (! (NRF_FICR->OVERRIDEEN & FICR_OVERRIDEEN_NRF_1MBIT_Msk)) {
+    printf("Override NRF: %lx %lx %lx %lx %lx\n",
+           NRF_FICR->NRF_1MBIT[0],
+           NRF_FICR->NRF_1MBIT[1],
+           NRF_FICR->NRF_1MBIT[2],
+           NRF_FICR->NRF_1MBIT[3],
+           NRF_FICR->NRF_1MBIT[4]);
+  }
   if (0 == ~NRF_FICR->INFO.PART) {
     printf("FICR_INFO field not available\n");
   } else {
