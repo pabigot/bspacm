@@ -41,6 +41,14 @@
 /* Hardware flow control has not yet been validated */
 #define ENABLE_HW_FLOW_CONTROL 0
 
+/** A flag in sBSPACMperiphUARTstate::peripheral_state_ni that records
+ * whether we're allowed to write to TXD. */
+#define PERIPHERAL_FLAG_TXDRDY 0x01
+
+/** A flag in sBSPACMperiphUARTstate::peripheral_state_ni that records
+ * whether the TX task is running. */
+#define PERIPHERAL_FLAG_TXTASK 0x02
+
 /** Structure to map from a baud rate to the register configuration
  * value required to achieve that rate. */
 typedef struct sNRF51baudMapEntry {
@@ -82,6 +90,7 @@ int
 uart_configure (sBSPACMperiphUARTstate * usp,
                 const sBSPACMperiphUARTconfiguration * cfgp)
 {
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   const sBSPACMdeviceNRF51periphUARTdevcfg * devcfgp;
 
   if (! (usp && (NRF_UART0 == usp->uart))) {
@@ -89,62 +98,82 @@ uart_configure (sBSPACMperiphUARTstate * usp,
   }
   devcfgp = (const sBSPACMdeviceNRF51periphUARTdevcfg *)usp->devcfg.ptr;
 
-  if (cfgp) {
-    nrf_gpio_cfg_input(devcfgp->rx_pin, NRF_GPIO_PIN_NOPULL);
-    NRF_UART0->PSELRXD = devcfgp->rx_pin;
-    nrf_gpio_cfg_output(devcfgp->tx_pin);
-    NRF_UART0->PSELTXD = devcfgp->tx_pin;
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    if (cfgp) {
+      nrf_gpio_cfg_input(devcfgp->rx_pin, NRF_GPIO_PIN_NOPULL);
+      NRF_UART0->PSELRXD = devcfgp->rx_pin;
+      nrf_gpio_cfg_output(devcfgp->tx_pin);
+      NRF_UART0->PSELTXD = devcfgp->tx_pin;
 #if (ENABLE_HW_FLOW_CONTROL - 0)
-    if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
-      nrf_gpio_cfg_output(devcfgp->cts_pin);
-      NRF_UART0->PSELCTS = devcfgp->cts_pin;
-      nrf_gpio_cfg_input(devcfgp->rts_pin, NRF_GPIO_PIN_NOPULL);
-      NRF_UART0->PSELRTS = devcfgp->rts_pin;
-      NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
-    }
-#endif /* ENABLE_HW_FLOW_CONTROL */
-  } else {
-    NRF_UART0->TASKS_STOPTX = 1;
-    NRF_UART0->TASKS_STOPRX = 1;
-#if (ENABLE_HW_FLOW_CONTROL - 0)
-    if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
-      nrf_gpio_cfg_output(devcfgp->rts_pin);
-      NRF_GPIO->OUTSET = 1 << devcfgp->rts_pin;
-      NRF_UART0->PSELCTS = -1;
-      NRF_UART0->PSELRTS = -1;
-      NRF_UART0->CONFIG &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
-    }
-#endif /* ENABLE_HW_FLOW_CONTROL */
-    NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Disabled << UART_ENABLE_ENABLE_Pos);
-  }
-
-  /* Reset the FIFOs */
-  if (usp->rx_fifo_ni_) {
-    fifo_reset(usp->rx_fifo_ni_);
-  }
-  if (usp->tx_fifo_ni_) {
-    fifo_reset(usp->tx_fifo_ni_);
-  }
-  usp->tx_state_ = 0;
-
-  /* Configure UART as requested and bring it online. */
-  if (cfgp) {
-    const sNRF51baudMapEntry * mep = xNRF51baudMap + sizeof(xNRF51baudMap)/sizeof(*xNRF51baudMap) ;
-
-    do {
-      --mep;
-      if (cfgp->speed_baud == mep->speed_baud) {
-        break;
+      if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
+        nrf_gpio_cfg_output(devcfgp->cts_pin);
+        NRF_UART0->PSELCTS = devcfgp->cts_pin;
+        nrf_gpio_cfg_input(devcfgp->rts_pin, NRF_GPIO_PIN_NOPULL);
+        NRF_UART0->PSELRTS = devcfgp->rts_pin;
+        NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
       }
-    } while (xNRF51baudMap < mep);
+#endif /* ENABLE_HW_FLOW_CONTROL */
+    } else {
+      NRF_UART0->TASKS_STOPRX = 1;
+      if (PERIPHERAL_FLAG_TXTASK & usp->peripheral_state_ni) {
+        NRF_UART0->TASKS_STOPTX = 1;
+        usp->peripheral_state_ni &= ~PERIPHERAL_FLAG_TXTASK;
+      }
 
-    NRF_UART0->BAUDRATE = (mep->baud_value << UART_BAUDRATE_BAUDRATE_Pos);
-    NRF_UART0->TASKS_STARTTX = 1;
-    NRF_UART0->TASKS_STARTRX = 1;
-    NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Enabled << UART_ENABLE_ENABLE_Pos);
-    NRF_UART0->EVENTS_RXDRDY = 0;
-  }
+#if (ENABLE_HW_FLOW_CONTROL - 0)
+      if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
+        nrf_gpio_cfg_output(devcfgp->rts_pin);
+        NRF_GPIO->OUTSET = 1 << devcfgp->rts_pin;
+        NRF_UART0->PSELCTS = -1;
+        NRF_UART0->PSELRTS = -1;
+        NRF_UART0->CONFIG &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
+      }
+#endif /* ENABLE_HW_FLOW_CONTROL */
 
+      NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Disabled << UART_ENABLE_ENABLE_Pos);
+
+      /* Clear the driver state flags */
+      usp->peripheral_state_ni = 0;
+    }
+
+    /* Reset the FIFOs */
+    if (usp->rx_fifo_ni_) {
+      fifo_reset(usp->rx_fifo_ni_);
+    }
+    if (usp->tx_fifo_ni_) {
+      fifo_reset(usp->tx_fifo_ni_);
+    }
+    usp->tx_state_ = 0;
+
+    /* Configure UART as requested and bring it online. */
+    if (cfgp) {
+      const sNRF51baudMapEntry * mep = xNRF51baudMap + sizeof(xNRF51baudMap)/sizeof(*xNRF51baudMap) ;
+
+      do {
+        --mep;
+        if (cfgp->speed_baud == mep->speed_baud) {
+          break;
+        }
+      } while (xNRF51baudMap < mep);
+
+      NRF_UART0->BAUDRATE = (mep->baud_value << UART_BAUDRATE_BAUDRATE_Pos);
+      NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Enabled << UART_ENABLE_ENABLE_Pos);
+      NRF_UART0->EVENTS_RXDRDY = 0;
+      NRF_UART0->EVENTS_TXDRDY = 0;
+      NRF_UART0->INTENCLR = ~0UL;
+      NRF_UART0->INTENSET = ((UART_INTENSET_RXDRDY_Set << UART_INTENSET_RXDRDY_Pos)
+                             | (UART_INTENSET_TXDRDY_Set << UART_INTENSET_TXDRDY_Pos)
+                             | (UART_INTENSET_ERROR_Set << UART_INTENSET_ERROR_Pos));
+      NVIC_ClearPendingIRQ(UART0_IRQn);
+      NVIC_EnableIRQ(UART0_IRQn);
+
+      /* Record that we're allowed to write to TXD. */
+      usp->peripheral_state_ni = PERIPHERAL_FLAG_TXDRDY;
+      NRF_UART0->TASKS_STARTRX = 1;
+    }
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
   return 0;
 }
 
@@ -154,9 +183,11 @@ uart_hw_transmit (sBSPACMperiphUARTstate * usp,
 {
   int rv = -1;
 
+  NRF_UART0->TASKS_STARTTX = 1;
   NRF_UART0->TXD = v;
   while (!NRF_UART0->EVENTS_TXDRDY);
   NRF_UART0->EVENTS_TXDRDY = 0;
+  NRF_UART0->TASKS_STOPTX = 1;
   usp->tx_count += 1;
   rv = v;
   return rv;
@@ -166,7 +197,14 @@ static void
 uart_hw_txien (sBSPACMperiphUARTstate * usp,
                int enablep)
 {
-  /* Not yet implemented */
+  /* The BSPACM layer will call this to enable TX interrupts when it
+   * thinks it's queued data for the first time.  That doesn't work
+   * for this device because enabling interrupts will not cause an
+   * interrupt if the TXD has space.  We manage interrupts by
+   * communication between fifo_state and the interrupt handler.
+   *
+   * Oh, and "interrupt" in this case means whether or not the TX task
+   * has been started.  TXDRDY interrupts are always on. */
 }
 
 static int
@@ -179,12 +217,8 @@ uart_fifo_state (sBSPACMperiphUARTstate * usp)
   BSPACM_CORE_DISABLE_INTERRUPT();
   (void)uart;
   do {
-#if 0
-    if (UART_FR_TXFE != ((UART_FR_TXFE | UART_FR_BUSY) & NRF_UART0->FR)) {
+    if (! (PERIPHERAL_FLAG_TXDRDY & usp->peripheral_state_ni)) {
       rv |= eBSPACMperiphUARTfifoState_HWTX;
-    }
-    if (! (UART_FR_RXFE & NRF_UART0->FR)) {
-      rv |= eBSPACMperiphUARTfifoState_HWRX;
     }
     if (usp->tx_fifo_ni_ && (! fifo_empty(usp->tx_fifo_ni_))) {
       rv |= eBSPACMperiphUARTfifoState_SWTX;
@@ -192,7 +226,9 @@ uart_fifo_state (sBSPACMperiphUARTstate * usp)
     if (usp->rx_fifo_ni_ && (! fifo_empty(usp->rx_fifo_ni_))) {
       rv |= eBSPACMperiphUARTfifoState_SWRX;
     }
-#endif
+    if (NRF_UART0->EVENTS_RXDRDY) {
+      rv |= eBSPACMperiphUARTfifoState_HWRX;
+    }
   } while (0);
   BSPACM_CORE_REENABLE_INTERRUPT(istate);
   return rv;
@@ -202,47 +238,51 @@ void
 vBSPACMdeviceNRF51periphUARTirqhandler (sBSPACMperiphUARTstate * const usp)
 {
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  uint32_t errorsrc;
 
   BSPACM_CORE_DISABLE_INTERRUPT();
-#if 0
-  NRF_UART0->ICR = (~ UART_MIS_TXMIS) & NRF_UART0->MIS;
-  while (! (UART_FR_RXFE & NRF_UART0->FR)) {
-    uint8_t dr = NRF_UART0->DR;
-    uint32_t rsr = NRF_UART0->RSR;
-    if (rsr) {
-      /* Warning: this clears all errors, not just the ones we just
-       * captured and are processing. */
-      NRF_UART0->RSR = rsr;
-      if (UART_RSR_FE & rsr) {
-        usp->rx_frame_errors += 1;
-      }
-      if (UART_RSR_PE & rsr) {
-        usp->rx_parity_errors += 1;
-      }
-      if (UART_RSR_BE & rsr) {
-        usp->rx_break_errors += 1;
-      }
-      if (UART_RSR_OE & rsr) {
-        usp->rx_overrun_errors += 1;
-      }
-    } else {
-      if ((! usp->rx_fifo_ni_)
-          || (0 > fifo_push_head(usp->rx_fifo_ni_, dr))) {
-        usp->rx_dropped_errors += 1;
-      }
-      usp->rx_count += 1;
+  if (NRF_UART0->EVENTS_ERROR) {
+    NRF_UART0->EVENTS_ERROR = 0;
+    errorsrc = NRF_UART0->ERRORSRC;
+    NRF_UART0->ERRORSRC = errorsrc;
+    if (UART_ERRORSRC_BREAK_Present & errorsrc) {
+      usp->rx_break_errors += 1;
+    }
+    if (UART_ERRORSRC_FRAMING_Present & errorsrc) {
+      usp->rx_frame_errors += 1;
+    }
+    if (UART_ERRORSRC_PARITY_Present & errorsrc) {
+      usp->rx_parity_errors += 1;
+    }
+    if (UART_ERRORSRC_OVERRUN_Present & errorsrc) {
+      usp->rx_overrun_errors += 1;
     }
   }
-  if (usp->tx_fifo_ni_) {
-    while (! (fifo_empty(usp->tx_fifo_ni_) || (UART_FR_TXFF & NRF_UART0->FR))) {
-      NRF_UART0->DR = fifo_pop_tail(usp->tx_fifo_ni_, 0);
+  if (NRF_UART0->EVENTS_RXDRDY) {
+    NRF_UART0->EVENTS_RXDRDY = 0;
+    uint8_t rxd = NRF_UART0->RXD;
+    if ((! usp->rx_fifo_ni_)
+        || (0 > fifo_push_head(usp->rx_fifo_ni_, rxd))) {
+      usp->rx_dropped_errors += 1;
+    }
+    usp->rx_count += 1;
+  }
+  if (NRF_UART0->EVENTS_TXDRDY) {
+    usp->peripheral_state_ni |= PERIPHERAL_FLAG_TXDRDY;
+    NRF_UART0->EVENTS_TXDRDY = 0;
+    if (usp->tx_fifo_ni_ && (! fifo_empty(usp->tx_fifo_ni_))) {
+      usp->peripheral_state_ni &= ~PERIPHERAL_FLAG_TXDRDY;
+      if (! (PERIPHERAL_FLAG_TXTASK & usp->peripheral_state_ni)) {
+        usp->peripheral_state_ni |= PERIPHERAL_FLAG_TXTASK;
+        NRF_UART0->TASKS_STARTTX = 1;
+      }
+      NRF_UART0->TXD = fifo_pop_tail(usp->tx_fifo_ni_, 0);
       usp->tx_count += 1;
-    }
-    if (fifo_empty(usp->tx_fifo_ni_)) {
-      NRF_UART0->IM &= ~UART_IM_TXIM;
+    } else {
+      NRF_UART0->TASKS_STOPTX = 1;
+      usp->peripheral_state_ni &= ~PERIPHERAL_FLAG_TXTASK;
     }
   }
-#endif
   BSPACM_CORE_REENABLE_INTERRUPT(istate);
 }
 

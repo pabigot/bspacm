@@ -64,4 +64,9 @@ const hBSPACMperiphUART hBSPACMdefaultUART =
   &xBSPACMdeviceNRF51periphUART0
   ;
 
+void UART0_IRQHandler(void)
+{
+  vBSPACMdeviceNRF51periphUARTirqhandler(&xBSPACMdeviceNRF51periphUART0);
+}
+
 #endif /* BSPACM_CONFIG_ENABLE_UART */
