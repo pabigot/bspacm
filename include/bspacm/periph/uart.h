@@ -94,6 +94,11 @@ typedef struct sBSPACMperiphUARTstate {
    * layer. */
   unsigned int flags;
 
+  /** State managed by the peripheral layer.  For example, this may be
+   * used to record information gathered in an interrupt handler for
+   * use by functions outside the interrupt handler. */
+  unsigned int peripheral_state_ni;
+
   /** The total number of characters received at the hardware
    * interface.  This includes characters that were dropped due to
    * lack of space in the software fifo (#rx_dropped_errors). */
@@ -129,7 +134,11 @@ typedef struct sBSPACMperiphUARTstate {
    * read without disabling interrupts.  However, its information
    * combines with state read from #tx_fifo_ni_, so interrupts must
    * disabled when mutating this value, or accessing both fields to
-   * determine fifo state. */
+   * determine fifo state.
+   *
+   * @note This field is owned by the BSPACM uart layer; vendor
+   * implementation layers can't use it.  See
+   * #peripheral_state_ni.  */
   uint8_t tx_state_;
 } sBSPACMperiphUARTstate;
 
