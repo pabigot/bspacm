@@ -361,10 +361,7 @@ endif # NEWLIB_SBRK
 # the object files being linked were built with the same flags.
 WITH_NANO ?= 1
 ifneq (0,$(WITH_NANO))
-LIBC_LIBRARY_OPTION=-lc_s
 TARGET_LDFLAGS += -specs=nano.specs
-else # WITH_NANO
-LIBC_LIBRARY_OPTION=-lc
 endif # WITH_NANO
 
 # Unconditionally add the flags for link-time optimization by removing
@@ -501,7 +498,8 @@ ORDERED_BSPACM_LDLIBS=$(VENDOR_LDLIB) -lbspacm-fdops -lbspacm
 
 # Include the generated library options when linking, in the required
 # order, and in a group so dependency cycles are resolved.
-LDLIBS += -Wl,--start-group $(LIBC_LIBRARY_OPTION) \
+# NB: -specs=nano will cause -lc to be replaced with the right variant.
+LDLIBS += -Wl,--start-group -lc \
   $(foreach lib,$(ORDERED_BSPACM_LDLIBS),$(filter $(lib),$(BSPACM_LDLIBS))) \
   $(filter-out $(ORDERED_BSPACM_LDLIBS),$(BSPACM_LDLIBS)) \
  -Wl,--end-group
