@@ -22,8 +22,20 @@
 #include <string.h>
 #include "nrf_delay.h"
 
+#ifndef PIN_SDA
+#if (BSPACM_BOARD_NRF51_PCA10028 - 0)
+#define PIN_SDA 7
+#else /* PCA10028 */
 #define PIN_SDA 25
+#endif /* PCA10028 */
+#endif /* PIN_SDA */
+#ifndef PIN_SCL
+#if (BSPACM_BOARD_NRF51_PCA10028 - 0)
+#define PIN_SCL 30
+#else /* PCA10028 */
 #define PIN_SCL 24
+#endif /* PCA10028 */
+#endif /* PIN_SCL */
 
 #define BIT_SDA (1UL << PIN_SDA)
 #define BIT_SCL (1UL << PIN_SCL)
@@ -286,7 +298,7 @@ int twi_error_clear (const twi_periphs_type * tpp)
 /** Configure and enable the TWI peripheral.
  *
  * @param pin_scl the pin to use as the serial clock signal.  nRF51
- * default is 24.
+ * default is 24 but note this is shared with an LED on some boards.
  *
  * @param pin_sda the pin to use as the serial data signal.  nRF51
  * default is 25.
@@ -543,7 +555,6 @@ int sht21_read_eic (const twi_periphs_type * tp,
       rc = -1;
     }
   }
-  printf("eic ret %d\n", rc);
   return rc;
 }
 
@@ -670,8 +681,8 @@ void main ()
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
 
-  printf("Initial stat: HF %08lx LF %08lx src %lu\n",
-         NRF_CLOCK->HFCLKSTAT, NRF_CLOCK->LFCLKSTAT, NRF_CLOCK->LFCLKSRC);
+  printf("SHT21: Connect SDA to P0.%u, SCL to P0.%u\n",
+         PIN_SDA, PIN_SCL);
 
   /* LFCLK starts as the RC oscillator.  Start the crystal . */
   NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
@@ -679,9 +690,6 @@ void main ()
   NRF_CLOCK->TASKS_LFCLKSTART = 1;
   while (! NRF_CLOCK->EVENTS_LFCLKSTARTED) {
   }
-
-  printf("Post start stat: HF %08lx LF %08lx src %lu\n",
-         NRF_CLOCK->HFCLKSTAT, NRF_CLOCK->LFCLKSTAT, NRF_CLOCK->LFCLKSRC);
 
   /* RTC only works on LFCLK.  Set one up using a zero prescaler (runs
    * at 32 KiHz).  Clock's 24 bits, so track overflow in a 32-bit
