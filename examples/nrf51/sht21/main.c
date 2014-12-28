@@ -579,6 +579,7 @@ int show_results (alarm_stage * asp)
   uint64_t elapsed = now - epoch;
 
   (void)asp;
+
   printf("%lu: %u wakeups ; uptime %lu ; awake %lu ; duty %lu [ppth]\n",
          (unsigned long)(now / UPTIME_Hz),
          wake_count,
@@ -597,6 +598,38 @@ int show_results (alarm_stage * asp)
   printf("\tRH: %u raw %u ppth\n", rh_raw, rh_ppth);
   t_raw = rh_raw = ~0;
 #endif /* ! DUTY_CYCLE_ONLY */
+
+#if ! (EXCLUDE_DIE_TEMP - 0)
+  {
+    NRF_TEMP->EVENTS_DATARDY = 0;
+    NRF_TEMP->TASKS_START = 1;
+    while (! NRF_TEMP->EVENTS_DATARDY) {
+    }
+    NRF_TEMP->EVENTS_DATARDY = 0;
+
+    /* PAN-29: STOP task clears TEMP register */
+    uint32_t dt_raw = NRF_TEMP->TEMP;
+
+    /* PAN-30: TEMP module analog front end does not power down when
+     * DATARDY event occurs */
+    NRF_TEMP->TASKS_STOP = 1;
+
+    /* PAN-28: Negative measured values are not represented correctly.
+     * Sign extension does not go higher than bit 9.
+     *
+     * Value is 10-bit 2's complement.  Convert to 32-bit 2's
+     * complement. */
+    const uint32_t sign_bit = 0x0200;
+    if (dt_raw & sign_bit) {
+      dt_raw |= ~(sign_bit - 1);
+    }
+
+    int dt_cCel = 25 * (int)(int32_t)dt_raw;
+    int dt_cFahr = (3200 + (9 * dt_cCel) / 5);
+    printf("\tT[die]: %d cCel ; %d c[Fahr]\n", dt_cCel, dt_cFahr);
+  }
+#endif /* EXCLUDE_DIE_TEMP */
+
   return 0;
 }
 
@@ -670,6 +703,11 @@ void main ()
   NVIC_EnableIRQ(RTC0_IRQn);
 
   uptime_rtc->TASKS_START = 1;
+
+  /* PAN-31: Temperature offset value has to be manually loaded.
+   * Address is 0x4000C504, the word before TEMP.  The struct does
+   * not have a field for this. */
+  ((__O uint32_t *)&NRF_TEMP->TEMP)[-1] = 0;
 
   do {
     alarm_stage alarm_stages[4];
