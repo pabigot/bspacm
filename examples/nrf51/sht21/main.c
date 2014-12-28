@@ -42,43 +42,76 @@
 #define SHT21_TRIGGER_T_HM (SHT21_CMDBIT_BASE | SHT21_CMDBIT_TEMP | SHT21_CMDBIT_READ)
 #define SHT21_TRIGGER_RH_HM (SHT21_CMDBIT_BASE | SHT21_CMDBIT_RH | SHT21_CMDBIT_READ)
 
-/* Normal is input pull-up */
-#define PIN_CNF_TWI ( 0                                                 \
-                      | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
-                      | (GPIO_PIN_CNF_DRIVE_S0D1 << GPIO_PIN_CNF_DRIVE_Pos) \
-                      | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) \
-                      | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) \
-                      | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos) \
-                      )
-
-/* Output pull-up */
-#define PIN_CNF_OUT ( 0                                                 \
-                      | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
-                      | (GPIO_PIN_CNF_DRIVE_S0D1 << GPIO_PIN_CNF_DRIVE_Pos) \
-                      | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) \
-                      | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) \
-                      | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos) \
-                      )
-
-
 const uint32_t UPTIME_Hz = 32768;
 NRF_RTC_Type * const uptime_rtc = NRF_RTC0;
 const int uptime_ccidx_1Hz = 0;
+const int uptime_ccidx_alarm = 1;
 
 volatile uint32_t uptime_s;
 volatile uint32_t rtc_overflows;
+uint32_t rtc_now_last_overflow_;
 
-uint32_t rtc_now_last_overflow;
 inline uint64_t rtc_now ()
 {
   uint32_t prev_ofl;
   uint32_t ctr24;
+
+  /* Get a consistent pair of counter and overflow values */
   do {
-    prev_ofl = rtc_now_last_overflow;
+    prev_ofl = rtc_now_last_overflow_;
     ctr24 = uptime_rtc->COUNTER;
-    rtc_now_last_overflow = rtc_overflows;
-  } while (prev_ofl != rtc_now_last_overflow);
-  return (((uint64_t)rtc_now_last_overflow) << 24) | ctr24;
+    rtc_now_last_overflow_ = rtc_overflows;
+  } while (prev_ofl != rtc_now_last_overflow_);
+  return (((uint64_t)rtc_now_last_overflow_) << 24) | ctr24;
+}
+
+typedef struct uptime_alarm {
+  struct uptime_alarm * next;   /** Next alarm to schedule, or NULL to terminate alarm sequence */
+  uint32_t delta_utt;           /** Ticks until next alarm should go off */
+} uptime_alarm;
+
+/** Pending alarm */
+const uptime_alarm * volatile uptime_alarms_;
+/** Last alarm to fire */
+const uptime_alarm * volatile uptime_alarm_;
+
+/* Return a pointer to the last alarm that fired, or a null pointer if
+ * no alarm has fired since the last call to this function. */
+const uptime_alarm * uptime_get_alarm ()
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  const uptime_alarm * rv;
+
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    rv = uptime_alarm_;
+    uptime_alarm_ = NULL;
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  return rv;
+}
+
+/** Register a sequence of alarms with the first scheduled at @p
+ * alarm_time_utt.  Pass a null pointer as @p sp to disable existing
+ * alarms. */
+void uptime_set_alarms (const uptime_alarm * sp,
+                        uint32_t alarm_time_utt)
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    uptime_alarms_ = sp;
+    if (uptime_alarms_) {
+      uptime_rtc->CC[uptime_ccidx_alarm] = alarm_time_utt;
+      uptime_rtc->INTENSET = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
+    } else {
+      uptime_rtc->INTENCLR = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
+    }
+    uptime_alarm_ = NULL;
+    uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm] = 0;
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
 }
 
 void RTC0_IRQHandler ()
@@ -91,6 +124,18 @@ void RTC0_IRQHandler ()
     uptime_rtc->EVENTS_COMPARE[uptime_ccidx_1Hz] = 0;
     uptime_rtc->CC[uptime_ccidx_1Hz] += UPTIME_Hz;
     ++uptime_s;
+  }
+  if (uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm]) {
+    uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm] = 0;
+    if (uptime_alarms_) {
+      uptime_alarm_ = uptime_alarms_;
+      uptime_alarms_ = uptime_alarm_->next;
+    }
+    if (uptime_alarm_) {
+      uptime_rtc->CC[uptime_ccidx_alarm] += uptime_alarm_->delta_utt;
+    } else {
+      uptime_rtc->INTENCLR = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
+    }
   }
 }
 
@@ -502,9 +547,89 @@ int sht21_read_eic (const twi_periphs_type * tp,
   return rc;
 }
 
+typedef struct alarm_stage {
+  uptime_alarm alarm;
+  int (* callback) (struct alarm_stage * asp);
+  const twi_periphs_type * tpp;
+  uint8_t cmd;
+} alarm_stage;
+
+unsigned int wake_count;
+uint64_t epoch;
+uint64_t wake_total;
+uint16_t t_raw;
+uint16_t rh_raw;
+
+/** Convert a raw humidity value to parts-per-thousand as an unsigned
+ * int */
+/* RH_pph = -6 + 125 * S / 2^16 */
+#define BSP430_SENSORS_SHT21_HUMIDITY_RAW_TO_ppth(raw_) (unsigned int)(((1250UL * (raw_)) >> 16) - 60)
+
+/** Convert a raw temperature value to centi-degrees Kelvin as an
+ * unsigned int */
+/* T_dC = -46.85 + 175.72 * S / 2^16
+ * T_cK = 27315 - 4685 + 17572 * S / 2^16
+ *      = 22630 + 17572 * S / 2^16
+ */
+#define BSP430_SENSORS_SHT21_TEMPERATURE_RAW_TO_cK(raw_) (22630U + (unsigned int)((17572UL * (raw_)) >> 16))
+
+int show_results (alarm_stage * asp)
+{
+  uint64_t now = rtc_now();
+  uint64_t elapsed = now - epoch;
+
+  (void)asp;
+  printf("%lu: %u wakeups ; uptime %lu ; awake %lu ; duty %lu [ppth]\n",
+         (unsigned long)(now / UPTIME_Hz),
+         wake_count,
+         (unsigned long)elapsed,
+         (unsigned long)wake_total,
+         (unsigned long)((1000 * wake_total) / elapsed));
+#if ! (DUTY_CYCLE_ONLY - 0)
+  /* If all output is disabled the duty cycle is less than 0.2%, as
+   * opposed to 1.5% with output enabled.  This is about 2 ms per
+   * measurement. */
+  unsigned int t_cK = BSP430_SENSORS_SHT21_TEMPERATURE_RAW_TO_cK(t_raw);
+  int t_cCel = t_cK - 27315;
+  int t_cFahr = 3200 + (9 * t_cCel) / 5;
+  unsigned int rh_ppth = BSP430_SENSORS_SHT21_HUMIDITY_RAW_TO_ppth(rh_raw);
+  printf("\tT: %u raw ; %u cK ; %d cCel ; %d c[Fahr]\n", t_raw, t_cK, t_cCel, t_cFahr);
+  printf("\tRH: %u raw %u ppth\n", rh_raw, rh_ppth);
+  t_raw = rh_raw = ~0;
+#endif /* ! DUTY_CYCLE_ONLY */
+  return 0;
+}
+
+int send_read (alarm_stage * asp)
+{
+  uint8_t cmd = (asp->cmd
+                 | SHT21_CMDBIT_BASE
+                 | SHT21_CMDBIT_READ
+                 | SHT21_CMDBIT_NOHOLD);
+  return twi_write(asp->tpp, &cmd, sizeof(cmd));
+}
+
+int read_result (alarm_stage * asp)
+{
+  uint8_t data[3];
+  int rc;
+
+  rc = twi_read(asp->tpp, data, sizeof(data));
+  if ((0 <= rc) && (0 == sht21_crc(data, rc))) {
+    rc = ((data[0] << 8) | data[1]) & ~0x03;
+    if (asp->cmd) {
+      t_raw = rc;
+      rc = send_read(asp);
+    } else {
+      rh_raw = rc;
+      show_results(asp);
+    }
+  }
+  return rc;
+}
+
 void main ()
 {
-  uint32_t uptime = ~0;
   twi_periphs_type tp;
   vBSPACMledConfigure();
   BSPACM_CORE_ENABLE_INTERRUPT();
@@ -547,6 +672,9 @@ void main ()
   uptime_rtc->TASKS_START = 1;
 
   do {
+    alarm_stage alarm_stages[4];
+    alarm_stage * asp;
+    unsigned int remaining_delay;
     uint8_t buf[16];
     int rc;
 
@@ -557,9 +685,10 @@ void main ()
     tp.chidx = 0;
 #endif /* ENABLE_PAN_36 */
 #if (ENABLE_PAN_56 - 0)
-    /* 500 is enough for a responsive I2C device.  Use less than that
-     * to verify the reset works. */
-    tp.pan56_loop_limit = 500;
+    /* 500 is enough for a responsive I2C device at 400 kHz; 800 is
+     * enough at 100 kHz.  Use smaller values to verify the reset
+     * works. */
+    tp.pan56_loop_limit = 800;
 #endif /* ENABLE_PAN_56 */
     tp.twi = NRF_TWI0;
 
@@ -583,19 +712,56 @@ void main ()
       }
     }
 
-    while (1) {
-      uint64_t now;
-      uint32_t new_uptime = uptime_s;
+    remaining_delay = UPTIME_Hz;
 
-      while (new_uptime == uptime) {
+    memset(alarm_stages, 0, sizeof(alarm_stages));
+
+    asp = alarm_stages;
+
+    asp->callback = send_read;
+    asp->tpp = &tp;
+    asp->cmd = SHT21_CMDBIT_TEMP;
+    /* High-resolution temperature read takes up to 85 ms.  Sleep for
+     * 100 ms. */
+    asp->alarm.delta_utt = UPTIME_Hz / 10;
+    remaining_delay -= asp->alarm.delta_utt;
+    asp->alarm.next = &asp[1].alarm;
+    ++asp;
+
+    asp->callback = read_result;
+    asp->tpp = &tp;
+    asp->cmd = SHT21_CMDBIT_RH;
+    /* High-resolution humidity read takes up to 29 ms.  Sleep for 50
+     * ms. */
+    asp->alarm.delta_utt = UPTIME_Hz / 20;
+    remaining_delay -= asp->alarm.delta_utt;
+    asp->alarm.next = &asp[1].alarm;
+    ++asp;
+
+    asp->callback = read_result;
+    asp->tpp = &tp;
+    asp->alarm.delta_utt = remaining_delay;
+    remaining_delay -= asp->alarm.delta_utt;
+    asp->alarm.next = &alarm_stages[0].alarm;
+
+    uint64_t last_wake = rtc_now();
+    wake_count = 0;
+    epoch = last_wake;
+    uptime_set_alarms(asp->alarm.next, UPTIME_Hz);
+    while (1) {
+      const uptime_alarm * ap;
+      while (! ((ap = uptime_get_alarm()))) {
+        uint64_t last_sleep = rtc_now();
+        wake_total += (last_sleep - last_wake);
         __WFE();
-        new_uptime = uptime_s;
+        last_wake = rtc_now();
+        /* NB: We can get wakeups not only because the alarm is ready
+         * but also because of UART interrupts as the transmit buffer
+         * drains. */
+        ++wake_count;
       }
-      now = rtc_now();
-      uptime = new_uptime;
-      printf("Uptime %lu counter %" PRIx32 " counts %lu actual %.6f\n",
-             uptime, (uint32_t)now, (uint32_t)(now / UPTIME_Hz),
-             (double)now / (double)UPTIME_Hz);
+      asp = (alarm_stage *)ap;
+      asp->callback(asp);
     }
   } while (0);
   fflush(stdout);
