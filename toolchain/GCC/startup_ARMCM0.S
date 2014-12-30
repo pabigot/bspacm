@@ -111,6 +111,44 @@ Reset_Handler:
  *  data to implement than the latter.
  *  Macro __STARTUP_COPY_MULTIPLE is used to choose between two schemes.  */
 
+#if (BSPACM_DEVICE_SERIES_NRF51 - 0)
+/* PAN #16: RAMON reset value causes problems under certain conditions
+ *
+ * When this anomaly is present RAMON is zero on power-up, which means
+ * the stack that's used during initialization is located in unpowered
+ * RAM.  We need to turn that RAM on.
+ *
+ * In the v2 nRF51 chips the low 4 bits of RAMON controlled four
+ * blocks of RAM, and an ONMODE mask of 0x0F was suggested.  In v3
+ * this was split into RAMON with two bits and RAMONB with the other
+ * two bits.  The startup sequence used in later SDKs provided by
+ * Nordic stores both separately.
+ *
+ * In the v3 chips PAN #16 does not apply.  There are no IC variants
+ * prior to v3 that have more than two blocks of RAM (i.e., there is
+ * no need to set RAMONB).  However, RAMON and RAMONB are retained
+ * registers, so it is not impossible that Reset_Handler could be
+ * invoked in a state where some blocks are turned off (e.g., a wakeup
+ * from system off.  There is no harm in setting RAMON bits if the
+ * variant does not have the corresponding RAM blocks, and if we're
+ * running this handler we're invoking initialization code that
+ * assumes all RAM is available.  So it's best to enforce consistency
+ * and set both RAMON and RAMONB to their nominal power-up values.  */
+	.equ	NRF_POWER_RAMON_ADDRESS, 0x40000524
+	.equ	NRF_POWER_RAMONB_ADDRESS, 0x40000554
+	.equ	NRF_POWER_RAMONx_RAMxON_ONMODE_Msk, 0x3
+
+	movs	r1, #NRF_POWER_RAMONx_RAMxON_ONMODE_Msk
+	ldr	r0, =NRF_POWER_RAMON_ADDRESS
+	ldr	r2, [r0]
+	orrs	r2, r1
+	str	r2, [r0]
+	ldr	r0, =NRF_POWER_RAMONB_ADDRESS
+	ldr	r2, [r0]
+	orrs	r2, r1
+	str	r2, [r0]
+#endif /* BSPACM_DEVICE_SERIES_NRF51 */
+
 #ifdef __STARTUP_COPY_MULTIPLE
 /*  Multiple sections scheme.
  *
