@@ -105,33 +105,29 @@ uart_configure (sBSPACMperiphUARTstate * usp,
       NRF_UART0->PSELRXD = devcfgp->rx_pin;
       nrf_gpio_cfg_output(devcfgp->tx_pin);
       NRF_UART0->PSELTXD = devcfgp->tx_pin;
-#if (ENABLE_HW_FLOW_CONTROL - 0)
       if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
         nrf_gpio_cfg_output(devcfgp->cts_pin);
         NRF_UART0->PSELCTS = devcfgp->cts_pin;
         nrf_gpio_cfg_input(devcfgp->rts_pin, NRF_GPIO_PIN_NOPULL);
         NRF_UART0->PSELRTS = devcfgp->rts_pin;
         NRF_UART0->CONFIG = (UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
+      } else {
+        NRF_UART0->CONFIG = 0;
       }
-#endif /* ENABLE_HW_FLOW_CONTROL */
     } else {
       NRF_UART0->TASKS_STOPRX = 1;
       if (PERIPHERAL_FLAG_TXTASK & usp->peripheral_state_ni) {
         NRF_UART0->TASKS_STOPTX = 1;
         usp->peripheral_state_ni &= ~PERIPHERAL_FLAG_TXTASK;
       }
+      NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Disabled << UART_ENABLE_ENABLE_Pos);
 
-#if (ENABLE_HW_FLOW_CONTROL - 0)
+      nrf_gpio_cfg_output(devcfgp->rx_pin);
+      NRF_GPIO->OUTSET = 1 << devcfgp->rx_pin;
       if ((0 <= devcfgp->rts_pin) && (0 <= devcfgp->cts_pin)) {
         nrf_gpio_cfg_output(devcfgp->rts_pin);
         NRF_GPIO->OUTSET = 1 << devcfgp->rts_pin;
-        NRF_UART0->PSELCTS = -1;
-        NRF_UART0->PSELRTS = -1;
-        NRF_UART0->CONFIG &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
       }
-#endif /* ENABLE_HW_FLOW_CONTROL */
-
-      NRF_UART0->ENABLE = (UART_ENABLE_ENABLE_Disabled << UART_ENABLE_ENABLE_Pos);
 
       /* Clear the driver state flags */
       usp->peripheral_state_ni = 0;
