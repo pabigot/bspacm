@@ -14,10 +14,11 @@
 
 /* UART0 pin assignments for PCA20006 "nRF51822-Beacon" */
 
-#define NRF51_UART0_RXD_PIN 24
-#define NRF51_UART0_TXD_PIN 9
-#define NRF51_UART0_RTS_PIN 11
-#define NRF51_UART0_CTS_PIN 21
+/* No UART pins are connected unless you've modified the board. */
+#define NRF51_UART0_RXD_PIN -1 /* 24 */
+#define NRF51_UART0_TXD_PIN -1 /* 9 */
+#define NRF51_UART0_RTS_PIN -1 /* 11 */
+#define NRF51_UART0_CTS_PIN -1 /* 21 */
 
 /*
  * Local Variables:

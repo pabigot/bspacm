@@ -97,6 +97,9 @@ uart_configure (sBSPACMperiphUARTstate * usp,
     return -1;
   }
   devcfgp = (const sBSPACMdeviceNRF51periphUARTdevcfg *)usp->devcfg.ptr;
+  if ((0 > devcfgp->rx_pin) || (0 > devcfgp->tx_pin)) {
+    return -1;
+  }
 
   BSPACM_CORE_DISABLE_INTERRUPT();
   do {
