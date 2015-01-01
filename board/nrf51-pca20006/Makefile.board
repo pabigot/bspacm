@@ -1,0 +1,26 @@
+# BSPACM - Makefile.board for nrf51-pca20006
+#
+# Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to
+# the public domain worldwide. This software is distributed without
+# any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+#
+
+# https://www.nordicsemi.com/eng/Products/nRF51-DK
+
+DEVICE_SOFT_DEVICE ?= blank
+DEVICE_PART = 51822
+DEVICE_VARIANT = xxaa
+DEVICE_PCA = PCA20006
+
+include $(BSPACM_ROOT)/device/nrf51/nrf51422/$(DEVICE_VARIANT)/Makefile.device
+
+# Local Variables:
+# mode:makefile
+# End:
