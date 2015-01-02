@@ -110,22 +110,58 @@ enum {
 };
 
 typedef struct sBSPACMonewireBus {
-  uint8_t pin;
-  uint32_t bit;
+  int8_t dq_pin;
+  int8_t pwr_pin;
+  uint32_t dq_bit;
+  uint32_t pwr_bit;
 } sBSPACMonewireBus;
 
-typedef const sBSPACMonewireBus * hBSPACMonewireBus;
+typedef const struct sBSPACMonewireBus * hBSPACMonewireBus;
 
-inline hBSPACMonewireBus
-hBSPACMonewireConfigureBus (sBSPACMonewireBus * bp, int pin)
+hBSPACMonewireBus
+hBSPACMonewireConfigureBus (sBSPACMonewireBus * bp,
+                            int dq_pin,
+                            int pwr_pin)
 {
   memset(bp, 0, sizeof(*bp));
-  bp->pin = pin;
-  bp->bit = 1ULL << pin;
+  if ((0 > dq_pin) || (31 < dq_pin)) {
+    return NULL;
+  }
+  bp->dq_pin = dq_pin;
+  bp->dq_bit = 1UL << dq_pin;
+  bp->pwr_pin = -1;
+  if ((0 <= pwr_pin) && (pwr_pin <= 31)) {
+    bp->pwr_pin = pwr_pin;
+    bp->pwr_bit = 1UL << pwr_pin;
+  } else if (0 < pwr_pin) {
+    return NULL;
+  }
+
   return bp;
 }
 
 volatile bool cc0_timeout;
+
+/* Configure to output high, so the device can detect the pull low
+ * for reset.  We'll toggle direction with DIR and output with OUT
+ * as necessary; the main thing this does is ensure the input buffer
+ * is connected.  (The pull-up is probably unnecessary assuming you
+ * wired a pull-up resistor to the data line as the datasheet
+ * instructs.) */
+#define ONEWIRE_CNF_ACTIVE ( (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
+                           | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) \
+                           | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) \
+                           | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) \
+                           | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos) \
+                           )
+
+/* Configure to reset state: input, but buffer disconnected */
+#define ONEWIRE_CNF_INACTIVE ( (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
+                             | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) \
+                             | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) \
+                             | (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) \
+                             | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos) \
+                             )
 
 void TIMER0_IRQHandler ()
 {
@@ -160,40 +196,42 @@ delay_us (uint32_t count_us)
   return;
 }
 
-#ifndef ONEWIRE_PIN
-#define ONEWIRE_PIN 29
-#endif /* ONEWIRE_PIN */
+#ifndef ONEWIRE_DQ_PIN
+#define ONEWIRE_DQ_PIN 29
+#endif /* ONEWIRE_DQ_PIN */
+#ifndef ONEWIRE_PWR_PIN
+#define ONEWIRE_PWR_PIN 0
+#endif /* ONEWIRE_PWR_PIN */
 
 int
 iBSPACMonewireReset (hBSPACMonewireBus bus)
 {
   int present;
 
-  /* Configure to output high, so the device can detect the pull low
-   * for reset.  We'll toggle direction with DIR and output with OUT
-   * as necessary; the main thing this does is ensure the input buffer
-   * is connected.  (The pull-up is probably unnecessary assuming you
-   * wired a pull-up resistor to the data line as the datasheet
-   * instructs.) */
-  NRF_GPIO->OUTSET = bus->bit;
-  NRF_GPIO->PIN_CNF[bus->pin] = 0
-    | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
-    | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-    | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
-    | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos)
-    | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
+  /* Set bus high so device can detect start of reset. */
+  NRF_GPIO->OUTSET = bus->dq_bit;
+  NRF_GPIO->PIN_CNF[bus->dq_pin] = ONEWIRE_CNF_ACTIVE;
+
+  if (bus->pwr_bit) {
+    /* In some situations it may be necessary to charge C_PP so the
+     * device detects the falling edge that starts the reset.  The
+     * hold period probably doesn't need to be RSTH, but that value
+     * was confirmed to work when this particular problem was observed
+     * using a different MCU. */
+    delay_us(OWT_RSTH_us);
+  }
 
   /* Hold bus low for OWT_RESET_us */
-  NRF_GPIO->OUTCLR = bus->bit;
+  NRF_GPIO->OUTCLR = bus->dq_bit;
   delay_us(OWT_RSTL_us);
 
   /* Release bus and switch to input until presence pulse should be
    * visible. */
-  NRF_GPIO->DIRCLR = bus->bit;
+  NRF_GPIO->DIRCLR = bus->dq_bit;
   delay_us(OWT_PDHIGH_us);
 
   /* Record presence if bus is low (DS182x is holding it there) */
-  present = !(NRF_GPIO->IN & bus->bit);
+  present = !(NRF_GPIO->IN & bus->dq_bit);
 
   /* Wait for reset cycle to complete */
   delay_us(OWT_RSTH_us - OWT_PDHIGH_us);
@@ -202,16 +240,30 @@ iBSPACMonewireReset (hBSPACMonewireBus bus)
 }
 
 void
+vBSPACMonewireParasitePower (hBSPACMonewireBus bus,
+                             bool powered)
+{
+  if (bus->pwr_bit) {
+    if (powered) {
+      NRF_GPIO->OUTSET = bus->pwr_bit;
+      NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_ACTIVE;
+    } else {
+      NRF_GPIO->OUTCLR = bus->pwr_bit;
+      NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_INACTIVE;
+    }
+  }
+}
+
+void
 vBSPACMonewireShutdown (hBSPACMonewireBus bus)
 {
   /* Configure to power-up defaults */
-  NRF_GPIO->OUTCLR = bus->bit;
-  NRF_GPIO->PIN_CNF[bus->pin] = 0
-    | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
-    | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-    | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
-    | (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos)
-    | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
+  NRF_GPIO->OUTCLR = bus->dq_bit;
+  NRF_GPIO->PIN_CNF[bus->dq_pin] = ONEWIRE_CNF_INACTIVE;
+  if (bus->pwr_bit) {
+    NRF_GPIO->OUTCLR = bus->pwr_bit;
+    NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_INACTIVE;
+  }
 }
 
 void
@@ -221,15 +273,15 @@ vBSPACMonewireWriteByte (hBSPACMonewireBus bus,
   int bp;
 
   for (bp = 0; bp < 8; ++bp) {
-    NRF_GPIO->OUTCLR = bus->bit;
-    NRF_GPIO->DIRSET = bus->bit;
+    NRF_GPIO->OUTCLR = bus->dq_bit;
+    NRF_GPIO->DIRSET = bus->dq_bit;
     if (byte & 0x01) {
       delay_us(OWT_LOW1_us);
-      NRF_GPIO->DIRCLR = bus->bit;
+      NRF_GPIO->DIRCLR = bus->dq_bit;
       delay_us(OWT_SLOT_us - OWT_LOW1_us + OWT_REC_us);
     } else {
       delay_us(OWT_LOW0_us);
-      NRF_GPIO->DIRCLR = bus->bit;
+      NRF_GPIO->DIRCLR = bus->dq_bit;
       delay_us(OWT_SLOT_us - OWT_LOW0_us + OWT_REC_us);
     }
     byte >>= 1;
@@ -241,13 +293,13 @@ iBSPACMonewireReadBit (hBSPACMonewireBus bus)
 {
   int rv;
 
-  NRF_GPIO->OUTCLR = bus->bit;
-  NRF_GPIO->DIRSET = bus->bit;
+  NRF_GPIO->OUTCLR = bus->dq_bit;
+  NRF_GPIO->DIRSET = bus->dq_bit;
   delay_us(OWT_INT_us);
-  NRF_GPIO->DIRCLR = bus->bit;
+  NRF_GPIO->DIRCLR = bus->dq_bit;
   delay_us(OWT_RDV_us);
   vBSPACMledSet(0, 1);
-  rv = !!(NRF_GPIO->IN & bus->bit);
+  rv = !!(NRF_GPIO->IN & bus->dq_bit);
   vBSPACMledSet(0, 0);
   delay_us(OWT_SLOT_us - OWT_RDV_us - OWT_INT_us + OWT_REC_us);
   return rv;
@@ -409,10 +461,10 @@ void main ()
 
   do {
     sBSPACMonewireBus bus_config;
-    hBSPACMonewireBus bus = hBSPACMonewireConfigureBus(&bus_config, ONEWIRE_PIN);
+    hBSPACMonewireBus bus = hBSPACMonewireConfigureBus(&bus_config, ONEWIRE_DQ_PIN, ONEWIRE_PWR_PIN);
 
     if (! iBSPACMonewireReset(bus)) {
-      printf("ERR: No DS18B20 present on P0.%u\n", ONEWIRE_PIN);
+      printf("ERR: No DS18B20 present on P0.%u\n", ONEWIRE_DQ_PIN);
       break;
     }
 
@@ -432,7 +484,6 @@ void main ()
     putchar('\n');
 
     while (0 == iBSPACMonewireRequestTemperature(bus)) {
-      int t_raw;
       if (external_power) {
         /* Wait for read to complete.  Conversion time can be as long as
          * 750 ms if 12-bit resolution is used (this resolution is the
@@ -447,20 +498,17 @@ void main ()
         /* Output high on the parasitic power boost line for 750ms, to
          * power the conversion.  Then switch that signal back to
          * input so the data can flow over the same circuit. */
-#if 0
-        /* Cheating because I know what the zero bits mean. */
-        NRF_GPIO->PIN_CNF[ONEWIRE_POWER_PIN] = (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
-        NRF_GPIO->OUTSET = ONEWIRE_POWER_BIT;
+        vBSPACMonewireParasitePower(bus, true);
         delay_us(750 * 1000UL);
-        NRF_GPIO->OUTCLR = ONEWIRE_POWER_BIT;
-        NRF_GPIO->PIN_CNF[ONEWIRE_POWER_PIN] = (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos);
-#endif
+        vBSPACMonewireParasitePower(bus, false);
       }
+      int t_raw = -1;
       rc = iBSPACMonewireReadTemperature(bus, &t_raw);
       vBSPACMonewireShutdown(bus);
       int t_dCel = (10 * t_raw) / 16;
       int t_dFahr = 320 + (9 * t_dCel) / 5;
       printf("Got %d dCel, %d d[Fahr]\n", t_dCel, t_dFahr);
+      delay_us(1000 * 1000);
     }
 
   } while (0);
