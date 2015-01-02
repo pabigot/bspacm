@@ -37,6 +37,7 @@
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 #include <stdio.h>
+#include <string.h>
 #include <fcntl.h>
 
 /** Structure holding a 1-wire serial number. */
@@ -68,7 +69,7 @@ enum {
    * default 12-bit resolution.
    *
    * For an externally (non-parasite) powered sensor, the caller may
-   * use #iBSPACMonewireReadBit_ni to determine whether the conversion
+   * use #iBSPACMonewireReadBit to determine whether the conversion
    * has completed.  Completion is indicated when the device responds
    * with a 1. */
   BSPACM_ONEWIRE_CMD_CONVERT_T = 0x44,
@@ -108,6 +109,22 @@ enum {
   OWT_SLOT_us = 60,
 };
 
+typedef struct sBSPACMonewireBus {
+  uint8_t pin;
+  uint32_t bit;
+} sBSPACMonewireBus;
+
+typedef const sBSPACMonewireBus * hBSPACMonewireBus;
+
+inline hBSPACMonewireBus
+hBSPACMonewireConfigureBus (sBSPACMonewireBus * bp, int pin)
+{
+  memset(bp, 0, sizeof(*bp));
+  bp->pin = pin;
+  bp->bit = 1ULL << pin;
+  return bp;
+}
+
 volatile bool cc0_timeout;
 
 void TIMER0_IRQHandler ()
@@ -121,10 +138,13 @@ void TIMER0_IRQHandler ()
 void
 delay_us (uint32_t count_us)
 {
+  /* The compare initialization sequence takes about 27 (16 MHz) ticks
+   * using an undivided clock, so if the desired delay is less than 3
+   * us we could miss the compare.  Use the busy-wait delay if a
+   * conservative check for duration fails. */
+  const uint32_t min_wfe_delay_us = 4;
 
-  /* Don't muck with timers if the duration is so short we might miss
-   * the compare value wrap. */
-  if (2 >= count_us) {
+  if (min_wfe_delay_us > count_us) {
     nrf_delay_us(count_us);
     return;
   }
@@ -132,7 +152,7 @@ delay_us (uint32_t count_us)
   NRF_TIMER0->TASKS_CAPTURE[0] = 1;
   NRF_TIMER0->EVENTS_COMPARE[0] = 0;
   NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Msk;
-  NRF_TIMER0->CC[0] += count_us;
+  NRF_TIMER0->CC[0] += count_us << 4;
   while (! cc0_timeout) {
     __WFE();
   }
@@ -143,49 +163,37 @@ delay_us (uint32_t count_us)
 #ifndef ONEWIRE_PIN
 #define ONEWIRE_PIN 29
 #endif /* ONEWIRE_PIN */
-#define ONEWIRE_BIT (1ULL << ONEWIRE_PIN)
-
-inline void
-dirset ()
-{
-  NRF_GPIO->DIRSET = ONEWIRE_BIT;
-}
-
-inline void
-dirclr ()
-{
-  NRF_GPIO->PIN_CNF[ONEWIRE_PIN] = 0
-    | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
-    | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-    | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
-    | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos)
-    | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
-}
 
 int
-iBSPACMonewireReset_ni ()
+iBSPACMonewireReset (hBSPACMonewireBus bus)
 {
   int present;
 
-  /* Non-standard: Hold bus high for OWT_RESET_us.  This provides
-   * enough parasitic power for the device to signal presence.
-   * Without this, effective RSTL duration may exceed the maximum
-   * 960us before device reset. */
-  dirset();
-  NRF_GPIO->OUTSET = ONEWIRE_BIT;
-  delay_us(OWT_RSTH_us);
+  /* Configure to output high, so the device can detect the pull low
+   * for reset.  We'll toggle direction with DIR and output with OUT
+   * as necessary; the main thing this does is ensure the input buffer
+   * is connected.  (The pull-up is probably unnecessary assuming you
+   * wired a pull-up resistor to the data line as the datasheet
+   * instructs.) */
+  NRF_GPIO->OUTSET = bus->bit;
+  NRF_GPIO->PIN_CNF[bus->pin] = 0
+    | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
+    | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+    | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
+    | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos)
+    | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
 
   /* Hold bus low for OWT_RESET_us */
-  NRF_GPIO->OUTCLR = ONEWIRE_BIT;
+  NRF_GPIO->OUTCLR = bus->bit;
   delay_us(OWT_RSTL_us);
 
   /* Release bus and switch to input until presence pulse should be
    * visible. */
-  dirclr();
+  NRF_GPIO->DIRCLR = bus->bit;
   delay_us(OWT_PDHIGH_us);
 
   /* Record presence if bus is low (DS182x is holding it there) */
-  present = !(NRF_GPIO->IN & ONEWIRE_BIT);
+  present = !(NRF_GPIO->IN & bus->bit);
 
   /* Wait for reset cycle to complete */
   delay_us(OWT_RSTH_us - OWT_PDHIGH_us);
@@ -194,27 +202,34 @@ iBSPACMonewireReset_ni ()
 }
 
 void
-vBSPACMonewireShutdown_ni ()
+vBSPACMonewireShutdown (hBSPACMonewireBus bus)
 {
-  NRF_GPIO->OUTCLR = ONEWIRE_BIT;
-  dirclr();
+  /* Configure to power-up defaults */
+  NRF_GPIO->OUTCLR = bus->bit;
+  NRF_GPIO->PIN_CNF[bus->pin] = 0
+    | (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
+    | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+    | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
+    | (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos)
+    | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
 }
 
 void
-vBSPACMonewireWriteByte_ni (int byte)
+vBSPACMonewireWriteByte (hBSPACMonewireBus bus,
+                         uint8_t byte)
 {
   int bp;
 
   for (bp = 0; bp < 8; ++bp) {
-    NRF_GPIO->OUTCLR = ONEWIRE_BIT;
-    dirset();
+    NRF_GPIO->OUTCLR = bus->bit;
+    NRF_GPIO->DIRSET = bus->bit;
     if (byte & 0x01) {
       delay_us(OWT_LOW1_us);
-      dirclr();
+      NRF_GPIO->DIRCLR = bus->bit;
       delay_us(OWT_SLOT_us - OWT_LOW1_us + OWT_REC_us);
     } else {
       delay_us(OWT_LOW0_us);
-      dirclr();
+      NRF_GPIO->DIRCLR = bus->bit;
       delay_us(OWT_SLOT_us - OWT_LOW0_us + OWT_REC_us);
     }
     byte >>= 1;
@@ -222,30 +237,30 @@ vBSPACMonewireWriteByte_ni (int byte)
 }
 
 int
-iBSPACMonewireReadBit_ni ()
+iBSPACMonewireReadBit (hBSPACMonewireBus bus)
 {
   int rv;
 
-  NRF_GPIO->OUTCLR = ONEWIRE_BIT;
-  dirset();
+  NRF_GPIO->OUTCLR = bus->bit;
+  NRF_GPIO->DIRSET = bus->bit;
   delay_us(OWT_INT_us);
-  dirclr();
+  NRF_GPIO->DIRCLR = bus->bit;
   delay_us(OWT_RDV_us);
   vBSPACMledSet(0, 1);
-  rv = !!(NRF_GPIO->IN & ONEWIRE_BIT);
+  rv = !!(NRF_GPIO->IN & bus->bit);
   vBSPACMledSet(0, 0);
   delay_us(OWT_SLOT_us - OWT_RDV_us - OWT_INT_us + OWT_REC_us);
   return rv;
 }
 
 int
-iBSPACMonewireReadByte_ni ()
+iBSPACMonewireReadByte (hBSPACMonewireBus bus)
 {
   int byte = 0;
   int bit = 1;
 
   do {
-    if (iBSPACMonewireReadBit_ni()) {
+    if (iBSPACMonewireReadBit(bus)) {
       byte |= bit;
     }
     bit <<= 1;
@@ -276,19 +291,20 @@ iBSPACMonewireComputeCRC (const unsigned char * romp,
 }
 
 int
-iBSPACMonewireReadSerialNumber (sBSPACMonewireSerialNumber * snp)
+iBSPACMonewireReadSerialNumber (hBSPACMonewireBus bus,
+                                sBSPACMonewireSerialNumber * snp)
 {
   uint8_t rom[8];
   int i;
   int rv = -1;
 
   do {
-    if (! iBSPACMonewireReset_ni()) {
+    if (! iBSPACMonewireReset(bus)) {
       break;
     }
-    vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_READ_ROM);
+    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_ROM);
     for (i = 0; i < sizeof(rom); ++i) {
-      rom[i] = iBSPACMonewireReadByte_ni();
+      rom[i] = iBSPACMonewireReadByte(bus);
     }
     rv = 0;
   } while (0);
@@ -306,41 +322,45 @@ iBSPACMonewireReadSerialNumber (sBSPACMonewireSerialNumber * snp)
 }
 
 int
-iBSPACMonewireRequestTemperature_ni ()
+iBSPACMonewireRequestTemperature (hBSPACMonewireBus bus)
 {
-  if (! iBSPACMonewireReset_ni()) {
+  if (! iBSPACMonewireReset(bus)) {
     return -1;
   }
-  vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_SKIP_ROM);
-  vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_CONVERT_T);
+  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
+  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_CONVERT_T);
   return 0;
 }
 
 int
-iBSPACMonewireReadPowerSupply ()
+iBSPACMonewireReadPowerSupply (hBSPACMonewireBus bus)
 {
   int rv = -1;
 
-  if (iBSPACMonewireReset_ni()) {
-    vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_SKIP_ROM);
-    vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_READ_POWER_SUPPLY);
-    rv = iBSPACMonewireReadBit_ni();
+  if (iBSPACMonewireReset(bus)) {
+    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
+    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_POWER_SUPPLY);
+    rv = iBSPACMonewireReadBit(bus);
   }
   return rv;
 }
 
 int
-iBSPACMonewireReadTemperature_ni (int * temp_xCel)
+iBSPACMonewireReadTemperature (hBSPACMonewireBus bus,
+                               int * temp_xCel)
 {
   int t;
 
-  if (! iBSPACMonewireReset_ni()) {
+  if (! iBSPACMonewireReset(bus)) {
     return -1;
   }
-  vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_SKIP_ROM);
-  vBSPACMonewireWriteByte_ni(BSPACM_ONEWIRE_CMD_READ_SCRATCHPAD);
-  t = iBSPACMonewireReadByte_ni();
-  t |= (iBSPACMonewireReadByte_ni() << 8);
+  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
+  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_SCRATCHPAD);
+  t = iBSPACMonewireReadByte(bus);
+  t |= (iBSPACMonewireReadByte(bus) << 8);
+  if (0 > t) {
+    return -1;
+  }
   *temp_xCel = t;
   return 0;
 }
@@ -369,11 +389,11 @@ void main ()
   printf("Post start stat: HF %08lx LF %08lx src %lu\n",
          NRF_CLOCK->HFCLKSTAT, NRF_CLOCK->LFCLKSTAT, NRF_CLOCK->LFCLKSRC);
 
-  /* Timers only work on HFCLK.  Set up to clock at 1 MHz, using a
-   * 32-bit timer so it's easier to do incremental changes to the
-     compare registers. */
+  /* Timers only work on HFCLK.  Set up to clock at full speed 16 MHz,
+   * using a 32-bit timer so we can handle delays that are much longer
+   * than we really need for this application. */
   NRF_TIMER0->MODE = (TIMER_MODE_MODE_Timer << TIMER_MODE_MODE_Pos);
-  NRF_TIMER0->PRESCALER = 4;    /* /16 */
+  NRF_TIMER0->PRESCALER = 0;
   NRF_TIMER0->BITMODE = (TIMER_BITMODE_BITMODE_32Bit << TIMER_BITMODE_BITMODE_Pos);
 
   /* Enable interrupts (thus event wakeup?) at the peripheral, but not
@@ -387,17 +407,18 @@ void main ()
   NRF_TIMER0->TASKS_CLEAR = 1;
   NRF_TIMER0->TASKS_START = 1;
 
-  dirclr();
-
   do {
-    if (! iBSPACMonewireReset_ni()) {
+    sBSPACMonewireBus bus_config;
+    hBSPACMonewireBus bus = hBSPACMonewireConfigureBus(&bus_config, ONEWIRE_PIN);
+
+    if (! iBSPACMonewireReset(bus)) {
       printf("ERR: No DS18B20 present on P0.%u\n", ONEWIRE_PIN);
       break;
     }
 
     static const char * const supply_type[] = { "parasitic", "external" };
 
-    int external_power = iBSPACMonewireReadPowerSupply();
+    int external_power = iBSPACMonewireReadPowerSupply(bus);
     printf("Power supply: %s\n", supply_type[external_power]);
     if (0 > external_power) {
       printf("ERROR: Device not present?\n");
@@ -405,27 +426,44 @@ void main ()
     }
 
     sBSPACMonewireSerialNumber serial;
-    int rc = iBSPACMonewireReadSerialNumber(&serial);
+    int rc = iBSPACMonewireReadSerialNumber(bus, &serial);
     printf("Serial got %d: ", rc);
     vBSPACMconsoleDisplayOctets(serial.id, sizeof(serial.id));
     putchar('\n');
 
-    while (0 == iBSPACMonewireRequestTemperature_ni()) {
+    while (0 == iBSPACMonewireRequestTemperature(bus)) {
       int t_raw;
-      delay_us(600000UL);
-      while (! iBSPACMonewireReadBit_ni()) {
+      if (external_power) {
+        /* Wait for read to complete.  Conversion time can be as long as
+         * 750 ms if 12-bit resolution is used (this resolution is the
+         * default). Timing will be wrong unless interrupts are enabled
+         * so uptime overflow events can be handled.  Sleep for 600ms,
+         * then test at 10ms intervals until the result is ready. */
+        delay_us(600 * 1000UL);
+        while (! iBSPACMonewireReadBit(bus)) {
+          delay_us(10 * 1000UL);
+        }
+      } else {
+        /* Output high on the parasitic power boost line for 750ms, to
+         * power the conversion.  Then switch that signal back to
+         * input so the data can flow over the same circuit. */
+#if 0
+        /* Cheating because I know what the zero bits mean. */
+        NRF_GPIO->PIN_CNF[ONEWIRE_POWER_PIN] = (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
+        NRF_GPIO->OUTSET = ONEWIRE_POWER_BIT;
+        delay_us(750 * 1000UL);
+        NRF_GPIO->OUTCLR = ONEWIRE_POWER_BIT;
+        NRF_GPIO->PIN_CNF[ONEWIRE_POWER_PIN] = (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos);
+#endif
       }
-      rc = iBSPACMonewireReadTemperature_ni(&t_raw);
+      rc = iBSPACMonewireReadTemperature(bus, &t_raw);
+      vBSPACMonewireShutdown(bus);
       int t_dCel = (10 * t_raw) / 16;
       int t_dFahr = 320 + (9 * t_dCel) / 5;
       printf("Got %d dCel, %d d[Fahr]\n", t_dCel, t_dFahr);
     }
 
-
   } while (0);
-
-  dirset();
-  NRF_GPIO->OUTCLR = ONEWIRE_BIT;
 
   fflush(stdout);
   ioctl(1, BSPACM_IOCTL_FLUSH, O_WRONLY);
