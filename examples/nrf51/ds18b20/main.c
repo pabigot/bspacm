@@ -1,167 +1,28 @@
-/* BSPACM - nRF51 DS18B20 OneWire interface
+/* BSPACM - nRF51 DS18B20 OneWire example
  *
- * Copyright 2012-2015, Peter A. Bigot
+ * Written in 2014 by Peter A. Bigot <http://pabigot.github.io/bspacm/>
  *
- * All rights reserved.
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to
+ * the public domain worldwide. This software is distributed without
+ * any warranty.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * * Redistributions of source code must retain the above copyright notice,
- *   this list of conditions and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
- * * Neither the name of the software nor the names of its contributors may be
- *   used to endorse or promote products derived from this software without
- *   specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 #include <bspacm/utility/led.h>
 #include <bspacm/newlib/ioctl.h>
 #include <bspacm/utility/misc.h>
+#include <bspacm/utility/onewire.h>
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
 
-/** Structure holding a 1-wire serial number. */
-typedef struct sBSPACMonewireSerialNumber {
-  /** The serial number in order MSB to LSB */
-  uint8_t id[6];
-} sBSPACMonewireSerialNumber;
-
-enum {
-  /** Read 64-bit ROM code without using search procedure */
-  BSPACM_ONEWIRE_CMD_READ_ROM = 0x33,
-
-  /** Skip ROM sends the following command to all bus devices */
-  BSPACM_ONEWIRE_CMD_SKIP_ROM = 0xcc,
-
-  /** Determine whether device is parasite-powered or
-   * external-powered */
-  BSPACM_ONEWIRE_CMD_READ_POWER_SUPPLY = 0xb4,
-
-  /** Store data from EEPROM into RAM */
-  BSPACM_ONEWIRE_CMD_RECALL_EE = 0xb8,
-
-  /** Read the RAM area. */
-  BSPACM_ONEWIRE_CMD_READ_SCRATCHPAD = 0xbe,
-
-  /** Initiate a temperature conversion.
-   *
-   * Be aware that temperature conversion can take up to 750ms at the
-   * default 12-bit resolution.
-   *
-   * For an externally (non-parasite) powered sensor, the caller may
-   * use #iBSPACMonewireReadBit to determine whether the conversion
-   * has completed.  Completion is indicated when the device responds
-   * with a 1. */
-  BSPACM_ONEWIRE_CMD_CONVERT_T = 0x44,
-};
-
-/** Define protocol state times in microseconds.
- *
- * @note Since all these times are far less than any sane watchdog
- * interval, and the timing can be important, BSPACM_CORE_DELAY_CYCLES
- * is not used in this module. */
-enum {
-  /** Minimum time to hold bus low to ensure reset */
-  OWT_RSTL_us = 480,
-
-  /** Time to wait for presence detection after reset to quiesce */
-  OWT_RSTH_us = 480,
-
-  /** Delay before presence pulse is known to be valid (15us..60us) */
-  OWT_PDHIGH_us = 60,
-
-  /** Minimum time to hold bus low when writing a zero */
-  OWT_LOW0_us = 60,
-
-  /** Minimum time to hold bus low when writing a one */
-  OWT_LOW1_us = 1,
-
-  /** Recovery delay between write/read transaction cycles */
-  OWT_REC_us = 1,
-
-  /** Time to hold bus low when initiating a read slot */
-  OWT_INT_us = 1,
-
-  /** Point at which read value should be sampled */
-  OWT_RDV_us = 15 - OWT_INT_us,
-
-  /** Minimum duration of a read or write slot */
-  OWT_SLOT_us = 60,
-};
-
-typedef struct sBSPACMonewireBus {
-  int8_t dq_pin;
-  int8_t pwr_pin;
-  uint32_t dq_bit;
-  uint32_t pwr_bit;
-} sBSPACMonewireBus;
-
-typedef const struct sBSPACMonewireBus * hBSPACMonewireBus;
-
-hBSPACMonewireBus
-hBSPACMonewireConfigureBus (sBSPACMonewireBus * bp,
-                            int dq_pin,
-                            int pwr_pin)
-{
-  memset(bp, 0, sizeof(*bp));
-  if ((0 > dq_pin) || (31 < dq_pin)) {
-    return NULL;
-  }
-  bp->dq_pin = dq_pin;
-  bp->dq_bit = 1UL << dq_pin;
-  bp->pwr_pin = -1;
-  if ((0 <= pwr_pin) && (pwr_pin <= 31)) {
-    bp->pwr_pin = pwr_pin;
-    bp->pwr_bit = 1UL << pwr_pin;
-  } else if (0 < pwr_pin) {
-    return NULL;
-  }
-
-  return bp;
-}
-
 volatile bool cc0_timeout;
-
-/* Configure to output high, so the device can detect the pull low
- * for reset.  We'll toggle direction with DIR and output with OUT
- * as necessary; the main thing this does is ensure the input buffer
- * is connected.  (The pull-up is probably unnecessary assuming you
- * wired a pull-up resistor to the data line as the datasheet
- * instructs.) */
-#define ONEWIRE_CNF_ACTIVE ( (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
-                           | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) \
-                           | (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) \
-                           | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) \
-                           | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos) \
-                           )
-
-/* Configure to reset state: input, but buffer disconnected */
-#define ONEWIRE_CNF_INACTIVE ( (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
-                             | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) \
-                             | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) \
-                             | (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) \
-                             | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos) \
-                             )
 
 void TIMER0_IRQHandler ()
 {
@@ -202,220 +63,6 @@ delay_us (uint32_t count_us)
 #ifndef ONEWIRE_PWR_PIN
 #define ONEWIRE_PWR_PIN 0
 #endif /* ONEWIRE_PWR_PIN */
-
-int
-iBSPACMonewireReset (hBSPACMonewireBus bus)
-{
-  int present;
-
-  /* Set bus high so device can detect start of reset. */
-  NRF_GPIO->OUTSET = bus->dq_bit;
-  NRF_GPIO->PIN_CNF[bus->dq_pin] = ONEWIRE_CNF_ACTIVE;
-
-  if (bus->pwr_bit) {
-    /* In some situations it may be necessary to charge C_PP so the
-     * device detects the falling edge that starts the reset.  The
-     * hold period probably doesn't need to be RSTH, but that value
-     * was confirmed to work when this particular problem was observed
-     * using a different MCU. */
-    delay_us(OWT_RSTH_us);
-  }
-
-  /* Hold bus low for OWT_RESET_us */
-  NRF_GPIO->OUTCLR = bus->dq_bit;
-  delay_us(OWT_RSTL_us);
-
-  /* Release bus and switch to input until presence pulse should be
-   * visible. */
-  NRF_GPIO->DIRCLR = bus->dq_bit;
-  delay_us(OWT_PDHIGH_us);
-
-  /* Record presence if bus is low (DS182x is holding it there) */
-  present = !(NRF_GPIO->IN & bus->dq_bit);
-
-  /* Wait for reset cycle to complete */
-  delay_us(OWT_RSTH_us - OWT_PDHIGH_us);
-
-  return present;
-}
-
-void
-vBSPACMonewireParasitePower (hBSPACMonewireBus bus,
-                             bool powered)
-{
-  if (bus->pwr_bit) {
-    if (powered) {
-      NRF_GPIO->OUTSET = bus->pwr_bit;
-      NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_ACTIVE;
-    } else {
-      NRF_GPIO->OUTCLR = bus->pwr_bit;
-      NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_INACTIVE;
-    }
-  }
-}
-
-void
-vBSPACMonewireShutdown (hBSPACMonewireBus bus)
-{
-  /* Configure to power-up defaults */
-  NRF_GPIO->OUTCLR = bus->dq_bit;
-  NRF_GPIO->PIN_CNF[bus->dq_pin] = ONEWIRE_CNF_INACTIVE;
-  if (bus->pwr_bit) {
-    NRF_GPIO->OUTCLR = bus->pwr_bit;
-    NRF_GPIO->PIN_CNF[bus->pwr_pin] = ONEWIRE_CNF_INACTIVE;
-  }
-}
-
-void
-vBSPACMonewireWriteByte (hBSPACMonewireBus bus,
-                         uint8_t byte)
-{
-  int bp;
-
-  for (bp = 0; bp < 8; ++bp) {
-    NRF_GPIO->OUTCLR = bus->dq_bit;
-    NRF_GPIO->DIRSET = bus->dq_bit;
-    if (byte & 0x01) {
-      delay_us(OWT_LOW1_us);
-      NRF_GPIO->DIRCLR = bus->dq_bit;
-      delay_us(OWT_SLOT_us - OWT_LOW1_us + OWT_REC_us);
-    } else {
-      delay_us(OWT_LOW0_us);
-      NRF_GPIO->DIRCLR = bus->dq_bit;
-      delay_us(OWT_SLOT_us - OWT_LOW0_us + OWT_REC_us);
-    }
-    byte >>= 1;
-  }
-}
-
-int
-iBSPACMonewireReadBit (hBSPACMonewireBus bus)
-{
-  int rv;
-
-  NRF_GPIO->OUTCLR = bus->dq_bit;
-  NRF_GPIO->DIRSET = bus->dq_bit;
-  delay_us(OWT_INT_us);
-  NRF_GPIO->DIRCLR = bus->dq_bit;
-  delay_us(OWT_RDV_us);
-  vBSPACMledSet(0, 1);
-  rv = !!(NRF_GPIO->IN & bus->dq_bit);
-  vBSPACMledSet(0, 0);
-  delay_us(OWT_SLOT_us - OWT_RDV_us - OWT_INT_us + OWT_REC_us);
-  return rv;
-}
-
-int
-iBSPACMonewireReadByte (hBSPACMonewireBus bus)
-{
-  int byte = 0;
-  int bit = 1;
-
-  do {
-    if (iBSPACMonewireReadBit(bus)) {
-      byte |= bit;
-    }
-    bit <<= 1;
-  } while (0x100 != bit);
-  return byte;
-}
-
-int
-iBSPACMonewireComputeCRC (const unsigned char * romp,
-                          int len)
-{
-  static const unsigned char OW_CRC_POLY = 0x8c;
-  unsigned char crc = 0;
-
-  while (0 < len--) {
-    int bi;
-
-    crc ^= *romp++;
-    for (bi = 0; bi < 8; ++bi) {
-      if (crc & 1) {
-        crc = (crc >> 1) ^ OW_CRC_POLY;
-      } else {
-        crc >>= 1;
-      }
-    }
-  }
-  return crc;
-}
-
-int
-iBSPACMonewireReadSerialNumber (hBSPACMonewireBus bus,
-                                sBSPACMonewireSerialNumber * snp)
-{
-  uint8_t rom[8];
-  int i;
-  int rv = -1;
-
-  do {
-    if (! iBSPACMonewireReset(bus)) {
-      break;
-    }
-    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_ROM);
-    for (i = 0; i < sizeof(rom); ++i) {
-      rom[i] = iBSPACMonewireReadByte(bus);
-    }
-    rv = 0;
-  } while (0);
-
-  if (0 == rv) {
-    if (0 != iBSPACMonewireComputeCRC(rom, sizeof(rom))) {
-      rv = -1;
-    } else {
-      for (i = 0; i < sizeof(snp->id); ++i) {
-        snp->id[i] = rom[sizeof(rom) - 2 - i];
-      }
-    }
-  }
-  return rv;
-}
-
-int
-iBSPACMonewireRequestTemperature (hBSPACMonewireBus bus)
-{
-  if (! iBSPACMonewireReset(bus)) {
-    return -1;
-  }
-  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
-  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_CONVERT_T);
-  return 0;
-}
-
-int
-iBSPACMonewireReadPowerSupply (hBSPACMonewireBus bus)
-{
-  int rv = -1;
-
-  if (iBSPACMonewireReset(bus)) {
-    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
-    vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_POWER_SUPPLY);
-    rv = iBSPACMonewireReadBit(bus);
-  }
-  return rv;
-}
-
-int
-iBSPACMonewireReadTemperature (hBSPACMonewireBus bus,
-                               int * temp_xCel)
-{
-  int t;
-
-  if (! iBSPACMonewireReset(bus)) {
-    return -1;
-  }
-  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_SKIP_ROM);
-  vBSPACMonewireWriteByte(bus, BSPACM_ONEWIRE_CMD_READ_SCRATCHPAD);
-  t = iBSPACMonewireReadByte(bus);
-  t |= (iBSPACMonewireReadByte(bus) << 8);
-  if (0 > t) {
-    return -1;
-  }
-  *temp_xCel = t;
-  return 0;
-}
 
 void main ()
 {
@@ -502,12 +149,14 @@ void main ()
         delay_us(750 * 1000UL);
         vBSPACMonewireParasitePower(bus, false);
       }
-      int t_raw = -1;
-      rc = iBSPACMonewireReadTemperature(bus, &t_raw);
+      int16_t t_xCel = -1;
+      rc = iBSPACMonewireReadTemperature(bus, &t_xCel);
       vBSPACMonewireShutdown(bus);
-      int t_dCel = (10 * t_raw) / 16;
-      int t_dFahr = 320 + (9 * t_dCel) / 5;
-      printf("Got %d dCel, %d d[Fahr]\n", t_dCel, t_dFahr);
+      printf("Got %d xCel, %d dCel, %d d[degF], %d dK\n",
+             t_xCel,
+             BSPACM_ONEWIRE_xCel_TO_dCel(t_xCel),
+             BSPACM_ONEWIRE_xCel_TO_ddegF(t_xCel),
+             BSPACM_ONEWIRE_xCel_TO_dK(t_xCel));
       delay_us(1000 * 1000);
     }
 
