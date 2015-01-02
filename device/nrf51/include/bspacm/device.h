@@ -44,7 +44,9 @@
 #error NRF51 device header in non-NRF51 device
 #endif /* BSPACM_DEVICE_SERIES_NRF51 */
 
+/* We need the peripheral structures for inline use in headers, but
+ * try not to contaminate the visible identifiers with everything
+ * that's in nrf51_bitfields.h */
 #include "nrf51.h"
-#include "nrf51_bitfields.h"
 
 #endif /* BSPACM_DEVICE_NRF51_H */

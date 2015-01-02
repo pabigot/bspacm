@@ -22,6 +22,8 @@
 #include <stdio.h>
 #if (BSPACM_DEVICE_SERIES_EFM32 - 0)
 #include <em_system.h>
+#elif (BSPACM_DEVICE_SERIES_NRF51 - 0)
+#include "nrf51_bitfields.h"
 #endif /* BSPACM_DEVICE_SERIES_EFM32 */
 
 void dumpMemory (const uint8_t * dp,
