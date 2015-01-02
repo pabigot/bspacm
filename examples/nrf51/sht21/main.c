@@ -15,12 +15,13 @@
 #include <bspacm/utility/led.h>
 #include <bspacm/newlib/ioctl.h>
 #include <bspacm/utility/misc.h>
+#include <bspacm/utility/hires.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <inttypes.h>
 #include <string.h>
-#include "nrf_delay.h"
+#include "nrf51_bitfields.h"
 
 #ifndef PIN_SDA
 #if (BSPACM_BOARD_NRF51_PCA10028 - 0)
@@ -249,7 +250,7 @@ int twi_bus_clear (const twi_periphs_type * tpp)
   NRF_GPIO->PIN_CNF[pin_sda] = pin_cnf;
   NRF_GPIO->OUTSET = bits;
   tpp->twi->ENABLE = 0;
-  nrf_delay_us(2 * half_cycle_us);
+  vBSPACMhiresSleep_us(2 * half_cycle_us);
   cleared = (bits == (bits & NRF_GPIO->IN));
 
   if (! cleared) {
@@ -259,9 +260,9 @@ int twi_bus_clear (const twi_periphs_type * tpp)
     int cycles = 18;
     while (0 < cycles--) {
       NRF_GPIO->OUTCLR = bit_scl;
-      nrf_delay_us(half_cycle_us);
+      vBSPACMhiresSleep_us(half_cycle_us);
       NRF_GPIO->OUTSET = bit_scl;
-      nrf_delay_us(half_cycle_us);
+      vBSPACMhiresSleep_us(half_cycle_us);
     }
     cleared = (bits == (bits & NRF_GPIO->IN));
   }
@@ -354,7 +355,7 @@ int twi_pan56_reset (const twi_periphs_type * tpp)
   ((twi_periphs_type*)tpp)->pan56_loop_limit = 0;
   tpp->twi->ENABLE = (TWI_ENABLE_ENABLE_Disabled << TWI_ENABLE_ENABLE_Pos);
   tpp->twi->POWER = 0;
-  nrf_delay_us(5);
+  vBSPACMhiresSleep_us(5);
   tpp->twi->POWER = 1;
   rv = twi_initialize(tpp, pin_scl, pin_sda, frequency);
   if (0 == rv) {
@@ -427,7 +428,7 @@ int twi_read (const twi_periphs_type * tpp,
      *
      * Delay RESUME for a least two TWI clock periods after RXD read
      * to ensure clock-stretched ACK completes.  100 kHz = 20us, 400 kHz = 5us. */
-    nrf_delay_us(20);
+    vBSPACMhiresSleep_us(20);
 #endif /* ENABLE_PAN_56 */
     tpp->twi->TASKS_RESUME = 1;
   }
@@ -683,6 +684,11 @@ void main ()
 
   printf("SHT21: Connect SDA to P0.%u, SCL to P0.%u\n",
          PIN_SDA, PIN_SCL);
+
+  /* High-resolution clock for microsecond-resolution sleeps */
+  int rc = iBSPACMhiresInitialize(1000U * 1000U);
+  (void)rc;
+  vBSPACMhiresSetEnabled(true);
 
   /* LFCLK starts as the RC oscillator.  Start the crystal . */
   NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
