@@ -32,6 +32,7 @@
  */
 
 #include <bspacm/utility/onewire.h>
+#include <bspacm/utility/hires.h>
 #include "nrf_gpio.h"
 #include <string.h>
 
@@ -55,9 +56,6 @@
                              | (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) \
                              | (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos) \
                              )
-
-/* TODO: Temporary hack */
-extern void delay_us (uint32_t count_us);
 
 hBSPACMonewireBus
 hBSPACMonewireConfigureBus (sBSPACMonewireBus * bp,
@@ -99,23 +97,23 @@ iBSPACMonewireReset (hBSPACMonewireBus bus)
      * power-on reset.  The hold period probably doesn't need to be as
      * long as RSTH, but that value was confirmed to work when this
      * particular problem was observed using a different MCU. */
-    delay_us(BSPACM_ONEWIRE_T_RSTH_us);
+    vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_RSTH_us);
   }
 
   /* Hold bus low for T_RESET us */
   NRF_GPIO->OUTCLR = bus->dq_bit;
-  delay_us(BSPACM_ONEWIRE_T_RSTL_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_RSTL_us);
 
   /* Release bus and switch to input until presence pulse should be
    * visible. */
   NRF_GPIO->DIRCLR = bus->dq_bit;
-  delay_us(BSPACM_ONEWIRE_T_PDHIGH_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_PDHIGH_us);
 
   /* Record presence if bus is low (DS182x is holding it there) */
   present = !(NRF_GPIO->IN & bus->dq_bit);
 
   /* Wait for reset cycle to complete */
-  delay_us(BSPACM_ONEWIRE_T_RSTH_us - BSPACM_ONEWIRE_T_PDHIGH_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_RSTH_us - BSPACM_ONEWIRE_T_PDHIGH_us);
 
   return present;
 }
@@ -157,13 +155,13 @@ vBSPACMonewireWriteByte (hBSPACMonewireBus bus,
     NRF_GPIO->OUTCLR = bus->dq_bit;
     NRF_GPIO->DIRSET = bus->dq_bit;
     if (byte & 0x01) {
-      delay_us(BSPACM_ONEWIRE_T_LOW1_us);
+      vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_LOW1_us);
       NRF_GPIO->DIRCLR = bus->dq_bit;
-      delay_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_LOW1_us + BSPACM_ONEWIRE_T_REC_us);
+      vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_LOW1_us + BSPACM_ONEWIRE_T_REC_us);
     } else {
-      delay_us(BSPACM_ONEWIRE_T_LOW0_us);
+      vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_LOW0_us);
       NRF_GPIO->DIRCLR = bus->dq_bit;
-      delay_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_LOW0_us + BSPACM_ONEWIRE_T_REC_us);
+      vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_LOW0_us + BSPACM_ONEWIRE_T_REC_us);
     }
     byte >>= 1;
   }
@@ -176,11 +174,11 @@ iBSPACMonewireReadBit (hBSPACMonewireBus bus)
 
   NRF_GPIO->OUTCLR = bus->dq_bit;
   NRF_GPIO->DIRSET = bus->dq_bit;
-  delay_us(BSPACM_ONEWIRE_T_INT_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_INT_us);
   NRF_GPIO->DIRCLR = bus->dq_bit;
-  delay_us(BSPACM_ONEWIRE_T_RDV_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_RDV_us);
   rv = !!(NRF_GPIO->IN & bus->dq_bit);
-  delay_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_RDV_us - BSPACM_ONEWIRE_T_INT_us + BSPACM_ONEWIRE_T_REC_us);
+  vBSPACMhiresSleep_us(BSPACM_ONEWIRE_T_SLOT_us - BSPACM_ONEWIRE_T_RDV_us - BSPACM_ONEWIRE_T_INT_us + BSPACM_ONEWIRE_T_REC_us);
   return rv;
 }
 
