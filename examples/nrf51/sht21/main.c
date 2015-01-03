@@ -601,7 +601,7 @@ void main ()
 {
   twi_periphs_type tp;
   vBSPACMledConfigure();
-  BSPACM_CORE_ENABLE_INTERRUPT();
+  vBSPACMuptimeStart();
 
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
@@ -609,26 +609,27 @@ void main ()
   printf("SHT21: Connect SDA to P0.%u, SCL to P0.%u\n",
          PIN_SDA, PIN_SCL);
 
-  /* High-resolution clock for microsecond-resolution sleeps */
-  int rc = iBSPACMhiresInitialize(1000U * 1000U);
-  (void)rc;
-  vBSPACMhiresSetEnabled(true);
-
-#if ! (EXCLUDE_DIE_TEMP - 0)
-  {
-    bool dtok = bBSPACMdietempInitialize();
-    printf("Die temperature enabled: expect %s results\n", dtok ? "good" : "BAD");
-  }
-#endif /* EXCLUDE_DIE_TEMP */
-
-  vBSPACMuptimeStart();
-
   do {
     alarm_stage alarm_stages[4];
     alarm_stage * asp;
     unsigned int remaining_delay;
     uint8_t buf[16];
     int rc;
+
+    /* High-resolution clock for microsecond-resolution sleeps. */
+    if (0 != iBSPACMhiresInitialize(1000U * 1000U)) {
+      printf("ERR: Failed to initialize high-resolution timer\n");
+      break;
+    }
+    (void)iBSPACMhiresSetEnabled(true);
+
+#if ! (EXCLUDE_DIE_TEMP - 0)
+    /* Die temperature depends on HFCLK for accuracy. */
+    {
+      bool dtok = bBSPACMdietempInitialize();
+      printf("Die temperature enabled: expect %s results\n", dtok ? "good" : "BAD");
+    }
+#endif /* EXCLUDE_DIE_TEMP */
 
     /* Now configure TWI (I2C) for a SHT21 */
     memset(&tp, 0, sizeof(tp));

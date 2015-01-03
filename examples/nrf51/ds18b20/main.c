@@ -30,24 +30,27 @@
 
 void main ()
 {
-  int rc;
-
   vBSPACMledConfigure();
-  BSPACM_CORE_ENABLE_INTERRUPT();
 
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
 
-  /* Configure high-resolution timer at 1 MHz */
-  rc = iBSPACMhiresInitialize(1000U * 1000U);
-  printf("Hires initialize got %d, divides %u\n", rc, 1U << BSPACM_HIRES_TIMER->PRESCALER);
-  printf("1 hrt = %u hfclk = %u ns\n", uiBSPACMhiresConvert_hrt_hfclk(1), uiBSPACMhiresConvert_hrt_us(1000));
-  printf("128 us = %u hrt\n", uiBSPACMhiresConvert_us_hrt(128));
-  vBSPACMhiresSetEnabled(true);
-
   do {
     sBSPACMonewireBus bus_config;
     hBSPACMonewireBus bus = hBSPACMonewireConfigureBus(&bus_config, ONEWIRE_DQ_PIN, ONEWIRE_PWR_PIN);
+    int rc;
+
+    /* Configure high-resolution timer at 1 MHz */
+    rc = iBSPACMhiresInitialize(1000U * 1000U);
+    if (0 != rc) {
+      printf("ERR: Failed to initialize high-resolution clock\n");
+      break;
+    }
+    printf("Hires divsor is %u\n", 1U << BSPACM_HIRES_TIMER->PRESCALER);
+    printf("1 hrt = %u hfclk = %u ns\n", uiBSPACMhiresConvert_hrt_hfclk(1), uiBSPACMhiresConvert_hrt_us(1000));
+    printf("128 us = %u hrt\n", uiBSPACMhiresConvert_us_hrt(128));
+    (void)iBSPACMhiresSetEnabled(true);
+
 
     if (! iBSPACMonewireReset(bus)) {
       printf("ERR: No DS18B20 present on P0.%u\n", ONEWIRE_DQ_PIN);
@@ -64,7 +67,7 @@ void main ()
     }
 
     sBSPACMonewireSerialNumber serial;
-    int rc = iBSPACMonewireReadSerialNumber(bus, &serial);
+    rc = iBSPACMonewireReadSerialNumber(bus, &serial);
     printf("Serial got %d: ", rc);
     vBSPACMconsoleDisplayOctets(serial.id, sizeof(serial.id));
     putchar('\n');

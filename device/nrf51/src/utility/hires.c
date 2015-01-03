@@ -47,6 +47,9 @@
 #error Unrecognized high-resolution timer
 #endif /* BSPACM_HIRES_TIMER_BASE */
 
+static bool hires_initialized;
+static bool hires_enabled;
+
 static volatile bool cc0_timeout;
 
 void BSPACM_HIRES_TIMER_IRQHandler ()
@@ -95,12 +98,23 @@ iBSPACMhiresInitialize (unsigned int freq_Hz)
   BSPACM_HIRES_TIMER->BITMODE = (TIMER_BITMODE_BITMODE_16Bit << TIMER_BITMODE_BITMODE_Pos);
 #endif /* BSPACM_HIRES_TIMER_BASE */
 
+  hires_initialized = true;
   return 0;
 }
 
-void
-vBSPACMhiresSetEnabled (bool enabled)
+bool
+bBSPACMhiresEnabled (void)
 {
+  return hires_enabled;
+}
+
+int
+iBSPACMhiresSetEnabled (bool enabled)
+{
+  bool in_enabled = hires_enabled;
+  if (! hires_initialized) {
+    return -1;
+  }
   if (enabled) {
     /* Enable interrupts (thus event wakeup?) at the peripheral, but not
      * at the NVIC */
@@ -118,11 +132,18 @@ vBSPACMhiresSetEnabled (bool enabled)
     BSPACM_HIRES_TIMER->INTENCLR = ~0;
     NVIC_ClearPendingIRQ(BSPACM_HIRES_TIMER_IRQn);
   }
+  hires_enabled = enabled;
+  return in_enabled;
 }
 
 void
 vBSPACMhiresSleep_us (unsigned long count_us)
 {
+  while (! hires_enabled) {
+    /* If you get here, you forgot to start or re-enable the high
+     * resolution timer. */
+  }
+
   /* The optimized compare initialization sequence takes about 27 (16
    * MHz) ticks, or a little under 2 us.  If the delay period isn't at
    * least 5 us and doesn't require at least two tick increments, we
@@ -132,6 +153,7 @@ vBSPACMhiresSleep_us (unsigned long count_us)
   const unsigned long min_wfe_delay_us = 5;
   const unsigned long min_wfe_delay_hrt = 2;
   unsigned int count_hrt = uiBSPACMhiresConvert_us_hrt(count_us);
+
   if ((min_wfe_delay_us > count_us)
       || (min_wfe_delay_hrt > count_hrt)) {
 
@@ -142,6 +164,7 @@ vBSPACMhiresSleep_us (unsigned long count_us)
     }
     return;
   }
+
   cc0_timeout = false;
   BSPACM_HIRES_TIMER->TASKS_CAPTURE[0] = 1;
   BSPACM_HIRES_TIMER->EVENTS_COMPARE[0] = 0;

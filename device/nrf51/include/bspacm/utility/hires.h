@@ -96,11 +96,20 @@ extern "C" {
 int
 iBSPACMhiresInitialize (unsigned int freq_Hz);
 
+/** Return @c true if and only if the high resolution timer has been
+ * initialized and is currently enabled. */
+bool
+bBSPACMhiresEnabled (void);
+
 /** Enable or disable the high-resolution timer.
  *
- * @param enabled if true, enable the timer; if false, disable it. */
-void
-vBSPACMhiresSetEnabled (bool enabled);
+ * @param enabled if true, enable the timer; if false, disable it.
+ *
+ * @return -1 if the high-resolution timer has not been initialized,
+ * otherwise the value of bBSPACMhiresEnabled() at the time of the
+ * call. */
+int
+iBSPACMhiresSetEnabled (bool enabled);
 
 /** Convert from ticks of the 16 MHz core system clock to ticks of
  * #BSPACM_HIRES_TIMER */
@@ -166,6 +175,10 @@ uiBSPACMhiresConvert_hrt_us (unsigned int dur_hrt)
  * TIMER0, the timer has only 16 bits and will overflow at
  * divisor*4.096 ms.  This means the maximum delay for a 1 MHz timer
  * is 65.535 ms.
+ *
+ * @warning If you invoke this when bBSPACMhiresEnabled() returns
+ * false it will hang.  This is a bigger clue that your program is
+ * incorrect than any other reasonable behavior.
  *
  * @warning Do not invoke this from first-level interrupt handlers.
  * Even if PAN #6 is fixed in your hardware, you may be overwriting
