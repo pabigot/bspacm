@@ -17,6 +17,7 @@
 #include <bspacm/utility/misc.h>
 #include <bspacm/utility/hires.h>
 #include <bspacm/utility/uptime.h>
+#include <bspacm/periph/dietemp.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -534,30 +535,7 @@ int show_results (const alarm_stage * asp)
 
 #if ! (EXCLUDE_DIE_TEMP - 0)
   {
-    NRF_TEMP->EVENTS_DATARDY = 0;
-    NRF_TEMP->TASKS_START = 1;
-    while (! NRF_TEMP->EVENTS_DATARDY) {
-    }
-    NRF_TEMP->EVENTS_DATARDY = 0;
-
-    /* PAN-29: STOP task clears TEMP register */
-    uint32_t dt_raw = NRF_TEMP->TEMP;
-
-    /* PAN-30: TEMP module analog front end does not power down when
-     * DATARDY event occurs */
-    NRF_TEMP->TASKS_STOP = 1;
-
-    /* PAN-28: Negative measured values are not represented correctly.
-     * Sign extension does not go higher than bit 9.
-     *
-     * Value is 10-bit 2's complement.  Convert to 32-bit 2's
-     * complement. */
-    const uint32_t sign_bit = 0x0200;
-    if (dt_raw & sign_bit) {
-      dt_raw |= ~(sign_bit - 1);
-    }
-
-    int dt_cCel = 25 * (int)(int32_t)dt_raw;
+    int dt_cCel = iBSPACMdietemp_cCel();
     int dt_cFahr = (3200 + (9 * dt_cCel) / 5);
     printf("\tT[die]: %d cCel ; %d c[Fahr]\n", dt_cCel, dt_cFahr);
   }
@@ -636,12 +614,14 @@ void main ()
   (void)rc;
   vBSPACMhiresSetEnabled(true);
 
-  vBSPACMuptimeStart();
+#if ! (EXCLUDE_DIE_TEMP - 0)
+  {
+    bool dtok = bBSPACMdietempInitialize();
+    printf("Die temperature enabled: expect %s results\n", dtok ? "good" : "BAD");
+  }
+#endif /* EXCLUDE_DIE_TEMP */
 
-  /* PAN-31: Temperature offset value has to be manually loaded.
-   * Address is 0x4000C504, the word before TEMP.  The struct does
-   * not have a field for this. */
-  ((__O uint32_t *)&NRF_TEMP->TEMP)[-1] = 0;
+  vBSPACMuptimeStart();
 
   do {
     alarm_stage alarm_stages[4];

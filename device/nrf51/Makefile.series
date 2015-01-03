@@ -103,6 +103,7 @@ $(BOARD_LIBVENDOR_A): $(wildcard $(NRF51_SDK_ROOT)/components/drivers_nrf/hal/*.
 
 # These sources are not customizable
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/uart_.c
+BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/periph/dietemp.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility/onewire.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility/hires.c
 BOARD_LIBBSPACM_SRC += $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/src/utility/uptime.c
