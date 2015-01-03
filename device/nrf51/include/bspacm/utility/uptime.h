@@ -99,6 +99,40 @@ extern "C" {
  * bBSPACMuptimeSleep() to actually sleep. */
 #define BSPACM_UPTIME_SLEEP_MINIMUM 2
 
+/** Convert a time from microseconds to uptime ticks, rounding up. */
+inline
+unsigned int
+uiBSPACMuptimeConvert_us_utt (unsigned int dur_us)
+{
+  const unsigned int us_per_s = 1000000U;
+  return (dur_us * BSPACM_UPTIME_Hz + us_per_s - 1) / us_per_s;
+}
+
+/** Convert a time from milliseconds to uptime ticks, rounding up. */
+inline
+unsigned int
+uiBSPACMuptimeConvert_ms_utt (unsigned int dur_ms)
+{
+  const unsigned int ms_per_s = 1000U;
+  return (dur_ms * BSPACM_UPTIME_Hz + ms_per_s - 1) / ms_per_s;
+}
+
+/** Convert a time from uptime ticks to microseconds, rounding up. */
+inline
+unsigned int
+uiBSPACMuptimeConvert_utt_us (unsigned int dur_utt)
+{
+  return ((1000000ULL * dur_utt) + BSPACM_UPTIME_Hz - 1) / BSPACM_UPTIME_Hz;
+}
+
+/** Convert a time from uptime ticks to milliseconds, rounding up. */
+inline
+unsigned int
+uiBSPACMuptimeConvert_utt_ms (unsigned int dur_utt)
+{
+  return ((1000ULL * dur_utt) + BSPACM_UPTIME_Hz - 1) / BSPACM_UPTIME_Hz;
+}
+
 /* Forward declaration */
 struct sBSPACMuptimeAlarm;
 
