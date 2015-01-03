@@ -105,8 +105,8 @@ vBSPACMhiresSetEnabled (bool enabled);
 /** Convert from ticks of the 16 MHz core system clock to ticks of
  * #BSPACM_HIRES_TIMER */
 inline
-unsigned long
-ulBSPACMhiresConvert_hfclk_hrt (unsigned long dur_hfclk)
+unsigned int
+uiBSPACMhiresConvert_hfclk_hrt (unsigned int dur_hfclk)
 {
   return dur_hfclk >> BSPACM_HIRES_TIMER->PRESCALER;
 }
@@ -114,24 +114,24 @@ ulBSPACMhiresConvert_hfclk_hrt (unsigned long dur_hfclk)
 /** Convert from ticks of #BSPACM_HIRES_TIMER to ticks of the 16 MHz
  * core system clock. */
 inline
-unsigned long
-ulBSPACMhiresConvert_hrt_hfclk (unsigned long dur_hrt)
+unsigned int
+uiBSPACMhiresConvert_hrt_hfclk (unsigned int dur_hrt)
 {
   return dur_hrt << BSPACM_HIRES_TIMER->PRESCALER;
 }
 
 /** Convert from microseconds to ticks of the 16 MHz core system clock. */
 inline
-unsigned long
-ulBSPACMhiresConvert_us_hfclk (unsigned long dur_us)
+unsigned int
+uiBSPACMhiresConvert_us_hfclk (unsigned int dur_us)
 {
   return dur_us << 4;
 }
 
 /** Convert from microseconds to ticks of #BSPACM_HIRES_TIMER. */
 inline
-unsigned long
-ulBSPACMhiresConvert_us_hrt (unsigned long dur_us)
+unsigned int
+uiBSPACMhiresConvert_us_hrt (unsigned int dur_us)
 {
   int shift = 4 - (int)BSPACM_HIRES_TIMER->PRESCALER;
   if (0 < shift) {
@@ -142,8 +142,8 @@ ulBSPACMhiresConvert_us_hrt (unsigned long dur_us)
 
 /** Convert from ticks of #BSPACM_HIRES_TIMER to microseconds. */
 inline
-unsigned long
-ulBSPACMhiresConvert_hrt_us (unsigned long dur_hrt)
+unsigned int
+uiBSPACMhiresConvert_hrt_us (unsigned int dur_hrt)
 {
   int shift = 4 - (int)BSPACM_HIRES_TIMER->PRESCALER;
   if (0 < shift) {

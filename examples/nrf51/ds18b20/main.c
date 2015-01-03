@@ -41,8 +41,8 @@ void main ()
   /* Configure high-resolution timer at 1 MHz */
   rc = iBSPACMhiresInitialize(1000U * 1000U);
   printf("Hires initialize got %d, divides %u\n", rc, 1U << BSPACM_HIRES_TIMER->PRESCALER);
-  printf("1 hrt = %lu hfclk = %lu ns\n", ulBSPACMhiresConvert_hrt_hfclk(1), ulBSPACMhiresConvert_hrt_us(1000));
-  printf("128 us = %lu hrt\n", ulBSPACMhiresConvert_us_hrt(128));
+  printf("1 hrt = %u hfclk = %u ns\n", uiBSPACMhiresConvert_hrt_hfclk(1), uiBSPACMhiresConvert_hrt_us(1000));
+  printf("128 us = %u hrt\n", uiBSPACMhiresConvert_us_hrt(128));
   vBSPACMhiresSetEnabled(true);
 
   do {

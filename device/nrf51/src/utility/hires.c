@@ -131,7 +131,7 @@ vBSPACMhiresSleep_us (unsigned long count_us)
    * gcc, didn't you?) */
   const unsigned long min_wfe_delay_us = 5;
   const unsigned long min_wfe_delay_hrt = 2;
-  unsigned long count_hrt = ulBSPACMhiresConvert_us_hrt(count_us);
+  unsigned int count_hrt = uiBSPACMhiresConvert_us_hrt(count_us);
   if ((min_wfe_delay_us > count_us)
       || (min_wfe_delay_hrt > count_hrt)) {
 
