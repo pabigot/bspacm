@@ -77,8 +77,8 @@ iBSPACMhiresInitialize (unsigned int freq_Hz)
 
   /* High-resolution timer uses the high-frequency clock (go figure).
    * Start it if nobody's done so already. */
-  if ((CLOCK_HFCLKSTAT_STATE_Running << CLOCK_HFCLKSTAT_STATE_Pos)
-      != (CLOCK_HFCLKSTAT_STATE_Msk & NRF_CLOCK->HFCLKSTAT)) {
+  if ((CLOCK_HFCLKSTAT_SRC_Xtal << CLOCK_HFCLKSTAT_SRC_Pos)
+      != (CLOCK_HFCLKSTAT_SRC_Msk & NRF_CLOCK->HFCLKSTAT)) {
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_HFCLKSTART = 1;
     while (! NRF_CLOCK->EVENTS_HFCLKSTARTED) {
