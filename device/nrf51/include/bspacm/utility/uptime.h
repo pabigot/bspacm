@@ -95,6 +95,10 @@ extern "C" {
 /** The frequency of the BSPACM_UPTIME_RTC peripheral in Hz. */
 #define BSPACM_UPTIME_Hz 32768U
 
+/** The minimum duration in uptime ticks that will cause
+ * bBSPACMuptimeSleep() to actually sleep. */
+#define BSPACM_UPTIME_SLEEP_MINIMUM 2
+
 /* Forward declaration */
 struct sBSPACMuptimeAlarm;
 
@@ -228,6 +232,29 @@ uiBSPACMuptime ()
 /** Configure and enable the uptime clock. */
 void
 vBSPACMuptimeStart ();
+
+/** Function to cancel any in-progress bBSPACMuptimeSleep().
+ *
+ * This may be called from interrupt handlers to force an early wakeup
+ * when a situation requires the application to react early. */
+void
+vBSPACMuptimeSleepCancel (void);
+
+/** Function to sleep for a given duration.
+ *
+ * This allows sleeps up to 512 s (24 bits of a 32 KiHz timer), much
+ * longer than vBSPACMhiresSleep_us().
+ *
+ * @param duration_utt duration of the sleep, in #BSPACM_UPTIME_Hz
+ * ticks.  Values are taken modulo 2^24.  Values less than
+ * #BSPACM_UPTIME_SLEEP_MINIMUM cause immediate return @c true.
+ *
+ * @return @c true if the sleep ran to completion or was shorter than
+ * #BSPACM_UPTIME_SLEEP_MINIMUM; @c false if
+ * vBSPACMuptimeSleepCancel() was invoked during an interrupt handler
+ * to force an early wakeup. */
+bool
+bBSPACMuptimeSleep (unsigned int duration_utt);
 
 #ifdef __cplusplus
 }

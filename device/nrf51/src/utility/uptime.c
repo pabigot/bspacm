@@ -46,6 +46,11 @@
 #error Unrecognized uptime RTC
 #endif /* BSPACM_UPTIME_RTC_BASE */
 
+#define RTC_COUNTER_BITS 24
+#define RTC_COUNTER_MASK ((1U << RTC_COUNTER_BITS) - 1)
+#define SLEEP_CCIDX 0
+#define SLEEP_COMPARE_BIT (RTC_INTENSET_COMPARE0_Enabled << (SLEEP_CCIDX + RTC_INTENSET_COMPARE0_Pos))
+
 sBSPACMuptimeState xBSPACMuptimeState_;
 
 int
@@ -58,7 +63,8 @@ iBSPACMuptimeAlarmSet (int ccidx,
 
   BSPACM_CORE_DISABLE_INTERRUPT();
   do {
-    if ((1 > ccidx)
+    if ((0 > ccidx)
+        || (SLEEP_CCIDX == ccidx)
         || (BSPACM_UPTIME_CC_COUNT <= ccidx)
         || (NULL != xBSPACMuptimeState_.alarm[ccidx])
         || (NULL == ap)) {
@@ -141,6 +147,40 @@ vBSPACMuptimeStart ()
   BSPACM_UPTIME_RTC->TASKS_START = 1;
 }
 
+static volatile bool sleep_aborted;
+static volatile bool sleep_wakeup;
+
+void
+vBSPACMuptimeSleepCancel (void)
+{
+  sleep_aborted = true;
+}
+
+bool
+bBSPACMuptimeSleep (unsigned int duration_utt)
+{
+  /* Mask off the bits that aren't supported by the counter, so we
+   * check for "now" using the value the peripheral will use. */
+  duration_utt &= RTC_COUNTER_MASK;
+  if (BSPACM_UPTIME_SLEEP_MINIMUM > duration_utt) {
+    return true;
+  }
+
+  /* We are expecting the following instructions up through INTENSET
+   * take less than BSPACM_UPTIME_SLEEP_MINIMUM-1 uptime clock
+   * ticks. */
+  BSPACM_UPTIME_RTC->CC[SLEEP_CCIDX] = BSPACM_UPTIME_RTC->COUNTER + duration_utt;
+  BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX] = 0;
+  sleep_aborted = sleep_wakeup = false;
+  BSPACM_UPTIME_RTC->INTENSET = SLEEP_COMPARE_BIT;
+  while (! (sleep_wakeup || sleep_aborted)) {
+    __WFE();
+  }
+  BSPACM_UPTIME_RTC->INTENCLR = SLEEP_COMPARE_BIT;
+  BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX] = 0;
+  return sleep_wakeup;
+}
+
 void
 BSPACM_UPTIME_RTC_IRQHandler ()
 {
@@ -148,6 +188,11 @@ BSPACM_UPTIME_RTC_IRQHandler ()
   if (BSPACM_UPTIME_RTC->EVENTS_OVRFLW) {
     BSPACM_UPTIME_RTC->EVENTS_OVRFLW = 0;
     ++xBSPACMuptimeState_.overflows;
+  }
+  if (BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX]) {
+    BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX] = 0;
+    sleep_wakeup = true;
+    BSPACM_UPTIME_RTC->INTENCLR = SLEEP_COMPARE_BIT;
   }
   for (ccidx = 0; ccidx < BSPACM_UPTIME_CC_COUNT; ++ccidx) {
     if (BSPACM_UPTIME_RTC->EVENTS_COMPARE[ccidx]) {
