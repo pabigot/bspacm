@@ -197,6 +197,9 @@ typedef struct sBSPACMuptimeState {
 
   /** Pointer to alarms that fire from the uptime clock. */
   hBSPACMuptimeAlarm volatile alarm[BSPACM_UPTIME_CC_COUNT];
+
+  /** True iff the timer has been initialized and is running */
+  bool enabled;
 } sBSPACMuptimeState;
 
 /** @cond DOXYGEN_EXCLUDE */
@@ -216,7 +219,9 @@ extern sBSPACMuptimeState xBSPACMuptimeState_;
  *
  * @param ap a pointer to the alarm structure
  *
- * @return 0 if successfully scheduled, or a negative error code. */
+ * @return 0 if successfully scheduled, or a negative error code.
+ * Attempting to schedule an alarm on an unstarted/disabled clock is
+ * an error. */
 int
 iBSPACMuptimeAlarmSet (int ccidx,
                        unsigned int when_utt,
@@ -267,6 +272,15 @@ uiBSPACMuptime ()
 void
 vBSPACMuptimeStart ();
 
+/** Return @c true if and only if the uptime clock has been started
+ * and is still running. */
+inline
+bool
+bBSPACMuptimeEnabled ()
+{
+  return xBSPACMuptimeState_.enabled;
+}
+
 /** Function to cancel any in-progress bBSPACMuptimeSleep().
  *
  * This may be called from interrupt handlers to force an early wakeup
@@ -278,6 +292,10 @@ vBSPACMuptimeSleepCancel (void);
  *
  * This allows sleeps up to 512 s (24 bits of a 32 KiHz timer), much
  * longer than vBSPACMhiresSleep_us().
+ *
+ * @warning If this function is invoked while bBSPACMuptimeEnabled()
+ * returns false, it will hang.  This is a bigger clue that your
+ * program is incorrect than any other reasonable behavior.
  *
  * @param duration_utt duration of the sleep, in #BSPACM_UPTIME_Hz
  * ticks.  Values are taken modulo 2^24.  Values less than

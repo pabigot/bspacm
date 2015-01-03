@@ -61,6 +61,9 @@ iBSPACMuptimeAlarmSet (int ccidx,
   BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
   int rv = -1;
 
+  if (! bBSPACMuptimeEnabled()) {
+    return -1;
+  }
   BSPACM_CORE_DISABLE_INTERRUPT();
   do {
     if ((0 > ccidx)
@@ -145,6 +148,7 @@ vBSPACMuptimeStart ()
 
   /* And start the clock */
   BSPACM_UPTIME_RTC->TASKS_START = 1;
+  xBSPACMuptimeState_.enabled = true;
 }
 
 static volatile bool sleep_aborted;
@@ -159,6 +163,10 @@ vBSPACMuptimeSleepCancel (void)
 bool
 bBSPACMuptimeSleep (unsigned int duration_utt)
 {
+  while (! bBSPACMuptimeEnabled()) {
+    /* If you get here you forgot to start or re-enable the clock. */
+  }
+
   /* Mask off the bits that aren't supported by the counter, so we
    * check for "now" using the value the peripheral will use. */
   duration_utt &= RTC_COUNTER_MASK;
