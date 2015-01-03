@@ -16,6 +16,7 @@
 #include <bspacm/newlib/ioctl.h>
 #include <bspacm/utility/misc.h>
 #include <bspacm/utility/hires.h>
+#include <bspacm/utility/uptime.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -54,103 +55,6 @@
 
 #define SHT21_TRIGGER_T_HM (SHT21_CMDBIT_BASE | SHT21_CMDBIT_TEMP | SHT21_CMDBIT_READ)
 #define SHT21_TRIGGER_RH_HM (SHT21_CMDBIT_BASE | SHT21_CMDBIT_RH | SHT21_CMDBIT_READ)
-
-const uint32_t UPTIME_Hz = 32768;
-NRF_RTC_Type * const uptime_rtc = NRF_RTC0;
-const int uptime_ccidx_1Hz = 0;
-const int uptime_ccidx_alarm = 1;
-
-volatile uint32_t uptime_s;
-volatile uint32_t rtc_overflows;
-uint32_t rtc_now_last_overflow_;
-
-inline uint64_t rtc_now ()
-{
-  uint32_t prev_ofl;
-  uint32_t ctr24;
-
-  /* Get a consistent pair of counter and overflow values */
-  do {
-    prev_ofl = rtc_now_last_overflow_;
-    ctr24 = uptime_rtc->COUNTER;
-    rtc_now_last_overflow_ = rtc_overflows;
-  } while (prev_ofl != rtc_now_last_overflow_);
-  return (((uint64_t)rtc_now_last_overflow_) << 24) | ctr24;
-}
-
-typedef struct uptime_alarm {
-  struct uptime_alarm * next;   /** Next alarm to schedule, or NULL to terminate alarm sequence */
-  uint32_t delta_utt;           /** Ticks until next alarm should go off */
-} uptime_alarm;
-
-/** Pending alarm */
-const uptime_alarm * volatile uptime_alarms_;
-/** Last alarm to fire */
-const uptime_alarm * volatile uptime_alarm_;
-
-/* Return a pointer to the last alarm that fired, or a null pointer if
- * no alarm has fired since the last call to this function. */
-const uptime_alarm * uptime_get_alarm ()
-{
-  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
-  const uptime_alarm * rv;
-
-  BSPACM_CORE_DISABLE_INTERRUPT();
-  do {
-    rv = uptime_alarm_;
-    uptime_alarm_ = NULL;
-  } while (0);
-  BSPACM_CORE_REENABLE_INTERRUPT(istate);
-  return rv;
-}
-
-/** Register a sequence of alarms with the first scheduled at @p
- * alarm_time_utt.  Pass a null pointer as @p sp to disable existing
- * alarms. */
-void uptime_set_alarms (const uptime_alarm * sp,
-                        uint32_t alarm_time_utt)
-{
-  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
-
-  BSPACM_CORE_DISABLE_INTERRUPT();
-  do {
-    uptime_alarms_ = sp;
-    if (uptime_alarms_) {
-      uptime_rtc->CC[uptime_ccidx_alarm] = alarm_time_utt;
-      uptime_rtc->INTENSET = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
-    } else {
-      uptime_rtc->INTENCLR = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
-    }
-    uptime_alarm_ = NULL;
-    uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm] = 0;
-  } while (0);
-  BSPACM_CORE_REENABLE_INTERRUPT(istate);
-}
-
-void RTC0_IRQHandler ()
-{
-  if (uptime_rtc->EVENTS_OVRFLW) {
-    uptime_rtc->EVENTS_OVRFLW = 0;
-    ++rtc_overflows;
-  }
-  if (uptime_rtc->EVENTS_COMPARE[uptime_ccidx_1Hz]) {
-    uptime_rtc->EVENTS_COMPARE[uptime_ccidx_1Hz] = 0;
-    uptime_rtc->CC[uptime_ccidx_1Hz] += UPTIME_Hz;
-    ++uptime_s;
-  }
-  if (uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm]) {
-    uptime_rtc->EVENTS_COMPARE[uptime_ccidx_alarm] = 0;
-    if (uptime_alarms_) {
-      uptime_alarm_ = uptime_alarms_;
-      uptime_alarms_ = uptime_alarm_->next;
-    }
-    if (uptime_alarm_) {
-      uptime_rtc->CC[uptime_ccidx_alarm] += uptime_alarm_->delta_utt;
-    } else {
-      uptime_rtc->INTENCLR = (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_alarm));
-    }
-  }
-}
 
 /* TWI bus error returns are negative integers with absolute value
  * taken from the ERRORSRC register augmented by several flags for
@@ -559,10 +463,27 @@ int sht21_read_eic (const twi_periphs_type * tp,
   return rc;
 }
 
+/* What we're doing here is using the generic uptime infrastructure to
+ * wake up once per second and start a sequence of timed I2C
+ * operations: first intiate a temperature read; after 100 ms read the
+ * temperature and initiate a humidity read; after 50 ms read the
+ * humidity and display the results; then start again in 850 ms. */
+
 typedef struct alarm_stage {
-  uptime_alarm alarm;
-  int (* callback) (struct alarm_stage * asp);
+  /* The alarm that fired to initiate this stage */
+  sBSPACMuptimeAlarm alarm;
+  /* The function that implements this stage */
+  int (* callback) (const struct alarm_stage * asp);
+  /* The next stage to run */
+  struct alarm_stage * next;
+  /* I2C parameters required to execute the stage */
   const twi_periphs_type * tpp;
+  /* The raw uptime clock value when this stage fired */
+  uint32_t last_fired;
+  /* The delta from #last_fired to when the next stage should be
+   * started */
+  uint16_t delta_utt;
+  /* An I2C command parameter used within the stage */
   uint8_t cmd;
 } alarm_stage;
 
@@ -585,15 +506,15 @@ uint16_t rh_raw;
  */
 #define BSP430_SENSORS_SHT21_TEMPERATURE_RAW_TO_cK(raw_) (22630U + (unsigned int)((17572UL * (raw_)) >> 16))
 
-int show_results (alarm_stage * asp)
+int show_results (const alarm_stage * asp)
 {
-  uint64_t now = rtc_now();
+  uint64_t now = ullBSPACMuptime();
   uint64_t elapsed = now - epoch;
 
   (void)asp;
 
   printf("%lu: %u wakeups ; uptime %lu ; awake %lu ; duty %lu [ppth]\n",
-         (unsigned long)(now / UPTIME_Hz),
+         (unsigned long)(now / BSPACM_UPTIME_Hz),
          wake_count,
          (unsigned long)elapsed,
          (unsigned long)wake_total,
@@ -645,7 +566,7 @@ int show_results (alarm_stage * asp)
   return 0;
 }
 
-int send_read (alarm_stage * asp)
+int send_read (const alarm_stage * asp)
 {
   uint8_t cmd = (asp->cmd
                  | SHT21_CMDBIT_BASE
@@ -654,7 +575,7 @@ int send_read (alarm_stage * asp)
   return twi_write(asp->tpp, &cmd, sizeof(cmd));
 }
 
-int read_result (alarm_stage * asp)
+int read_result (const alarm_stage * asp)
 {
   uint8_t data[3];
   int rc;
@@ -671,6 +592,31 @@ int read_result (alarm_stage * asp)
     }
   }
   return rc;
+}
+
+static const alarm_stage * volatile pending_stage_;
+void stage_flih (int ccidx,
+                 hBSPACMuptimeAlarm ap)
+{
+  alarm_stage * asp = (alarm_stage *)ap;
+  asp->last_fired = BSPACM_UPTIME_RTC->CC[ccidx];
+  pending_stage_ = asp;
+}
+
+/* Return a pointer to the next stage to execute, or a null pointer if
+ * no stage has become due since the last call to this function. */
+const alarm_stage * get_pending_stage ()
+{
+  BSPACM_CORE_SAVED_INTERRUPT_STATE(istate);
+  const alarm_stage * rv;
+
+  BSPACM_CORE_DISABLE_INTERRUPT();
+  do {
+    rv = pending_stage_;
+    pending_stage_ = NULL;
+  } while (0);
+  BSPACM_CORE_REENABLE_INTERRUPT(istate);
+  return rv;
 }
 
 void main ()
@@ -690,33 +636,7 @@ void main ()
   (void)rc;
   vBSPACMhiresSetEnabled(true);
 
-  /* LFCLK starts as the RC oscillator.  Start the crystal . */
-  NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
-  NRF_CLOCK->LFCLKSRC = (CLOCK_LFCLKSTAT_SRC_Xtal << CLOCK_LFCLKSTAT_SRC_Pos);
-  NRF_CLOCK->TASKS_LFCLKSTART = 1;
-  while (! NRF_CLOCK->EVENTS_LFCLKSTARTED) {
-  }
-
-  /* RTC only works on LFCLK.  Set one up using a zero prescaler (runs
-   * at 32 KiHz).  Clock's 24 bits, so track overflow in a 32-bit
-   * external counter, giving us 56 bits for the full clock (span 2^41
-   * seconds, roughly 69 thousand years).
-   *
-   * Also enable a comparison that will fire an event at 1Hz.  We
-   * don't use these events in PPI so don't enable event routing; we
-   * do need the interrupts, though. */
-  uptime_rtc->TASKS_STOP = 1;
-  uptime_rtc->TASKS_CLEAR = 1;
-  uptime_rtc->EVTENCLR = ~0;
-  uptime_rtc->INTENCLR = ~0;
-  uptime_rtc->CC[uptime_ccidx_1Hz] = UPTIME_Hz;
-  uptime_rtc->INTENSET = ((RTC_INTENSET_OVRFLW_Enabled << RTC_INTENSET_OVRFLW_Pos)
-                          | (RTC_INTENSET_COMPARE0_Enabled << (RTC_INTENSET_COMPARE0_Pos + uptime_ccidx_1Hz)));
-
-  NVIC_ClearPendingIRQ(RTC0_IRQn);
-  NVIC_EnableIRQ(RTC0_IRQn);
-
-  uptime_rtc->TASKS_START = 1;
+  vBSPACMuptimeStart();
 
   /* PAN-31: Temperature offset value has to be manually loaded.
    * Address is 0x4000C504, the word before TEMP.  The struct does
@@ -764,56 +684,60 @@ void main ()
       }
     }
 
-    remaining_delay = UPTIME_Hz;
+    remaining_delay = BSPACM_UPTIME_Hz;
 
     memset(alarm_stages, 0, sizeof(alarm_stages));
 
     asp = alarm_stages;
 
+    asp->alarm.callback_flih = stage_flih;
     asp->callback = send_read;
     asp->tpp = &tp;
     asp->cmd = SHT21_CMDBIT_TEMP;
     /* High-resolution temperature read takes up to 85 ms.  Sleep for
      * 100 ms. */
-    asp->alarm.delta_utt = UPTIME_Hz / 10;
-    remaining_delay -= asp->alarm.delta_utt;
-    asp->alarm.next = &asp[1].alarm;
+    asp->delta_utt = BSPACM_UPTIME_Hz / 10;
+    remaining_delay -= asp->delta_utt;
+    asp->next = asp+1;
     ++asp;
 
+    asp->alarm.callback_flih = stage_flih;
     asp->callback = read_result;
     asp->tpp = &tp;
     asp->cmd = SHT21_CMDBIT_RH;
     /* High-resolution humidity read takes up to 29 ms.  Sleep for 50
      * ms. */
-    asp->alarm.delta_utt = UPTIME_Hz / 20;
-    remaining_delay -= asp->alarm.delta_utt;
-    asp->alarm.next = &asp[1].alarm;
+    asp->delta_utt = BSPACM_UPTIME_Hz / 20;
+    remaining_delay -= asp->delta_utt;
+    asp->next = asp+1;
     ++asp;
 
+    asp->alarm.callback_flih = stage_flih;
     asp->callback = read_result;
     asp->tpp = &tp;
-    asp->alarm.delta_utt = remaining_delay;
-    remaining_delay -= asp->alarm.delta_utt;
-    asp->alarm.next = &alarm_stages[0].alarm;
+    asp->delta_utt = remaining_delay;
+    asp->next = alarm_stages;
 
-    uint64_t last_wake = rtc_now();
+    uint64_t last_wake = ullBSPACMuptime();
     wake_count = 0;
     epoch = last_wake;
-    uptime_set_alarms(asp->alarm.next, UPTIME_Hz);
+    rc = iBSPACMuptimeAlarmSet(1, BSPACM_UPTIME_Hz, &alarm_stages[0].alarm);
     while (1) {
-      const uptime_alarm * ap;
-      while (! ((ap = uptime_get_alarm()))) {
-        uint64_t last_sleep = rtc_now();
+      const alarm_stage * asp;
+      while (! ((asp = get_pending_stage()))) {
+        uint64_t last_sleep = ullBSPACMuptime();
         wake_total += (last_sleep - last_wake);
         __WFE();
-        last_wake = rtc_now();
+        last_wake = ullBSPACMuptime();
         /* NB: We can get wakeups not only because the alarm is ready
          * but also because of UART interrupts as the transmit buffer
          * drains. */
         ++wake_count;
       }
-      asp = (alarm_stage *)ap;
       asp->callback(asp);
+      if (asp->next) {
+        rc = iBSPACMuptimeAlarmSet(1, asp->last_fired + asp->delta_utt, &asp->next->alarm);
+      }
     }
   } while (0);
   fflush(stdout);
