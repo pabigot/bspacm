@@ -1,28 +1,50 @@
-The nRF51 series varies along several dimensions:
+The nRF51 series varies along several dimensions that do not map well to
+the BSPACM series/line/device taxonomy.
 
-* Device part number.  The options are:
+* Device part number (DEVICE_PART).  The options are:
 
-    + nRF51422: top of model line, incorporates ANT, BlueTooth, 2.4GHz
-      proprietary radio
+    + 51422 : nRF51422, top of model line incorporates ANT, BlueTooth,
+      2.4GHz proprietary radio
 
-    + nRF51822: All capabilities of nRF51422 except ANT
+    + 51822 : nRF51822, All capabilities of nRF51422 except ANT
 
-  There are no configuration differences based on device part number., so
-  this variation point is reduced to a single option nRF51422 as the
-  BSPACM line.
+  There are no configuration differences based on device part number.
+  For completeness, boards define DEVICE_PART to 51422 or 51822, but
+  this is not currently reflected in the series/line/device hierarchy.
+  All nRF51 device parts are reduced to nRF51 as the BSPACM line.
 
-* Memory footprints.  The options are:
+  DEVICE_PART is defined in Makefile.board and cannot be overridden.
 
-    + xxaa: 256 KiBy flash, 16 KiBy RAM
-    + xxab: 128 KiBy flash, 16 KiBy RAM
-    + xxac: 256 KiBy flash, 32 KiBy RAM
+* Device variant (DEVICE_VARIANT).  This is denoted by the second pair
+  of characters in the package/variant identifier and indicates memory
+  layout.  The options are:
 
-  This variation is used for the BSPACM device layer.
+    + xxaa : 256 KiBy flash, 16 KiBy RAM
+    + xxab : 128 KiBy flash, 16 KiBy RAM
+    + xxac : 256 KiBy flash, 32 KiBy RAM
 
-* Selection of a "soft-device" providing capabilities such as BlueTooth
-  Smart through a SVC (formerly SWI) supervisor call interface.  The set
-  of options are: blank, s110, s120, s130, s210, s310
+  DEVICE_VARIANT is defined in Makefile.board and cannot be overridden.
+
+* Application soft device (DEVICE_SD).  Selection of a "soft-device"
+  providing capabilities such as BlueTooth Smart through a SVC (formerly
+  SWI) supervisor call interface.  The set of options are:
+
+    + blank : no soft device installed
+    + s110 : Bluetooth 4.1, peripheral+broadcaster role
+    + s120 : Bluetooth 4.1, 8x central+observer, peripheral+broadcaster roles
+    + s130 : Bluetooth 4.1, 3x central, 1 ea peripheral+observer+broadcaster
+    + s210 : ANT soft device (51422 only)
+    + s310 : ANT soft device (51422 only)
 
   Assuming memory requirements are met, the same device can accept any
-  of the the soft devices; the impact is on the memory map used by the
+  of the soft devices; the impact is on the memory map used by the
   linker.
+
+  DEVICE_SD is defaulted in Makefile.series but values in application
+  Makefile supersede this default.
+
+* Printed Circuit Assembly (DEVICE_PCA).  This is the identifier used to
+  distinguish evaluation boards.  "nrf-$(DEVICE_PCA)" is the BSPACM
+  board identifier.
+
+  DEVICE_PCA is defined in Makefile.board and cannot be overridden.

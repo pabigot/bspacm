@@ -14,12 +14,11 @@
 
 # https://www.nordicsemi.com/eng/Products/nRF51-DK
 
-DEVICE_SOFT_DEVICE ?= blank
-DEVICE_PART = 51422
-DEVICE_VARIANT = xxac
-DEVICE_PCA = PCA10028
+override DEVICE_PART := 51422
+override DEVICE_VARIANT := xxac
+override DEVICE_PCA := PCA10028
 
-include $(BSPACM_ROOT)/device/nrf51/nrf51422/$(DEVICE_VARIANT)/Makefile.device
+include $(BSPACM_ROOT)/device/nrf51/Makefile.series
 
 # Local Variables:
 # mode:makefile

@@ -28,26 +28,27 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+
 # BSPACM (http://github.com/pabigot/bspacm) vendor series build support:
 # Nordic Semiconductor ASA nRF51 ANT/Bluetooth Smart multiprotocol SoC
 DEVICE_SERIES=nrf51
 
+# BSPACM requires that this be defined, but it's not a meaningful
+# distinguisher for this device series.
+DEVICE=nRF$(DEVICE_PART)
+
 # Get upper-case versions of some identifiers
 DEVICE_SERIES_UC=$(call uc,$(DEVICE_SERIES))
-
-ifndef DEVICE_LINE
-$(error DEVICE_LINE has not been set: include Makefile.line first)
-endif
 
 # All nRF51 chips are Cortex-M0
 ARM_PROCESSOR=M0
 TARGET_MFLAGS=-mthumb -mcpu=cortex-m0
 
 # Unless told otherwise assume there is no soft device
-NRF51_SOFT_DEVICE ?= blank
+NRF_SOFT_DEVICE ?= blank
 
-# TODO: This will vary based on soft device
-DEVICE_LDSCRIPT_PATH ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(DEVICE_LINE)/$(DEVICE)
+# Variation is by soft device and variant (memory layout)
+DEVICE_LDSCRIPT_PATH ?= $(BSPACM_ROOT)/device/$(DEVICE_SERIES)/$(NRF_SOFT_DEVICE)/$(DEVICE_VARIANT)
 
 # All boards share the same periph config.  Board-specific pin
 # information is included from this file.

@@ -14,12 +14,11 @@
 
 # https://www.nordicsemi.com/eng/Products/Bluetooth-Smart-Bluetooth-low-energy/nRF51822-Evaluation-Kit
 
-DEVICE_SOFT_DEVICE ?= blank
-DEVICE_PART = 51822
-DEVICE_VARIANT = xxaa
-DEVICE_PCA = PCA10000
+override DEVICE_PART := 51822
+override DEVICE_VARIANT := xxaa
+override DEVICE_PCA := PCA10000
 
-include $(BSPACM_ROOT)/device/nrf51/nrf51422/$(DEVICE_VARIANT)/Makefile.device
+include $(BSPACM_ROOT)/device/nrf51/Makefile.series
 
 # Local Variables:
 # mode:makefile
