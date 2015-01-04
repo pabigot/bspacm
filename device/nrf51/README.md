@@ -31,7 +31,11 @@ the BSPACM series/line/device taxonomy.
 
     + blank : no soft device installed
     + s110 : Bluetooth 4.1, peripheral+broadcaster role
+      - s110v6 : Version 5.x and 6.x use 80 KiBy flash
+      - s110v7 : Version 7.x uses 88 KiBy flash
     + s120 : Bluetooth 4.1, 8x central+observer, peripheral+broadcaster roles
+      - s120v1 : Version 1.x uses 96 KiBy flash
+      - s120v2 : Version 2.x uses 116 KiBy flash
     + s130 : Bluetooth 4.1, 3x central, 1 ea peripheral+observer+broadcaster
     + s210 : ANT soft device (51422 only)
     + s310 : ANT soft device (51422 only)
