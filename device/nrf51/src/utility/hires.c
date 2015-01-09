@@ -118,6 +118,7 @@ iBSPACMhiresSetEnabled (bool enabled)
     BSPACM_HIRES_TIMER->INTENCLR = ~0;
     BSPACM_HIRES_TIMER->INTENSET = (TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos);
     NVIC_ClearPendingIRQ(BSPACM_HIRES_TIMER_IRQn);
+    vBSPACMnrf51NVICsetApplicationPriority(BSPACM_HIRES_TIMER_IRQn, true);
     NVIC_EnableIRQ(BSPACM_HIRES_TIMER_IRQn);
 
     /* Clear the counter and start things going */

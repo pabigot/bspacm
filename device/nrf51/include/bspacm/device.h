@@ -60,6 +60,38 @@
 #include "nrf_soc.h"
 #endif /* BSPACM_NRF_USE_SD */
 
+/** Conditionally set priority for non-soft-device interrupts.
+ *
+ * The ARM Cortex-M0 supports four interrupt levels from 0 (highest)
+ * through 3 (lowest), with 0 being the power-up default.
+ *
+ * The Nordic soft device architecture allows applications to use
+ * interrupt levels 1 (high-priority application) and 3 (low-priority
+ * application).  Attempts to enable the soft-device if interrupts at
+ * other priorities are already enabled result in an error
+ * NRF_ERROR_SDM_INCORRECT_INTERRUPT_CONFIGURATION.
+ *
+ * This function can be used wherever interrupts are configured for
+ * peripherals that are not restricted by the soft-device.  It has no
+ * effect when #BSPACM_NRF_USE_SD is false, but assigns a
+ * SD-acceptable priority when #BSPACM_NRF_USE_SD is true.
+ *
+ * @param irqn the IRQ number.
+ * @note @p irqn should reflect a peripheral that is not restricted by
+ * the soft device.  For restricted peripherals you should use
+ * vBSPACMnrf_NVIC_SetPriority().
+ *
+ * @param high if @c true use high priority; if false use low priority. */
+__STATIC_INLINE void
+vBSPACMnrf51NVICsetApplicationPriority (IRQn_Type irqn,
+                                        bool high)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  /* NB: Use non-sd interface for unrestricted peripherals */
+  NVIC_SetPriority(irqn, high ? 1 : 3);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
 /** Soft-device--aware version of NVIC_EnableIRQ */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_EnableIRQ (IRQn_Type irqn)

@@ -165,6 +165,7 @@ uart_configure (sBSPACMperiphUARTstate * usp,
                              | (UART_INTENSET_TXDRDY_Set << UART_INTENSET_TXDRDY_Pos)
                              | (UART_INTENSET_ERROR_Set << UART_INTENSET_ERROR_Pos));
       NVIC_ClearPendingIRQ(UART0_IRQn);
+      vBSPACMnrf51NVICsetApplicationPriority(UART0_IRQn, false);
       NVIC_EnableIRQ(UART0_IRQn);
 
       /* Record that we're allowed to write to TXD. */

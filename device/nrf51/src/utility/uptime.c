@@ -144,6 +144,7 @@ vBSPACMuptimeStart ()
 
   /* Enable the interrupts at the NVIC */
   NVIC_ClearPendingIRQ(BSPACM_UPTIME_RTC_IRQn);
+  vBSPACMnrf51NVICsetApplicationPriority(BSPACM_UPTIME_RTC_IRQn, true);
   NVIC_EnableIRQ(BSPACM_UPTIME_RTC_IRQn);
 
   /* And start the clock */
