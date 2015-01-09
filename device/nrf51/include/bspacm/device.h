@@ -60,7 +60,7 @@
 #include "nrf_soc.h"
 #endif /* BSPACM_NRF_USE_SD */
 
-/** Soft-device aware version of NVIC_EnableIRQ */
+/** Soft-device--aware version of NVIC_EnableIRQ */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_EnableIRQ (IRQn_Type irqn)
 {
@@ -71,7 +71,7 @@ vBSPACMnrf51_NVIC_EnableIRQ (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_DisableIRQ */
+/** Soft-device--aware version of NVIC_DisableIRQ */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_DisableIRQ (IRQn_Type irqn)
 {
@@ -82,7 +82,7 @@ vBSPACMnrf51_NVIC_DisableIRQ (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_GetPendingIRQ */
+/** Soft-device--aware version of NVIC_GetPendingIRQ */
 __STATIC_INLINE uint32_t
 uiBSPACMnrf51_NVIC_GetPendingIRQ (IRQn_Type irqn)
 {
@@ -93,7 +93,7 @@ uiBSPACMnrf51_NVIC_GetPendingIRQ (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_SetPendingIRQ */
+/** Soft-device--aware version of NVIC_SetPendingIRQ */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_SetPendingIRQ (IRQn_Type irqn)
 {
@@ -104,7 +104,7 @@ vBSPACMnrf51_NVIC_SetPendingIRQ (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_ClearPendingIRQ */
+/** Soft-device--aware version of NVIC_ClearPendingIRQ */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_ClearPendingIRQ (IRQn_Type irqn)
 {
@@ -115,7 +115,7 @@ vBSPACMnrf51_NVIC_ClearPendingIRQ (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_SetPriority */
+/** Soft-device--aware version of NVIC_SetPriority */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn,
                                uint32_t priority)
@@ -127,7 +127,7 @@ vBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn,
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_GetPriority */
+/** Soft-device--aware version of NVIC_GetPriority */
 __STATIC_INLINE uint32_t
 uiBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn)
 {
@@ -138,7 +138,7 @@ uiBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn)
 #endif /* BSPACM_NRF_USE_SD */
 }
 
-/** Soft-device aware version of NVIC_SystemReset */
+/** Soft-device--aware version of NVIC_SystemReset */
 __STATIC_INLINE void
 vBSPACMnrf51_NVIC_SystemReset (void)
 {
@@ -146,6 +146,53 @@ vBSPACMnrf51_NVIC_SystemReset (void)
   #error not supported
 #else /* BSPACM_NRF_USE_SD */
   return NVIC_SystemReset();
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device--aware configuration of NRF_PPI->CH */
+__STATIC_INLINE void
+vBSPACMnrf51_PPI_CH (uint8_t channel_num,
+                     const volatile void * evt_endpoint,
+                     const volatile void * task_endpoint)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NRF_PPI->CH[channel_num].EEP = (uintptr_t)evt_endpoint;
+  NRF_PPI->CH[channel_num].TEP = (uintptr_t)task_endpoint;
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device--aware assignment to NRF_PPI->CHENCLR */
+__STATIC_INLINE void
+vBSPACMnrf51_PPI_CHENCLR (uint32_t mask)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NRF_PPI->CHENCLR = mask;
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device--aware assignment to NRF_PPI->CHENSET */
+__STATIC_INLINE void
+vBSPACMnrf51_PPI_CHENSET (uint32_t mask)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NRF_PPI->CHENSET = mask;
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device--aware read of to NRF_PPI->CHEN */
+__STATIC_INLINE uint32_t
+uiBSPACMnrf51_PPI_CHEN ()
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  return NRF_PPI->CHEN;
 #endif /* BSPACM_NRF_USE_SD */
 }
 

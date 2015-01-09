@@ -159,7 +159,7 @@ iBSPACMi2cSetEnabled (hBSPACMi2cBus tpp,
     tpp->twi->FREQUENCY = tpp->frequency;
 
 #if (BSPACM_NRF_APPLY_PAN_36 - 0)
-    NRF_PPI->CHENCLR = PPI_CHENCLR_CH0_Msk << tpp->ppi_chidx;
+    vBSPACMnrf51_PPI_CHENCLR(PPI_CHENCLR_CH0_Msk << tpp->ppi_chidx);
 #endif /* BSPACM_NRF_APPLY_PAN_36 */
     rv = - twi_bus_clear(tpp);
   }
@@ -238,13 +238,12 @@ iBSPACMi2cRead (hBSPACMi2cBus tpp,
  *
  * Select the appropriate mechanism to provide this coordination. */
 #if (BSPACM_NRF_APPLY_PAN_36 - 0)
-  NRF_PPI->CH[tpp->ppi_chidx].EEP = (uintptr_t)&tpp->twi->EVENTS_BB;
   if (1 == len) {
-    NRF_PPI->CH[tpp->ppi_chidx].TEP = (uintptr_t)&tpp->twi->TASKS_STOP;
+    vBSPACMnrf51_PPI_CH(tpp->ppi_chidx, &tpp->twi->EVENTS_BB, &tpp->twi->TASKS_STOP);
   } else {
-    NRF_PPI->CH[tpp->ppi_chidx].TEP = (uintptr_t)&tpp->twi->TASKS_SUSPEND;
+    vBSPACMnrf51_PPI_CH(tpp->ppi_chidx, &tpp->twi->EVENTS_BB, &tpp->twi->TASKS_SUSPEND);
   }
-  NRF_PPI->CHENSET = PPI_CHENSET_CH0_Msk << tpp->ppi_chidx;
+  vBSPACMnrf51_PPI_CHENSET(PPI_CHENSET_CH0_Msk << tpp->ppi_chidx);
 #else /* */
   if (1 == len) {
     tpp->twi->SHORTS = (TWI_SHORTS_BB_STOP_Enabled << TWI_SHORTS_BB_STOP_Pos);
@@ -307,7 +306,7 @@ iBSPACMi2cRead (hBSPACMi2cBus tpp,
   }
 
 #if (BSPACM_NRF_APPLY_PAN_36 - 0)
-  NRF_PPI->CHENCLR = PPI_CHENCLR_CH0_Msk << tpp->ppi_chidx;
+  vBSPACMnrf51_PPI_CHENCLR(PPI_CHENCLR_CH0_Msk << tpp->ppi_chidx);
 #else /* BSPACM_NRF_APPLY_PAN_36 */
   tpp->twi->SHORTS = 0;
 #endif /* BSPACM_NRF_APPLY_PAN_36 */
