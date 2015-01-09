@@ -196,4 +196,18 @@ uiBSPACMnrf51_PPI_CHEN ()
 #endif /* BSPACM_NRF_USE_SD */
 }
 
+/** Soft-device--aware start of HFCLK */
+__STATIC_INLINE void
+vBSPACMnrf51_HFCLKSTART ()
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+  NRF_CLOCK->TASKS_HFCLKSTART = 1;
+  while (! NRF_CLOCK->EVENTS_HFCLKSTARTED) {
+  }
+#endif /* BSPACM_NRF_USE_SD */
+}
+
 #endif /* BSPACM_DEVICE_NRF51_H */

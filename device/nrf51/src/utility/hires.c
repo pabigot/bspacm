@@ -82,10 +82,7 @@ iBSPACMhiresInitialize (unsigned int freq_Hz)
    * Start it if nobody's done so already. */
   if ((CLOCK_HFCLKSTAT_SRC_Xtal << CLOCK_HFCLKSTAT_SRC_Pos)
       != (CLOCK_HFCLKSTAT_SRC_Msk & NRF_CLOCK->HFCLKSTAT)) {
-    NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    NRF_CLOCK->TASKS_HFCLKSTART = 1;
-    while (! NRF_CLOCK->EVENTS_HFCLKSTARTED) {
-    }
+    vBSPACMnrf51_HFCLKSTART();
   }
 
   /* Use a the biggest timer base available.  Pretty feeble except for

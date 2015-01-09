@@ -19,6 +19,10 @@
 #include <fcntl.h>
 #include "nrf_delay.h"
 
+#if (BSPACM_NRF_USE_SD - 0)
+#error Application not updated for soft-device use
+#endif /* BSPACM_NRF_USE_SD */
+
 volatile unsigned int irqs;
 volatile bool do_wake;
 void TIMER0_IRQHandler ()

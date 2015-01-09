@@ -32,10 +32,7 @@ void main ()
   /* TEMP is accurate only if clock source is HFCLK.  This is true and
    * can be confirmed by disabling the conditional startup. */
   if (1) {
-    NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    NRF_CLOCK->TASKS_HFCLKSTART = 1;
-    while (! NRF_CLOCK->EVENTS_HFCLKSTARTED) {
-    }
+    vBSPACMnrf51_HFCLKSTART();
   }
   bool rc = bBSPACMdietempInitialize();
   printf("Die temp initialization: %s\n", rc ? "good" : "BAD");
