@@ -53,10 +53,18 @@
 bool
 bBSPACMdietempInitialize ();
 
+#if (BSPACM_NRF_USE_SD - 0)
+__STATIC_INLINE
+#else /* BSPACM_NRF_USE_SD */
 inline
+#endif /* BSPACM_NRF_USE_SD */
 int
 iBSPACMdietemp_cCel ()
 {
+  int32_t temp_qCel;
+#if (BSPACM_NRF_USE_SD - 0)
+  sd_temp_get(&temp_qCel);
+#else /* BSPACM_NRF_USE_SD */
   NRF_TEMP->EVENTS_DATARDY = 0;
 
   NRF_TEMP->TASKS_START = 1;
@@ -80,10 +88,10 @@ iBSPACMdietemp_cCel ()
   if (temp_raw & sign_bit) {
     temp_raw |= ~(sign_bit - 1);
   }
+  temp_qCel = (int32_t)temp_raw;
+#endif /* BSPACM_NRF_USE_SD */
 
-  int temp_cCel = 25 * (int)(int32_t)temp_raw;
-
-  return temp_cCel;
+  return 25 * (int)temp_qCel;
 }
 
 #endif /* BSPACM_DEVICE_NRF51_INTERNAL_PERIPH_DIETEMP_H */
