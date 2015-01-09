@@ -49,4 +49,104 @@
  * that's in nrf51_bitfields.h */
 #include "nrf51.h"
 
+#ifndef BSPACM_NRF_USE_SD
+/** Define to a true value to use the nRF soft-device wrapper
+ * functions. */
+#define BSPACM_NRF_USE_SD 0
+#endif /* BSPACM_NRF_USE_SD */
+
+#if (BSPACM_NRF_USE_SD - 0)
+/* And of course this pulls in nrf51_bitfields.h, dammit. */
+#include "nrf_soc.h"
+#endif /* BSPACM_NRF_USE_SD */
+
+/** Soft-device aware version of NVIC_EnableIRQ */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_EnableIRQ (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NVIC_EnableIRQ(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_DisableIRQ */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_DisableIRQ (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NVIC_DisableIRQ(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_GetPendingIRQ */
+__STATIC_INLINE uint32_t
+uiBSPACMnrf51_NVIC_GetPendingIRQ (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  return NVIC_GetPendingIRQ(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_SetPendingIRQ */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_SetPendingIRQ (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NVIC_SetPendingIRQ(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_ClearPendingIRQ */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_ClearPendingIRQ (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NVIC_ClearPendingIRQ(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_SetPriority */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn,
+                               uint32_t priority)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  NVIC_SetPriority(irqn, priority);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_GetPriority */
+__STATIC_INLINE uint32_t
+uiBSPACMnrf51_NVIC_SetPriority (IRQn_Type irqn)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  return NVIC_GetPriority(irqn);
+#endif /* BSPACM_NRF_USE_SD */
+}
+
+/** Soft-device aware version of NVIC_SystemReset */
+__STATIC_INLINE void
+vBSPACMnrf51_NVIC_SystemReset (void)
+{
+#if (BSPACM_NRF_USE_SD - 0)
+  #error not supported
+#else /* BSPACM_NRF_USE_SD */
+  return NVIC_SystemReset();
+#endif /* BSPACM_NRF_USE_SD */
+}
+
 #endif /* BSPACM_DEVICE_NRF51_H */

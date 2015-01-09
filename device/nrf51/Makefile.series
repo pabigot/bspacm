@@ -80,6 +80,28 @@ TARGET_CPPFLAGS += -I$(NRF51_SDK_ROOT)/components/drivers_nrf/hal
 # it thinks it is.
 TARGET_CPPFLAGS += -D$(DEVICE_SERIES_UC)
 
+# Use the soft-device API iff there's a non-blank soft device, unless
+# overridden externally.
+ifndef NRF_USE_SD
+ifeq (blank,$(NRF_SOFT_DEVICE))
+NRF_USE_SD = 0
+else # blank NRF_SOFT_DEVICE
+NRF_USE_SD = 1
+endif # NRF_SOFT_DEVICE != blank
+endif # NRF_USE_SD
+TARGET_CPPFLAGS += -DBSPACM_NRF_USE_SD=$(NRF_USE_SD)
+
+ifneq (0,$(NRF_USE_SD))
+# Define to the path holding the headers for the desired soft-device.
+# This is the directory containing nrf_soc.h.  Note that because we
+# distinguish variants of soft devices (e.g. s110v6) the path probably
+# can't be inferred from NRF_SOFT_DEVICE and must be set externally if
+# the default isn't right.  (This is also necessary because Nordic
+# changes the case of API(api) variously with different releases.)
+NRF51_SD_HEADER_PATH ?= /prj/arm/s110-nrf51/API/include
+TARGET_CPPFLAGS += -I$(NRF51_SD_HEADER_PATH)
+endif # NRF_USE_SD
+
 # Special flags needed to interact with JLink
 JLINK_OPTIONS = -device nrf51422 -If SWD
 

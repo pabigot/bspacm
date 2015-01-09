@@ -18,6 +18,10 @@
 #include <fcntl.h>
 #include <inttypes.h>
 
+#if (BSPACM_NRF_USE_SD - 0)
+#error Application does not support soft-device
+#endif /* BSPACM_NRF_USE_SD */
+
 const uint32_t UPTIME_Hz = 32768;
 NRF_RTC_Type * const uptime_rtc = NRF_RTC0;
 const int uptime_ccidx_1Hz = 0;

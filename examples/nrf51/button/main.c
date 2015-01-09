@@ -102,8 +102,8 @@ void main ()
     NRF_GPIOTE->INTENSET = bbit;
   }
   /* Enable the interrupts at the NVIC */
-  NVIC_ClearPendingIRQ(GPIOTE_IRQn);
-  NVIC_EnableIRQ(GPIOTE_IRQn);
+  vBSPACMnrf51_NVIC_ClearPendingIRQ(GPIOTE_IRQn);
+  vBSPACMnrf51_NVIC_EnableIRQ(GPIOTE_IRQn);
 
   while (1) {
     bool fns = bBSPACMuptimeSleep(BSPACM_UPTIME_Hz);

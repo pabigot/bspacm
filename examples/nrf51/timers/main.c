@@ -17,6 +17,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#if (BSPACM_NRF_USE_SD - 0)
+#error Application does not support soft-device
+#endif /* BSPACM_NRF_USE_SD */
+
 volatile unsigned int irqs;
 volatile bool do_wake;
 void TIMER0_IRQHandler ()
