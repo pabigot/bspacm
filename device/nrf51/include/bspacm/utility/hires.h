@@ -111,6 +111,21 @@ bBSPACMhiresEnabled (void);
 int
 iBSPACMhiresSetEnabled (bool enabled);
 
+/** Read the counter of the high-resolution timer.
+ *
+ * @warning When calculating durations, be aware that the timer may
+ * not support a 32-bit counter, resulting in unexpected behavior if
+ * unsigned integer arithmetic involves an underflow or overflow.  You
+ * may get better results by casting operands to @c uint16_t before
+ * subtracting to obtain a duration. */
+inline
+unsigned int
+uiBSPACMhires (void)
+{
+  BSPACM_HIRES_TIMER->TASKS_CAPTURE[0] = 1;
+  return BSPACM_HIRES_TIMER->CC[0];
+}
+
 /** Convert from ticks of the 16 MHz core system clock to ticks of
  * #BSPACM_HIRES_TIMER */
 inline
