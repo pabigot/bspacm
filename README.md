@@ -1,4 +1,4 @@
-Release: 20140523
+Release: 20150113
 
 BSPACM is a build environment and development framework for ARM
 Cortex<sup>&reg;</sup>-M applications.
