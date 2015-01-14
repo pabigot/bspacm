@@ -21,10 +21,12 @@ void main ()
 {
   vBSPACMledConfigure();
 
-  BSPACM_CORE_ENABLE_INTERRUPT();
-
+  setvbuf(stdout, NULL, _IONBF, 0);
   printf("\n" __DATE__ " " __TIME__ "\n");
   printf("System clock %lu Hz\n", SystemCoreClock);
+
+  /* Your application here. */
+
   fflush(stdout);
   ioctl(1, BSPACM_IOCTL_FLUSH, O_WRONLY);
   BSPACM_CORE_DEEP_SLEEP();
