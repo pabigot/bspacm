@@ -15,8 +15,8 @@ Its features include:
 * A common Make-based infrastructure for cross-platform applications;
 
 * Support for several experimenter boards across two vendor lines (two
-  Tiva&trade; C Series launchpads; at least two SiLabs/Energy Micro
-  Gecko STKs);
+  Tiva&trade; C Series launchpads; multiple SiLabs/Energy Micro
+  Gecko STKs); multiple Nordic nRF51 Bluetooth/ANT+ RF SoC solutions
 
 * Leverages:
 
@@ -57,5 +57,5 @@ git:
 or by downloading the master branch via:
 https://github.com/pabigot/bspacm/tarball/master
 
-Copyright 2014, Peter A. Bigot, and licensed under
+Copyright 2014-2015, Peter A. Bigot, and licensed under
 [BSD-3-Clause](http://www.opensource.org/licenses/BSD-3-Clause)

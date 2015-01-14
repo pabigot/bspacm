@@ -46,18 +46,18 @@ BSPACM features:
 <li>A common Make-based infrastructure for cross-platform
 applications;</li>
 
-<li>Support for several experimenter boards across two vendor lines (two
-Tiva&trade; C Series launchpads; four Silicon Labs EFM32&trade; Gecko
-STKs);</li>
+<li>Support for several experimenter boards across multiple vendor
+lines:<ul>
+ <li> two Tiva&trade; C Series launchpads;</li>
+ <li> four Silicon Labs EFM32&trade; Gecko STKs;</li>
+ <li> five Nordic nRF51 series development boards;</li></ul>
 
 <li>Leverages:<ul>
   <li><a
   href="http://www.arm.com/products/processors/cortex-m/cortex-microcontroller-software-interface-standard.php">CMSIS</a>
   for the low-level API across platforms;</li>
-
   <li>Access to vendor-specific libraries and CMSIS device headers for
     full control of specific peripherals;</li>
-
   <li>A higher-level API to abstract the vendor-specific peripherals
     into common capabilities (such as @link bspacm/utility/led.h LED
     control@endlink, @link bspacm/periph/uart.h UARTs@endlink,
