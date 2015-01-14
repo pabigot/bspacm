@@ -1,5 +1,21 @@
 var searchData=
 [
-  ['gpio_2eh',['gpio.h',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html',1,'']]],
-  ['gpio_2eh',['gpio.h',['../efm32_2include_2bspacm_2periph_2gpio_8h.html',1,'']]]
+  ['fbspacmnewlibfdopsdriver',['fBSPACMnewlibFDOPSdriver',['../fdops_8h.html#a4b0d5a724d9cd5e2457995a0a6f6c953',1,'fdops.h']]],
+  ['fbspacmnewlibfdopsdriverconsole',['fBSPACMnewlibFDOPSdriverCONSOLE',['../newlib_2uart_8h.html#a7bbae5fb156a23dc09cc9639426b94a0',1,'uart.h']]],
+  ['fdops_2eh',['fdops.h',['../fdops_8h.html',1,'']]],
+  ['fifo_2eh',['fifo.h',['../fifo_8h.html',1,'']]],
+  ['fifo_5fadjust_5foffset',['FIFO_ADJUST_OFFSET',['../fifo_8h.html#ad5aa192d3b7a536b64073a64a588408d',1,'fifo.h']]],
+  ['fifo_5fdefine_5fallocation',['FIFO_DEFINE_ALLOCATION',['../fifo_8h.html#ac0b054d67fce60479c1b95b71c1b24c0',1,'fifo.h']]],
+  ['fifo_5fempty',['fifo_empty',['../fifo_8h.html#add8d6f1082b214dbeecea9d7af493b28',1,'fifo.h']]],
+  ['fifo_5ffrom_5fallocation',['FIFO_FROM_ALLOCATION',['../fifo_8h.html#aae4ae108da38caa190f3f4a3f6919d5b',1,'fifo.h']]],
+  ['fifo_5ffull',['fifo_full',['../fifo_8h.html#a23af0e1ea95b503003f574932eb2ac71',1,'fifo.h']]],
+  ['fifo_5flength',['fifo_length',['../fifo_8h.html#a1a7b6241711fd37302f6a111e26c7518',1,'fifo.h']]],
+  ['fifo_5fpop_5finto_5fbuffer',['fifo_pop_into_buffer',['../fifo_8h.html#a08874dcb08ebf9feb18024e13c84673f',1,'fifo.h']]],
+  ['fifo_5fpop_5ftail',['fifo_pop_tail',['../fifo_8h.html#a20d249e99d054a22862d14017f35b786',1,'fifo.h']]],
+  ['fifo_5fpush_5fhead',['fifo_push_head',['../fifo_8h.html#a680f08e825bd52bf39572bc8609775af',1,'fifo.h']]],
+  ['fifo_5freset',['fifo_reset',['../fifo_8h.html#ae17298965120bbe67294de80097d502e',1,'fifo.h']]],
+  ['fifo_5fstate',['fifo_state',['../structsBSPACMperiphUARToperations.html#ab66c40c05347b6d3ba4d2356fdc447ec',1,'sBSPACMperiphUARToperations']]],
+  ['flags',['flags',['../structsBSPACMperiphUARTstate.html#a224e5f3ccafad32c9dbfe66160179622',1,'sBSPACMperiphUARTstate']]],
+  ['framework_20architecture',['Framework Architecture',['../framework.html',1,'']]],
+  ['frequency',['frequency',['../structsBSPACMi2cBus.html#a9390e6e71f1f0a370e2dbc70d8f9421a',1,'sBSPACMi2cBus']]]
 ];

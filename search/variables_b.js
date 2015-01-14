@@ -1,13 +1,12 @@
 var searchData=
 [
-  ['rts_5fpinmux',['rts_pinmux',['../structsBSPACMdeviceTM4CperiphUARTdevcfg.html#afa8a93ecc928d7da813de20087f7b7c2',1,'sBSPACMdeviceTM4CperiphUARTdevcfg']]],
-  ['rx_5fbreak_5ferrors',['rx_break_errors',['../structsBSPACMperiphUARTstate.html#a8590883ffe65fcfd277c9d21733e9b34',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5fcount',['rx_count',['../structsBSPACMperiphUARTstate.html#a883e97e892edbde907d1f9fcbaf7d915',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5fdropped_5ferrors',['rx_dropped_errors',['../structsBSPACMperiphUARTstate.html#aba80993ecdf203547ba5c07bc5abdb9a',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5ffifo_5fni_5f',['rx_fifo_ni_',['../structsBSPACMperiphUARTstate.html#ac46274c2ca538cb73af93734acb026a8',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5fframe_5ferrors',['rx_frame_errors',['../structsBSPACMperiphUARTstate.html#a8c941b22a634cb5a2159dc7c983f9468',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5firqn',['rx_irqn',['../structsBSPACMdeviceEFM32periphUARTdevcfg.html#aac37babb305ecbc9a56ce93fa43381e9',1,'sBSPACMdeviceEFM32periphUARTdevcfg']]],
-  ['rx_5foverrun_5ferrors',['rx_overrun_errors',['../structsBSPACMperiphUARTstate.html#ac0be194b76c2af137bd531d6fb822c47',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5fparity_5ferrors',['rx_parity_errors',['../structsBSPACMperiphUARTstate.html#acfa5174529bac9ee91dba500b8bac87f',1,'sBSPACMperiphUARTstate']]],
-  ['rx_5fpinmux',['rx_pinmux',['../structsBSPACMdeviceTM4CperiphUARTdevcfg.html#ad681c868bc0303b0e884862c49727ff9',1,'sBSPACMdeviceTM4CperiphUARTdevcfg::rx_pinmux()'],['../structsBSPACMdeviceEFM32periphXRTdevcfg.html#ab332c791f7883442b4dc5edb11fb479f',1,'sBSPACMdeviceEFM32periphXRTdevcfg::rx_pinmux()']]]
+  ['op_5fclose',['op_close',['../structsBSPACMnewlibFDOPSfileOps.html#a007481b2e85706b9cfd6305faecb31a2',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5ffstat',['op_fstat',['../structsBSPACMnewlibFDOPSfileOps.html#abbf11c87294e61e09e6ed5e439df8a9c',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fioctl',['op_ioctl',['../structsBSPACMnewlibFDOPSfileOps.html#a209faf8574544aeefe430b226cbc7ac2',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fisatty',['op_isatty',['../structsBSPACMnewlibFDOPSfileOps.html#a4c6b34b88e703840006b80e4289c1e46',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5flseek',['op_lseek',['../structsBSPACMnewlibFDOPSfileOps.html#ac1a0284c93d2c49806d67ed20f9263ed',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fread',['op_read',['../structsBSPACMnewlibFDOPSfileOps.html#a8a131b160dc74577d6284281715ca97e',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['op_5fwrite',['op_write',['../structsBSPACMnewlibFDOPSfileOps.html#a3537f2e394507555eb338935967293a7',1,'sBSPACMnewlibFDOPSfileOps']]],
+  ['ops',['ops',['../structsBSPACMnewlibFDOPSfile.html#ae1738ceed2ce17124b8b03a5b5f45ad8',1,'sBSPACMnewlibFDOPSfile::ops()'],['../structsBSPACMperiphUARTstate.html#af41ef178cd99aab5b1c732116baf7332',1,'sBSPACMperiphUARTstate::ops()']]],
+  ['overflows',['overflows',['../structsBSPACMuptimeState.html#a2a8feeae997d18edd0ea6c352a09f956',1,'sBSPACMuptimeState']]]
 ];

@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['nbspacmdevicetm4cperiphgpio',['nBSPACMdeviceTM4CperiphGPIO',['../periphs_8h.html#a333e3d3e5aa54c87fdbc5ca51cdd3388',1,'periphs.h']]],
-  ['nbspacmdevicetm4cperiphi2c',['nBSPACMdeviceTM4CperiphI2C',['../periphs_8h.html#aec3e14b647fe8bcba851f4c5b16252fd',1,'periphs.h']]],
-  ['nbspacmdevicetm4cperiphssi',['nBSPACMdeviceTM4CperiphSSI',['../periphs_8h.html#ac6a832e4c125d3b5f0b361e4480fb162',1,'periphs.h']]],
-  ['nbspacmdevicetm4cperiphtimer',['nBSPACMdeviceTM4CperiphTIMER',['../periphs_8h.html#a98dadf3ab303472bbe8236222d2ae4f9',1,'periphs.h']]],
-  ['nbspacmdevicetm4cperiphuart',['nBSPACMdeviceTM4CperiphUART',['../periphs_8h.html#ac89f5a6354f45f180811355ee0105a58',1,'periphs.h']]],
-  ['nbspacmdevicetm4cperiphwtimer',['nBSPACMdeviceTM4CperiphWTIMER',['../periphs_8h.html#acba5552d584b6d71f87311ce1e959bd9',1,'periphs.h']]],
-  ['nbspacmleds',['nBSPACMleds',['../led_8h.html#a4ccecb84d22d8237adba3929ba9f8174',1,'led.h']]],
-  ['nbspacmnewlibfdopsfile',['nBSPACMnewlibFDOPSfile',['../fdops_8h.html#a4e0662a1864298049e4bd14892a480e9',1,'fdops.h']]]
+  ['last_5foverflows',['last_overflows',['../structsBSPACMuptimeState.html#a085b4a6d59f004ee584608613d85b502',1,'sBSPACMuptimeState']]],
+  ['lfbsel',['lfbsel',['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a3882632fdde4dbe54a808e1ad9dd5812',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg']]],
+  ['location',['location',['../structsBSPACMdeviceEFM32periphXRTdevcfg.html#a7acaabe497ab59d0fe5dc8011c2de603',1,'sBSPACMdeviceEFM32periphXRTdevcfg']]]
 ];

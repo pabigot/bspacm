@@ -1,4 +1,25 @@
 var searchData=
 [
-  ['uibspacmcorebitfrommask',['uiBSPACMcoreBitFromMask',['../core_8h.html#a7645482c1c93f154e1123e8dab961024',1,'core.h']]]
+  ['ibspacmdevicetm4cgpioportshift',['iBSPACMdeviceTM4CgpioPortShift',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#ad43a3fabd2f440771abc79c4457a257b',1,'gpio.h']]],
+  ['ibspacmdevicetm4cgpioporttagfromshift',['iBSPACMdeviceTM4CgpioPortTagFromShift',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#ae6d98ecd145761e88ff30bbb9bb79812',1,'gpio.h']]],
+  ['ibspacmhiresinitialize',['iBSPACMhiresInitialize',['../hires_8h.html#a24e3a9bcac9690495dadf8116b26cd48',1,'hires.h']]],
+  ['ibspacmhiressetenabled',['iBSPACMhiresSetEnabled',['../hires_8h.html#ab975ad7e2b594348986a28d143d3fc83',1,'hires.h']]],
+  ['ibspacmi2cread',['iBSPACMi2cRead',['../twi_8h.html#a3eba501fe82b0774497d978bbf0becc1',1,'twi.h']]],
+  ['ibspacmi2csetenabled',['iBSPACMi2cSetEnabled',['../twi_8h.html#af81c7acb98f2dba56e086ea0ffb0d86c',1,'twi.h']]],
+  ['ibspacmi2cwrite',['iBSPACMi2cWrite',['../twi_8h.html#aa71b0192d209b6c8d541c09cdadd3285',1,'twi.h']]],
+  ['ibspacmonewirecomputecrc',['iBSPACMonewireComputeCRC',['../onewire_8h.html#a3c3610ed30946b7eaefc0959399ca889',1,'onewire.h']]],
+  ['ibspacmonewirereadbit',['iBSPACMonewireReadBit',['../onewire_8h.html#ac4eeed8c1f9b7df6bb3bc7624c2e12aa',1,'onewire.h']]],
+  ['ibspacmonewirereadbyte',['iBSPACMonewireReadByte',['../onewire_8h.html#a31478a356d80c1ee0a7fa60dccde7e34',1,'onewire.h']]],
+  ['ibspacmonewirereadpowersupply',['iBSPACMonewireReadPowerSupply',['../onewire_8h.html#ab4b545b3f913108407c886e0014c9c67',1,'onewire.h']]],
+  ['ibspacmonewirereadserialnumber',['iBSPACMonewireReadSerialNumber',['../onewire_8h.html#a046dad11f39bef9f072d3b5d44355ce1',1,'onewire.h']]],
+  ['ibspacmonewirereadtemperature',['iBSPACMonewireReadTemperature',['../onewire_8h.html#a2411e5ce947483d2923b8cec2bd37b38',1,'onewire.h']]],
+  ['ibspacmonewirerequesttemperature',['iBSPACMonewireRequestTemperature',['../onewire_8h.html#a9171689717dc3c43f64f88224ff19a22',1,'onewire.h']]],
+  ['ibspacmonewirereset',['iBSPACMonewireReset',['../onewire_8h.html#a75486b5774b042c6534e847a2029dc17',1,'onewire.h']]],
+  ['ibspacmonewiretemperatureready',['iBSPACMonewireTemperatureReady',['../onewire_8h.html#a44d9e38b52950a7dfa77f58ce7336fc4',1,'onewire.h']]],
+  ['ibspacmperiphuartfifostate',['iBSPACMperiphUARTfifoState',['../periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844',1,'uart.h']]],
+  ['ibspacmperiphuartflush',['iBSPACMperiphUARTflush',['../periph_2uart_8h.html#ac01205f4058e5686dabdf82d86d11ee2',1,'uart.h']]],
+  ['ibspacmperiphuartread',['iBSPACMperiphUARTread',['../periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6',1,'uart.h']]],
+  ['ibspacmperiphuartwrite',['iBSPACMperiphUARTwrite',['../periph_2uart_8h.html#a9d94576797c53ff1bb97e4703cca7367',1,'uart.h']]],
+  ['ibspacmuptimealarmset',['iBSPACMuptimeAlarmSet',['../uptime_8h.html#a5bc145d4c4f8ba5ea81ab126b559c8fd',1,'uptime.h']]],
+  ['ioctl',['ioctl',['../ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6',1,'ioctl.h']]]
 ];

@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['op_5fclose',['op_close',['../structsBSPACMnewlibFDOPSfileOps.html#a655fb4265172cad3c7d3f4457f6a26c2',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5ffstat',['op_fstat',['../structsBSPACMnewlibFDOPSfileOps.html#a13bd4dc25d85ac908b74e1ddafec4932',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5fioctl',['op_ioctl',['../structsBSPACMnewlibFDOPSfileOps.html#afd6629b466d424dd1abda296baec4ef1',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5fisatty',['op_isatty',['../structsBSPACMnewlibFDOPSfileOps.html#ad4b655275a092d291e4b889d712a6e16',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5flseek',['op_lseek',['../structsBSPACMnewlibFDOPSfileOps.html#a1c0a82d0c5b8e301be5435403c38690e',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5fread',['op_read',['../structsBSPACMnewlibFDOPSfileOps.html#a36147a23f27f792762e2cab01aed7351',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['op_5fwrite',['op_write',['../structsBSPACMnewlibFDOPSfileOps.html#acedb69c025cb900258aba41782688321',1,'sBSPACMnewlibFDOPSfileOps']]],
-  ['ops',['ops',['../structsBSPACMnewlibFDOPSfile.html#ae1738ceed2ce17124b8b03a5b5f45ad8',1,'sBSPACMnewlibFDOPSfile::ops()'],['../structsBSPACMperiphUARTstate.html#af41ef178cd99aab5b1c732116baf7332',1,'sBSPACMperiphUARTstate::ops()']]]
+  ['nbspacmdevicetm4cperiphgpio',['nBSPACMdeviceTM4CperiphGPIO',['../periphs_8h.html#a333e3d3e5aa54c87fdbc5ca51cdd3388',1,'periphs.h']]],
+  ['nbspacmdevicetm4cperiphi2c',['nBSPACMdeviceTM4CperiphI2C',['../periphs_8h.html#aec3e14b647fe8bcba851f4c5b16252fd',1,'periphs.h']]],
+  ['nbspacmdevicetm4cperiphssi',['nBSPACMdeviceTM4CperiphSSI',['../periphs_8h.html#ac6a832e4c125d3b5f0b361e4480fb162',1,'periphs.h']]],
+  ['nbspacmdevicetm4cperiphtimer',['nBSPACMdeviceTM4CperiphTIMER',['../periphs_8h.html#a98dadf3ab303472bbe8236222d2ae4f9',1,'periphs.h']]],
+  ['nbspacmdevicetm4cperiphuart',['nBSPACMdeviceTM4CperiphUART',['../periphs_8h.html#ac89f5a6354f45f180811355ee0105a58',1,'periphs.h']]],
+  ['nbspacmdevicetm4cperiphwtimer',['nBSPACMdeviceTM4CperiphWTIMER',['../periphs_8h.html#acba5552d584b6d71f87311ce1e959bd9',1,'periphs.h']]],
+  ['nbspacmleds',['nBSPACMleds',['../led_8h.html#a4ccecb84d22d8237adba3929ba9f8174',1,'led.h']]],
+  ['nbspacmnewlibfdopsfile',['nBSPACMnewlibFDOPSfile',['../fdops_8h.html#a4e0662a1864298049e4bd14892a480e9',1,'fdops.h']]]
 ];

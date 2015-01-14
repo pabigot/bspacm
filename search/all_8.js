@@ -1,13 +1,19 @@
 var searchData=
 [
-  ['ibspacmdevicetm4cgpioportshift',['iBSPACMdeviceTM4CgpioPortShift',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#ad43a3fabd2f440771abc79c4457a257b',1,'gpio.h']]],
-  ['ibspacmdevicetm4cgpioporttagfromshift',['iBSPACMdeviceTM4CgpioPortTagFromShift',['../tm4c_2include_2bspacm_2periph_2gpio_8h.html#ae6d98ecd145761e88ff30bbb9bb79812',1,'gpio.h']]],
-  ['ibspacmperiphuartfifostate',['iBSPACMperiphUARTfifoState',['../periph_2uart_8h.html#a50463328c1b690c4ee90f75f3d013844',1,'uart.h']]],
-  ['ibspacmperiphuartflush',['iBSPACMperiphUARTflush',['../periph_2uart_8h.html#ac01205f4058e5686dabdf82d86d11ee2',1,'uart.h']]],
-  ['ibspacmperiphuartread',['iBSPACMperiphUARTread',['../periph_2uart_8h.html#a24478e5f8180e3aae8d0c7fe307ec5d6',1,'uart.h']]],
-  ['ibspacmperiphuartwrite',['iBSPACMperiphUARTwrite',['../periph_2uart_8h.html#a9d94576797c53ff1bb97e4703cca7367',1,'uart.h']]],
-  ['ioctl',['ioctl',['../ioctl_8h.html#a0971a75f3178a0c3aa6b1cf871d0d7c6',1,'ioctl.h']]],
-  ['ioctl_2eh',['ioctl.h',['../ioctl_8h.html',1,'']]],
-  ['irqn',['irqn',['../structsBSPACMdeviceTM4Cpinmux.html#af50c0525d0d03c4abf3d0c7ce8894cd4',1,'sBSPACMdeviceTM4Cpinmux::irqn()'],['../structsBSPACMdeviceTM4CperiphUARTdevcfg.html#a87ec40b2698a195b609603e913efc8c6',1,'sBSPACMdeviceTM4CperiphUARTdevcfg::irqn()'],['../structsBSPACMdeviceEFM32periphLEUARTdevcfg.html#a85d2e3ab94dd507e6324e7994b647438',1,'sBSPACMdeviceEFM32periphLEUARTdevcfg::irqn()']]],
-  ['interfacing_20with_20newlib_20_28libc_29',['Interfacing with newlib (libc)',['../newlib.html',1,'']]]
+  ['hbspacmdefaultuart',['hBSPACMdefaultUART',['../periph_2uart_8h.html#a8dbcfec140e12df894b23d179f7839a9',1,'uart.h']]],
+  ['hbspacmi2cbus',['hBSPACMi2cBus',['../twi_8h.html#afba2b4b514c1baefd6aacdad0c850b9d',1,'twi.h']]],
+  ['hbspacmi2cconfigurebus',['hBSPACMi2cConfigureBus',['../twi_8h.html#a3e7f8154dba81fe6ced25fca7aada979',1,'twi.h']]],
+  ['hbspacmnewlibfdopsdriveruartbind',['hBSPACMnewlibFDOPSdriverUARTbind',['../newlib_2uart_8h.html#a98540e1e1c7651625a355e40d4117237',1,'uart.h']]],
+  ['hbspacmnewlibfdopsfile',['hBSPACMnewlibFDOPSfile',['../fdops_8h.html#a3f47a4bad11923847eaf18193bb4a5e5',1,'fdops.h']]],
+  ['hbspacmnewlibfdopsfilereserved',['hBSPACMnewlibFDOPSfileRESERVED',['../fdops_8h.html#a8adc04fa0415ba318eb26bdde683723f',1,'fdops.h']]],
+  ['hbspacmonewirebus',['hBSPACMonewireBus',['../onewire_8h.html#a202a04aa31767d0196bf500902bc838e',1,'onewire.h']]],
+  ['hbspacmonewireconfigurebus',['hBSPACMonewireConfigureBus',['../onewire___8h.html#a6e2203cea2148d44568127e27297289d',1,'onewire_.h']]],
+  ['hbspacmperiphuart',['hBSPACMperiphUART',['../periph_2uart_8h.html#a2f1510eed2326251b0092eb7e0ca6ee5',1,'uart.h']]],
+  ['hbspacmperiphuartconfigure',['hBSPACMperiphUARTconfigure',['../periph_2uart_8h.html#a798656e81bf4371a351e5e8469f66a1d',1,'uart.h']]],
+  ['hbspacmuptimealarm',['hBSPACMuptimeAlarm',['../uptime_8h.html#a79fdcf07a30b84aaaca74e8666566017',1,'uptime.h']]],
+  ['hbspacmuptimealarmclear',['hBSPACMuptimeAlarmClear',['../uptime_8h.html#aac3cfa2f0cea11b6ce0d104156b603b1',1,'uptime.h']]],
+  ['head',['head',['../structsFIFO.html#a2d28ad8a22368fa28a8de9f49b9d91a5',1,'sFIFO']]],
+  ['hires_2eh',['hires.h',['../hires_8h.html',1,'']]],
+  ['hw_5ftransmit',['hw_transmit',['../structsBSPACMperiphUARToperations.html#a4eab7e3f029b3b931807d4bc23dcfac7',1,'sBSPACMperiphUARToperations']]],
+  ['hw_5ftxien',['hw_txien',['../structsBSPACMperiphUARToperations.html#ac40b0162bb4ad2c7b8fca0685fb82e3d',1,'sBSPACMperiphUARToperations']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ioctl_2eh',['ioctl.h',['../ioctl_8h.html',1,'']]]
+  ['hires_2eh',['hires.h',['../hires_8h.html',1,'']]]
 ];
