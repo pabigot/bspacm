@@ -173,40 +173,6 @@ typedef struct sBSPACMuptimeAlarm {
 /** A handle to an uptime alarm structure */
 typedef sBSPACMuptimeAlarm * hBSPACMuptimeAlarm;
 
-/** The current state of the uptime clock.
- *
- * This is global to allow access to pieces of it from inline
- * functions.  User application should never inspect nor mutate any of
- * these fields. */
-typedef struct sBSPACMuptimeState {
-  /** Counts number of times uptime RTC peripheral has overflowed.
-   *
-   * LFCLK is always 32 KiHz, and we use a zero prescaler to preserve
-   * full resolution.  The counter is 24 bits, so track overflows in a
-   * 32-bit external counter, giving us 56 bits for the full clock
-   * (span 2^41 seconds, roughly 69 thousand years). */
-  volatile unsigned int overflows;
-
-  /** Records the last read value of the RTC peripheral uptime overflow
-   * counter.
-   *
-   * This reduces the counter+overflow read check to a single
-   * iteration in the common case where an overflow has not occurred
-   * since the last uptime read. */
-  unsigned int last_overflows;
-
-  /** Pointer to alarms that fire from the uptime clock. */
-  hBSPACMuptimeAlarm volatile alarm[BSPACM_UPTIME_CC_COUNT];
-
-  /** True iff the timer has been initialized and is running */
-  bool enabled;
-} sBSPACMuptimeState;
-
-/** @cond DOXYGEN_EXCLUDE */
-/* This doesn't exist. */
-extern sBSPACMuptimeState xBSPACMuptimeState_;
-/** @endcond */
-
 /** Schedule an alarm on the uptime clock.
  *
  * @param ccidx the capture/compare register to use for the alarm.  If
@@ -244,42 +210,21 @@ hBSPACMuptimeAlarmClear (int ccidx,
                          bool * pendingp);
 
 /** Return the absolute uptime in its highest available precision */
-inline
 unsigned long long
-ullBSPACMuptime ()
-{
-  unsigned int prev_ofl;
-  unsigned int ctr24;
-
-  /* Get a consistent pair of counter and overflow values */
-  do {
-    prev_ofl = xBSPACMuptimeState_.last_overflows;
-    ctr24 = BSPACM_UPTIME_RTC->COUNTER;
-    xBSPACMuptimeState_.last_overflows = xBSPACMuptimeState_.overflows;
-  } while (prev_ofl != xBSPACMuptimeState_.last_overflows);
-  return (((uint64_t)xBSPACMuptimeState_.last_overflows) << 24) | ctr24;
-}
+ullBSPACMuptime (void);
 
 /** Return the current uptime truncated to the lowest 32 bits */
-inline
 unsigned int
-uiBSPACMuptime ()
-{
-  return ullBSPACMuptime();
-}
+uiBSPACMuptime (void);
 
 /** Configure and enable the uptime clock. */
 void
-vBSPACMuptimeStart ();
+vBSPACMuptimeStart (void);
 
 /** Return @c true if and only if the uptime clock has been started
  * and is still running. */
-inline
 bool
-bBSPACMuptimeEnabled ()
-{
-  return xBSPACMuptimeState_.enabled;
-}
+bBSPACMuptimeEnabled (void);
 
 /** Function to cancel any in-progress bBSPACMuptimeSleep().
  *

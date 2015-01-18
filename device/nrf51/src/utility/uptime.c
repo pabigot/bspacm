@@ -51,7 +51,66 @@
 #define SLEEP_CCIDX 0
 #define SLEEP_COMPARE_BIT (RTC_INTENSET_COMPARE0_Enabled << (SLEEP_CCIDX + RTC_INTENSET_COMPARE0_Pos))
 
-sBSPACMuptimeState xBSPACMuptimeState_;
+/** The current state of the uptime clock.
+ *
+ * This is global to allow access to pieces of it from inline
+ * functions.  User application should never inspect nor mutate any of
+ * these fields. */
+typedef struct sBSPACMuptimeState {
+  /** Counts number of times uptime RTC peripheral has overflowed.
+   *
+   * LFCLK is always 32 KiHz, and we use a zero prescaler to preserve
+   * full resolution.  The counter is 24 bits, so track overflows in a
+   * 32-bit external counter, giving us 56 bits for the full clock
+   * (span 2^41 seconds, roughly 69 thousand years). */
+  volatile unsigned int overflows;
+
+  /** Pointer to alarms that fire from the uptime clock. */
+  hBSPACMuptimeAlarm volatile alarm[BSPACM_UPTIME_CC_COUNT];
+
+  /** True iff the timer has been initialized and is running */
+  bool enabled;
+} sBSPACMuptimeState;
+
+sBSPACMuptimeState uptime_state;
+
+/* Anywhere we read the overflow counter and might be running with
+ * interrupts disabled we need to make sure it's updated. */
+#define PROCESS_PENDING_OVERFLOW() do {      \
+    if (BSPACM_UPTIME_RTC->EVENTS_OVRFLW) {  \
+      BSPACM_UPTIME_RTC->EVENTS_OVRFLW = 0;  \
+      ++uptime_state.overflows;       \
+    }                                        \
+  } while (0)
+
+inline
+unsigned long long
+ullBSPACMuptime ()
+{
+  unsigned int ofl;
+  unsigned int ctr24a;
+  unsigned int ctr24b;
+
+  /* Get a consistent pair of counter and overflow values */
+  NVIC_DisableIRQ(BSPACM_UPTIME_RTC_IRQn);
+  ctr24a = BSPACM_UPTIME_RTC->COUNTER;
+  do {
+    ctr24b = ctr24a;
+    PROCESS_PENDING_OVERFLOW();
+    ofl = uptime_state.overflows;
+    ctr24a = BSPACM_UPTIME_RTC->COUNTER;
+  } while (ctr24a != ctr24b);
+  NVIC_EnableIRQ(BSPACM_UPTIME_RTC_IRQn);
+  return ((uint64_t)ofl << 24) | ctr24a;
+}
+
+extern unsigned long long ullBSPACMuptime ();
+
+unsigned int
+uiBSPACMuptime ()
+{
+  return ullBSPACMuptime();
+}
 
 int
 iBSPACMuptimeAlarmSet (int ccidx,
@@ -69,14 +128,14 @@ iBSPACMuptimeAlarmSet (int ccidx,
     if ((0 > ccidx)
         || (SLEEP_CCIDX == ccidx)
         || (BSPACM_UPTIME_CC_COUNT <= ccidx)
-        || (NULL != xBSPACMuptimeState_.alarm[ccidx])
+        || (NULL != uptime_state.alarm[ccidx])
         || (NULL == ap)) {
       break;
     }
     BSPACM_UPTIME_RTC->EVENTS_COMPARE[ccidx] = 0;
     BSPACM_UPTIME_RTC->CC[ccidx] = when_utt;
     BSPACM_UPTIME_RTC->INTENSET = (RTC_INTENSET_COMPARE0_Enabled << (ccidx + RTC_INTENSET_COMPARE0_Pos));
-    xBSPACMuptimeState_.alarm[ccidx] = ap;
+    uptime_state.alarm[ccidx] = ap;
     rv = 0;
   } while (0);
   BSPACM_CORE_RESTORE_INTERRUPT_STATE(istate);
@@ -104,11 +163,17 @@ hBSPACMuptimeAlarmClear (int ccidx,
     if (pendingp) {
       *pendingp = pending;
     }
-    rv = xBSPACMuptimeState_.alarm[ccidx];
-    xBSPACMuptimeState_.alarm[ccidx] = NULL;
+    rv = uptime_state.alarm[ccidx];
+    uptime_state.alarm[ccidx] = NULL;
   } while (0);
   BSPACM_CORE_RESTORE_INTERRUPT_STATE(istate);
   return rv;
+}
+
+bool
+bBSPACMuptimeEnabled (void)
+{
+  return uptime_state.enabled;
 }
 
 void
@@ -131,7 +196,7 @@ vBSPACMuptimeStart ()
    * events, disable PPI event forwarding, disable all interrupts
    * except overflow. */
   BSPACM_UPTIME_RTC->TASKS_STOP = 1;
-  memset(&xBSPACMuptimeState_, 0, sizeof(xBSPACMuptimeState_));
+  memset(&uptime_state, 0, sizeof(uptime_state));
   BSPACM_UPTIME_RTC->TASKS_CLEAR = 1;
   BSPACM_UPTIME_RTC->EVENTS_TICK = 0;
   BSPACM_UPTIME_RTC->EVENTS_OVRFLW = 0;
@@ -149,7 +214,7 @@ vBSPACMuptimeStart ()
 
   /* And start the clock */
   BSPACM_UPTIME_RTC->TASKS_START = 1;
-  xBSPACMuptimeState_.enabled = true;
+  uptime_state.enabled = true;
 }
 
 static volatile bool sleep_aborted;
@@ -194,10 +259,7 @@ void
 BSPACM_UPTIME_RTC_IRQHandler ()
 {
   int ccidx;
-  if (BSPACM_UPTIME_RTC->EVENTS_OVRFLW) {
-    BSPACM_UPTIME_RTC->EVENTS_OVRFLW = 0;
-    ++xBSPACMuptimeState_.overflows;
-  }
+  PROCESS_PENDING_OVERFLOW();
   if (BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX]) {
     BSPACM_UPTIME_RTC->EVENTS_COMPARE[SLEEP_CCIDX] = 0;
     sleep_wakeup = true;
@@ -205,7 +267,7 @@ BSPACM_UPTIME_RTC_IRQHandler ()
   }
   for (ccidx = 0; ccidx < BSPACM_UPTIME_CC_COUNT; ++ccidx) {
     if (BSPACM_UPTIME_RTC->EVENTS_COMPARE[ccidx]) {
-      hBSPACMuptimeAlarm ap = xBSPACMuptimeState_.alarm[ccidx];
+      hBSPACMuptimeAlarm ap = uptime_state.alarm[ccidx];
       BSPACM_UPTIME_RTC->EVENTS_COMPARE[ccidx] = 0;
       if (ap) {
         if (ap->interval_utt) {
